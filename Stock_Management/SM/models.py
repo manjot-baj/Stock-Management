@@ -1,10 +1,9 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
-from .models import BaseModel
 
 
-class BaseModel(BaseModel):
+class BaseModel(models.Model):
     create_date = models.DateTimeField(default=timezone.now, null=True, blank=True, editable=False)
     write_date = models.DateTimeField(default=timezone.now, null=True, blank=True, editable=False)
     create_user = models.ForeignKey(
