@@ -17,7 +17,7 @@ class EnquiryType(BaseModel):
         return self.enquiryType
 
 
-class EnquiryForm(models.Model):
+class EnquiryForm(BaseModel):
     firstName = models.CharField(max_length=100, null=True, blank=False, )
     lastName = models.CharField(max_length=100, null=True, blank=False, )
     customerType = models.ForeignKey(CostumerType, on_delete=models.CASCADE, null=True, blank=False)
