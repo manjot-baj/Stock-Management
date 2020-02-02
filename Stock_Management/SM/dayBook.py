@@ -2,12 +2,13 @@ from django.utils import timezone
 
 from django.db import models
 import random
+from .models import BaseModel
 
 
 def random_string():
     return str(random.randint(10000, 99999))
 
-class DayBook(models.Model):
+class DayBook(BaseModel):
     number = models.CharField(default=random_string, max_length=50, null=True)
     date = models.DateTimeField(default=timezone.now, null=True, blank=False)
     customerType = (
