@@ -18,22 +18,23 @@ class EnquiryType(BaseModel):
 
 
 class EnquiryForm(BaseModel):
-    firstName = models.CharField(max_length=100, null=True, blank=False, )
-    lastName = models.CharField(max_length=100, null=True, blank=False, )
-    customerType = models.ForeignKey(CostumerType, on_delete=models.CASCADE, null=True, blank=False)
+    first_name = models.CharField(max_length=100, null=True, blank=False, )
+    last_name = models.CharField(max_length=100, null=True, blank=False, )
+    customer_type = models.ForeignKey(CostumerType, on_delete=models.CASCADE, null=True, blank=False)
     address = models.TextField(max_length=200, null=True, blank=False, )
-    enquiryDate = models.DateTimeField(default=timezone.now, null=True, blank=True)
-    handledBy = models.CharField(max_length=100, null=True, blank=False, )
-    enquiryType = models.ForeignKey(EnquiryType, on_delete=models.CASCADE, null=True, blank=False)
+    enquiry_date = models.DateTimeField(default=timezone.now, null=True, blank=True)
+    handled_by = models.CharField(max_length=100, null=True, blank=False, )
+    enquiry_type = models.ForeignKey(EnquiryType, on_delete=models.CASCADE, null=True, blank=False)
 
-    enquiry_Name = models.CharField(max_length=100, null=True, blank=True)
+    product_name = models.CharField(max_length=100, null=True, blank=True)
+    description = models.TextField(null=True, blank=False)
     startPrice = models.CharField(max_length=100, null=True, blank=True)
     endPrice = models.CharField(max_length=100, null=True, blank=True)
 
-    mobile_No = models.CharField(max_length=100, null=True, blank=False, )
-    whatsUP_No = models.CharField(max_length=100, null=True, blank=True, )
-    contact_No = models.CharField(max_length=100, null=True, blank=True, )
-    email_Id = models.CharField(max_length=100, null=True, blank=True, )
+    mobile_no = models.CharField(max_length=100, null=True, blank=False, )
+    whatsapp_no = models.CharField(max_length=100, null=True, blank=True, )
+    contact_no = models.CharField(max_length=100, null=True, blank=True, )
+    email_id = models.CharField(max_length=100, null=True, blank=True, )
 
     def __str__(self):
-        return 'Name : {0},  Enquiry_For:{1},  Date : {2}'.format(self.firstName, self.enquiryType, self.enquiryDate)
+        return 'Name : {0},  Enquiry_For:{1},  Date : {2}'.format(self.first_name, self.enquiry_type, self.enquiry_type)
