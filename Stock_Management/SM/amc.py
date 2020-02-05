@@ -9,7 +9,7 @@ def random_string():
 
 
 class Product_type(BaseModel):
-    product_type = models.CharField(max_length=100)
+    product_type = models.CharField(max_length=100, null=True, blank=False)
 
     def __str__(self):
         return self.product_type
