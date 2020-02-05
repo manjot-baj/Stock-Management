@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 from .models import BaseModel
+from .company_data import Client
+from .invoice import Product
 import random
 
 
@@ -17,11 +19,10 @@ class Product_type(BaseModel):
 
 class AMC(BaseModel):
     number = models.CharField(default=random_string, max_length=50, null=True)
-    client_name = models.CharField(max_length=100, null=True, blank=False)
-    product = models.CharField(max_length=100, null=True, blank=False)
+    client_name = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
     product_types = models.ForeignKey(Product_type, on_delete=models.CASCADE, null=True, blank=False)
     description = models.TextField(null=True, blank=False)
-    product_type = models.CharField(max_length=100, null=True, blank=False)
     start_date = models.DateTimeField(default=timezone.now, null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)
 

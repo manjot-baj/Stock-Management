@@ -2,7 +2,7 @@ from django.contrib import admin
 from .enquiry import *
 from .dayBook import *
 from .company_data import *
-from .purchaseOrder import *
+from .PO import *
 from .invoice import *
 from .amc import *
 from .employee_data import *
@@ -18,7 +18,7 @@ admin.site.register(CompanyDetail)
 admin.site.register(DayBook)
 admin.site.register(Vendor)
 admin.site.register(Client)
-admin.site.register(PurchaseOrder)
+admin.site.register(POData)
 admin.site.register(Bill)
 admin.site.register(Product)
 admin.site.register(Invoice)
