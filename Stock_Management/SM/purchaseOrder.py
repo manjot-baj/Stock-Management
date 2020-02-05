@@ -1,6 +1,6 @@
-
 from django.db import models
 from .models import BaseModel
+
 
 class PurchaseOrder(BaseModel):
     name = models.CharField(max_length=100, null=True, blank=False)
