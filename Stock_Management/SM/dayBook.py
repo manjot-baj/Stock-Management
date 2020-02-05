@@ -14,7 +14,7 @@ class DayBook(BaseModel):
     date = models.DateTimeField(default=timezone.now, null=True, blank=False)
     customerType = (
         ("Customer", "Customer"),
-        ("Employ", "Employ"),
+        ("Employee", "Employee"),
         ("Vendor", "Vendor"),
     )
     type = models.CharField(max_length=32, choices=customerType)

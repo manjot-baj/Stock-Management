@@ -1,3 +1,4 @@
 .idea/*
 Stock_Management/SM/migrations/*
 Stock_Management/SM/__pycache__/*
+Stock_Management/uploads/*

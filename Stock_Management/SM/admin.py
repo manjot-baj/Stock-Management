@@ -5,6 +5,7 @@ from .company_data import *
 from .purchaseOrder import *
 from .invoice import *
 from .amc import *
+from .employee_data import *
 
 admin.site.site_header = 'Storeck'
 admin.site.site_title = 'Storeck'
@@ -24,3 +25,4 @@ admin.site.register(Invoice)
 admin.site.register(Quotation)
 admin.site.register(AMC)
 admin.site.register(Product_type)
+admin.site.register(Employee)

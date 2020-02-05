@@ -5,10 +5,10 @@ from .models import BaseModel
 class PurchaseOrder(BaseModel):
     name = models.CharField(max_length=100, null=True, blank=False)
     GSTIN = models.CharField(max_length=100, null=True, blank=False)
-    purchase_Order_No = models.CharField(max_length=100, null=True, blank=False)
-    PO_Number = models.CharField(max_length=100, null=True, blank=False)
-    issue_Date = models.CharField(max_length=100, null=True, blank=False)
-    valid_Until = models.CharField(max_length=100, null=True, blank=False)
+    purchase_order_no = models.CharField(max_length=100, null=True, blank=False)
+    po_no = models.CharField(max_length=100, null=True, blank=False)
+    issue_date = models.CharField(max_length=100, null=True, blank=False)
+    valid_until = models.CharField(max_length=100, null=True, blank=False)
     amount = models.CharField(max_length=100, null=True, blank=False)
     tax = models.CharField(max_length=100, null=True, blank=False)
     CGST = models.CharField(max_length=100, null=True, blank=False)
@@ -17,7 +17,7 @@ class PurchaseOrder(BaseModel):
     CESS = models.CharField(max_length=100, null=True, blank=False)
     total = models.CharField(max_length=100, null=True, blank=False)
     billed = models.CharField(max_length=100, null=True, blank=False)
-    advanced_Payments = models.CharField(max_length=100, null=True, blank=False)
+    advanced_payments = models.CharField(max_length=100, null=True, blank=False)
 
     def __str__(self):
         return self.name
@@ -26,9 +26,9 @@ class PurchaseOrder(BaseModel):
 class Bill(BaseModel):
     name = models.CharField(max_length=100, null=True, blank=False)
     GSTIN = models.CharField(max_length=100, null=True, blank=False)
-    bill_number = models.CharField(max_length=100, null=True, blank=False)
-    invoice_number = models.CharField(max_length=100, null=True, blank=False)
-    PO_number = models.CharField(max_length=100, null=True, blank=False)
+    bill_no = models.CharField(max_length=100, null=True, blank=False)
+    invoice_no = models.CharField(max_length=100, null=True, blank=False)
+    po_no = models.CharField(max_length=100, null=True, blank=False)
     issue_date = models.CharField(max_length=100, null=True, blank=False)
     due_date = models.CharField(max_length=100, null=True, blank=False)
     shipping_charges = models.CharField(max_length=100, null=True, blank=False)
