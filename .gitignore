@@ -4,5 +4,5 @@ bin/*
 include/*
 lib/*
 Stock_Management/SM/migrations/*
-Stock_Management/SM/__pycache__/*cd .
+Stock_Management/SM/__pycache__/*
 *.pyc
