@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 from .models import BaseModel
 from .company_data import Client
-from .invoice import Product
+from .invoice import Invoice
 import random
 
 
@@ -20,7 +20,7 @@ class Product_type(BaseModel):
 class AMC(BaseModel):
     number = models.CharField(default=random_string, max_length=50, null=True)
     client_name = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
+    invoice_no = models.ForeignKey(Invoice, on_delete=models.CASCADE, null=True, blank=True)
     product_types = models.ForeignKey(Product_type, on_delete=models.CASCADE, null=True, blank=False)
     description = models.TextField(null=True, blank=False)
     start_date = models.DateTimeField(default=timezone.now, null=True, blank=True)
