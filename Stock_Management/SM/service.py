@@ -16,7 +16,7 @@ class ServiceType(BaseModel):
 
 
 class Service(BaseModel):
-    service_number = models.CharField(max_length=50, default=random_string(), null=True, blank=True)
+    service_number = models.CharField(max_length=50, default=random_string, null=True, blank=True)
     date = models.DateTimeField(default=timezone.now, null=True, blank=False)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=False)
     service_type = models.ForeignKey(ServiceType, on_delete=models.CASCADE, null=True, blank=False)
