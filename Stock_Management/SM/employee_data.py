@@ -4,6 +4,7 @@ from .models import BaseModel
 
 class Employee(BaseModel):
     photo = models.ImageField(upload_to='uploads/', null=True, blank=True)
+    join_date = models.DateField(null=True, blank=False)
     name = models.CharField(max_length=100, null=True, blank=False)
     address = models.TextField(max_length=200, null=True, blank=False)
     city = models.CharField(max_length=100, null=True, blank=False)
