@@ -6,6 +6,7 @@ from .PO import *
 from .invoice import *
 from .amc import *
 from .employee_data import *
+from .service import *
 
 admin.site.site_header = 'Storeck'
 admin.site.site_title = 'Storeck'
@@ -26,3 +27,6 @@ admin.site.register(Quotation)
 admin.site.register(AMC)
 admin.site.register(Product_type)
 admin.site.register(Employee)
+admin.site.register(Service)
+admin.site.register(ServiceType)
+
