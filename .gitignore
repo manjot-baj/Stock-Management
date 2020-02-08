@@ -1,6 +1,7 @@
 .idea/*
 Stock_Management/SM/migrations/*
 Stock_Management/SM/__pycache__/*
-Stock_Management/uploads/*
 Stock_Management/media/*
 Stock_Management/Stock_Management/__pycache__/*
+Stock_Management/SMdashboard/__pycache__/*
+Stock_Management/SMdashboard/migrations/*
