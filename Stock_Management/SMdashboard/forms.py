@@ -1,5 +1,6 @@
 import os
 from django import forms
+from SM import enquiry
 
 
 class ClientForm(forms.Form):
@@ -19,3 +20,27 @@ class ClientForm(forms.Form):
                 u' Please make sure your input file is a correct excel file' % extension)
         else:
             return input_excel
+
+
+class EnqueryForm(forms.ModelForm):
+    class Meta:
+        model = enquiry.Enquiry
+        fields = ['first_name', 'last_name', 'customer_type', 'address', 'handled_by', 'enquiry_type', 'product_name',
+                  'description', 'startPrice', 'endPrice', 'mobile_no', 'whatsapp_no', 'contact_no', 'email_id',
+                  ]
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'customer_type': forms.Select(attrs={'class': 'form-control'}),
+            'address': forms.Textarea(attrs={'rows': 3, 'cols': 58, 'class': 'form-control'}),
+            'handled_by': forms.Select(attrs={'class': 'form-control'}),
+            'enquiry_type': forms.Select(attrs={'class': 'form-control'}),
+            'product_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'rows': 3, 'cols': 58, 'class': 'form-control'}),
+            'startPrice': forms.TextInput(attrs={'class': 'form-control'}),
+            'endPrice': forms.TextInput(attrs={'class': 'form-control'}),
+            'mobile_no': forms.TextInput(attrs={'class': 'form-control'}),
+            'whatsapp_no': forms.TextInput(attrs={'class': 'form-control'}),
+            'contact_no': forms.TextInput(attrs={'class': 'form-control'}),
+            'email_id': forms.TextInput(attrs={'class': 'form-control'}),
+        }

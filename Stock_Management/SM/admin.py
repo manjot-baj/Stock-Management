@@ -49,7 +49,7 @@ class EmployeeAdmin(admin.ModelAdmin):
     search_fields = ['name', 'type', 'join_date', 'mobile_no', 'email_id']
 
 
-@admin.register(EnquiryForm)
+@admin.register(Enquiry)
 class EnquiryAdmin(admin.ModelAdmin):
     list_display = ['enquiry_date', 'customer_type', 'first_name', 'last_name', 'enquiry_type', 'handled_by',
                     'product_name', 'startPrice', 'endPrice', 'mobile_no', 'whatsapp_no', 'email_id']
