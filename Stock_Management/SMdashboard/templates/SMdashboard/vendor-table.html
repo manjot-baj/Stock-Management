@@ -1,0 +1,80 @@
+{% extends 'SMdashboard/base.html' %}
+{% load static %}
+{% block content %}
+{{ block.super }}
+<div class="app-title">
+      <div>
+        <h1><i class="fa fa-th-list"></i>Vendors</h1>
+        <p>Vendors</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="tile">
+          <div class="tile-body">
+            <div class="table-responsive">
+              <table class="table table-hover table-striped" id="sampleTable">
+                <thead>
+                  <tr>
+                    <th>Vendor Name</th>
+                    <th>Contact Name</th>
+                    <th>Vendor TIN</th>
+                     <th>Email</th>
+                      <th>Phone</th>
+                      <th>Billing Address</th>
+                      <th>Billing Zip</th>
+                      <th>Billing City</th>
+                      <th>Billing State</th>
+                      <th>Billing Country</th>
+                      <th>Shipping Address</th>
+                      <th>Shipping Zip</th>
+                      <th>Shipping City</th>
+                      <th>Shipping State</th>
+                      <th>Shipping Country</th>
+                      <th>Private Details</th>
+                      <th> GSTIN</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}
+{% block script %}
+{{ block.super }}
+<!-- Page specific javascripts-->
+<!-- Data table plugin-->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<script type="text/javascript" src="{% static 'SMdashboard/js/plugins/bootstrap-datepicker.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'SMdashboard/js/plugins/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'SMdashboard/js/plugins/dataTables.bootstrap.min.js' %}"></script>
+<script type="text/javascript">
+var table = $('#sampleTable').DataTable({
+  columns: [
+  { data: "name"},
+  { data: "contact_Name"},
+  { data: "TIN"},
+  { data: "email"},
+  {data: "phone"},
+  {data:"billing_address"},
+  {data:"billing_zip"},
+  {data:"billing_city"},
+  {data:"billing_state"},
+  {data:"billing_country"},
+  {data:"shipping_address"},
+  {data:"shipping_zip"},
+  {data:"shipping_city"},
+  {data:"shipping_state"},
+  {data:"shipping_country"},
+  {data:"details"},
+  {data:"GSTIN"},
+  ],
+  data: {% autoescape off %}{{data}}{% endautoescape %}
+  });
+</script>
+{% endblock %}
