@@ -5,20 +5,20 @@ from .employee_data import Employee
 
 
 class CostumerType(BaseModel):
-    customerType = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.customerType
+        return self.name
 
 
 class EnquiryType(BaseModel):
-    enquiryType = models.CharField(max_length=100, null=True, blank=False)
+    name = models.CharField(max_length=100, null=True, blank=False)
 
     def __str__(self):
-        return self.enquiryType
+        return self.name
 
 
-class EnquiryForm(BaseModel):
+class Enquiry(BaseModel):
     first_name = models.CharField(max_length=100, null=True, blank=False, )
     last_name = models.CharField(max_length=100, null=True, blank=False, )
     customer_type = models.ForeignKey(CostumerType, on_delete=models.CASCADE, null=True, blank=False)

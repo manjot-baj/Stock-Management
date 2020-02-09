@@ -2,9 +2,9 @@ from django import forms
 from SM import enquiry
 # from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
-class EnqueryFom(forms.ModelForm):
+class EnqueryForm(forms.ModelForm):
     class Meta:
-        model = enquiry.EnquiryForm
+        model = enquiry.Enquiry
         fields = ['first_name', 'last_name', 'customer_type', 'address', 'handled_by', 'enquiry_type', 'product_name',
                   'description', 'startPrice', 'endPrice', 'mobile_no', 'whatsapp_no', 'contact_no', 'email_id',
                   ]
