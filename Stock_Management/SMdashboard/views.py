@@ -185,9 +185,8 @@ class Enquiry(View):
                 endPrice=endPrice, mobile_no=mobile_no, whatsapp_no=whatsapp_no, contact_no=contact_no,
                 email_id=email_id
             )
-
-            return redirect(to='enquirySubmitted')
-        return redirect(to='SMdashboard: dashboard')
+            return redirect(to='enquiry')
+        return redirect(to='enquiry_form')
 
 
 class Success(View):

@@ -31,11 +31,10 @@ class Enquiry(BaseModel):
     description = models.TextField(null=True, blank=False)
     startPrice = models.CharField(max_length=100, null=True, blank=True)
     endPrice = models.CharField(max_length=100, null=True, blank=True)
-
-    mobile_no = models.CharField(max_length=100, null=True, blank=False, )
-    whatsapp_no = models.CharField(max_length=100, null=True, blank=True, )
-    contact_no = models.CharField(max_length=100, null=True, blank=True, )
-    email_id = models.CharField(max_length=100, null=True, blank=True, )
+    mobile_no = models.CharField(max_length=15, null=True, blank=False,)
+    whatsapp_no = models.CharField(max_length=15, null=True, blank=False,)
+    contact_no = models.CharField(max_length=15, null=True, blank=False, )
+    email_id = models.CharField(max_length=50, null=True, blank=False, )
 
     def __str__(self):
         return 'Name : {0},  Enquiry_For:{1},  Date : {2}'.format(self.first_name, self.enquiry_type, self.enquiry_date)

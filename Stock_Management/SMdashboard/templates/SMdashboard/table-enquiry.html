@@ -39,14 +39,16 @@
 <!-- Page specific javascripts-->
 <!-- Data table plugin-->
 
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
-<script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-<!--<script type="text/javascript" src="{% static 'SMdashboard/js/plugins/dataTables.bootstrap.min.js' %}"></script>-->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<script type="text/javascript" src="{% static 'SMdashboard/js/plugins/bootstrap-datepicker.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'SMdashboard/js/plugins/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'SMdashboard/js/plugins/dataTables.bootstrap.min.js' %}"></script>
 <script type="text/javascript">
 
-$(document).ready( function () {
-    $('#sampleTable').DataTable({
-    columns: [
+var table = $('#sampleTable').DataTable({
+  columns: [
     { data: "date"},
     { data: "enquiry"},
     { data: "product_name"},
@@ -57,7 +59,7 @@ $(document).ready( function () {
     { data: "mobile_no"},
   ],
   data: {% autoescape off %}{{data}}{% endautoescape %}
-} );
+  });
 
 </script>
 
