@@ -12,7 +12,9 @@ def random_string():
 
 
 class ServiceType(BaseModel):
-    service_type = models.CharField(max_length=100, null=True, blank=True)
+    name = models.CharField(max_length=100, null=True, blank=True)
+    def __str__(self):
+        return self.name
 
 
 class Service(BaseModel):

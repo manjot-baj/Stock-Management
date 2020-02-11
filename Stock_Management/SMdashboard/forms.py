@@ -1,6 +1,7 @@
 import os
 from django import forms
 from SM import enquiry, dayBook
+from SM import enquiry, employee_data, service
 
 
 class ClientForm(forms.Form):
@@ -80,4 +81,47 @@ class DayBookForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control-sm'}),
             'status': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'amount': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+        }
+
+
+class EmployeeForm(forms.ModelForm):
+    class Meta:
+        model = employee_data.Employee
+        fields = ['photo', 'join_date', 'name', 'address', 'city', 'state', 'pin_code', 'country', 'mobile_no',
+                  'email_id',
+                  'qualification', 'type', 'job_profile', 'job_description',
+                  ]
+        widgets = {
+            # 'photo': forms.ImageField(attrs={'class': 'form-control'}),
+            # 'join_date': forms.DateInput(attrs={'type': 'date'}),
+            'join_date': forms.widgets.DateInput(attrs={'type': 'date'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'address': forms.Textarea(attrs={'class': 'form-control'}),
+            'city': forms.TextInput(attrs={'class': 'form-control'}),
+            'state': forms.TextInput(attrs={'class': 'form-control'}),
+            'pin_code': forms.TextInput(attrs={'class': 'form-control'}),
+            'country': forms.TextInput(attrs={'class': 'form-control'}),
+            'mobile_no': forms.TextInput(attrs={'class': 'form-control'}),
+            'email_id': forms.TextInput(attrs={'class': 'form-control'}),
+            'qualification': forms.Textarea(attrs={'class': 'form-control'}),
+            'type': forms.Select(attrs={'class': 'form-control'}),
+            'job_profile': forms.TextInput(attrs={'class': 'form-control'}),
+            'job_description': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class ServiceForm(forms.ModelForm):
+    class Meta:
+        model = service.Service
+        fields = [
+            'service_number', 'date', 'client', 'service_type', 'description', 'photo', 'status'
+        ]
+
+        widgets = {
+            'service_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'date': forms.widgets.DateInput(attrs={'type': 'date'}),
+            'client': forms.Select(attrs={'class': 'form-control'}),
+            'service_type': forms.Select(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'status': forms.Select(attrs={'class': 'form-control'}),
         }

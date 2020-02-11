@@ -8,7 +8,9 @@ from django.views.generic import ListView, View
 from django.db.models import (Case, CharField, Count, DateTimeField,
                               ExpressionWrapper, F, FloatField, Func, Max, Min,
                               Prefetch, Q, Sum, Value, When, Subquery)
+
 from SM import enquiry, dayBook
+from SM import enquiry, employee_data, service
 
 
 class Dashboard(View):
@@ -231,12 +233,12 @@ class VendorView(View):
 class Enquiry(View):
     from .forms import EnqueryForm
     form = EnqueryForm
-    dashboard_template = 'SMdashboard/dashboard.html'
+    # dashboard_template = 'SMdashboard/dashboard.html'
     enquiryForm_template = 'SMdashboard/enquiry_form.html'
     enquiryForm_table = 'SMdashboard/table-enquiry.html'
 
     model = enquiry.Enquiry
-    enquiry_tableTemplate = 'dashboard/table-enquiry.html'
+    # enquiry_tableTemplate = 'dashboard/table-enquiry.html'
 
     def get_data(self):
 
@@ -258,7 +260,7 @@ class Enquiry(View):
             return render(request, self.enquiryForm_template, {'enquiry': self.form()})
         data = self.get_data()
         print(data)
-        return render(request, self.enquiryForm_table, {'data': data})  # json.dumps(data)
+        return render(request, self.enquiryForm_table, {'data': data})
 
     def post(self, request, *args, **kwargs):
         form = self.EnqueryForm(request.POST)
@@ -288,7 +290,6 @@ class Enquiry(View):
             )
             return redirect(to='enquiry')
         return redirect(to='enquiry_form')
-
 
 class DayBookView(View):
     from .forms import DayBookForm
@@ -342,3 +343,102 @@ class DayBookView(View):
                 description=description, status=status, amount=amount)
             return redirect(to='daybook')
         return redirect(to='daybook_form')
+
+class Employee(View):
+    from .forms import EmployeeForm
+    form = EmployeeForm
+
+    model = employee_data.Employee
+
+    # dashboard_template = 'SMdashboard/dashboard.html'
+    employeeForm_template = 'SMdashboard/employee_form.html'
+    employeeForm_table = 'SMdashboard/table-employee.html'
+
+    def get_data(self):
+        data = self.model.objects.all().values(
+            'photo', 'name', 'address', 'city', 'state', 'pin_code', 'country', 'mobile_no', 'email_id',
+            'qualification', 'type', 'job_profile', 'job_description', 'pk',
+        ).annotate(
+            date=ExpressionWrapper(Func(F('join_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                   output_field=CharField()),
+        ).order_by("-date")
+        return list(data)
+
+    def get(self, request, *args, **kwargs):
+        if 'employee_form' in kwargs:
+            return render(request, self.employeeForm_template, {'employee': self.form()})
+        data = self.get_data()
+        print(data)
+        return render(request, self.employeeForm_table, {'data': data})
+
+    def post(self, request, *args, **kwargs):
+        form = self.EmployeeForm(request.POST, request.FILES,)
+        print(form.is_valid)
+        print(form)
+        if form.is_valid():
+            photo = form.cleaned_data.get('photo')
+            join_date = form.cleaned_data.get('join_date')
+            name = form.cleaned_data.get('name')
+            address = form.cleaned_data.get('address')
+            city = form.cleaned_data.get('city')
+            state = form.cleaned_data.get('state')
+            pin_code = form.cleaned_data.get('pin_code')
+            country = form.cleaned_data.get('country')
+            mobile_no = form.cleaned_data.get('mobile_no')
+            email_id = form.cleaned_data.get('email_id')
+            qualification = form.cleaned_data.get('qualification')
+            type = form.cleaned_data.get('type')
+            job_profile = form.cleaned_data.get('job_profile')
+            job_description = form.cleaned_data.get('job_description')
+
+            employee_data.Employee.objects.create(
+                photo=photo, join_date=join_date, name=name, address=address, city=city, state=state, pin_code=pin_code,
+                country=country, mobile_no=mobile_no, email_id=email_id, qualification=qualification, type=type,
+                job_profile=job_profile, job_description=job_description,
+            )
+            return redirect(to="employee")
+        return redirect(to="employee_form")
+
+class Service(View):
+    from .forms import ServiceForm
+    form = ServiceForm
+    model = service.Service
+
+    serviceForm_template = 'SMdashboard/service_form.html'
+    serviceForm_table = 'SMdashboard/table-service.html'
+
+    def get_data(self):
+        data = self.model.objects.all().values(
+            'service_number', 'description', 'photo', 'status', 'pk'
+        ).annotate(
+            service_client=F('client__name'),
+            service=F('service_type__name'),
+            service_date=ExpressionWrapper(Func(F('date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                   output_field=CharField()),
+        ).order_by("-service_date")
+        return list(data)
+
+    def get(self, request, *args, **kwargs):
+        if 'service_form' in kwargs:
+            return render(request, self.serviceForm_template, {'service': self.form()})
+        data = self.get_data()
+        print(data)
+        return render(request, self.serviceForm_table, {'data': data})
+
+    def post(self, request, *args, **kwargs):
+        form = self.ServiceForm(request.POST, request.FILES,)
+        print(form.is_valid())
+        if form.is_valid():
+            service_number = form.cleaned_data.get('service_number')
+            date = form.cleaned_data.get('date')
+            client = form.cleaned_data.get('client')
+            service_type = form.cleaned_data.get('service_type')
+            description = form.cleaned_data.get('service_type')
+            photo = form.cleaned_data.get('photo')
+            status = form.cleaned_data.get('status')
+            service.Service.objects.create(
+                service_number=service_number, date=date, client=client, service_type=service_type,
+                description=description, photo=photo, status=status
+            )
+            return redirect(to="service")
+        return redirect(to="service_form")
