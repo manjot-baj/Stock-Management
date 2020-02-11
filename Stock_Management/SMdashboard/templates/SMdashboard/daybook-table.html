@@ -1,0 +1,65 @@
+{% extends 'SMdashboard/base.html' %}
+{% load static %}
+{% block content %}
+{{ block.super }}
+<div class="app-title">
+      <div>
+        <h1><i class="fa fa-th-list"></i>Day Book Entry's</h1>
+        <p>Entry's</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="tile">
+          <div class="tile-body">
+            <div class="table-responsive">
+              <table class="table table-hover table-striped" id="sampleTable">
+                <thead>
+                  <tr>
+                    <th>Entry No</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                     <th>Name</th>
+                      <th>Customer</th>
+                      <th>Employee</th>
+                      <th>Vendor</th>
+                      <th>Status</th>
+                      <th>Amount</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}
+{% block script %}
+{{ block.super }}
+<!-- Page specific javascripts-->
+<!-- Data table plugin-->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<script type="text/javascript" src="{% static 'SMdashboard/js/plugins/bootstrap-datepicker.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'SMdashboard/js/plugins/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'SMdashboard/js/plugins/dataTables.bootstrap.min.js' %}"></script>
+<script type="text/javascript">
+var table = $('#sampleTable').DataTable({
+  columns: [
+  { data: "number"},
+  { data: "dayBook_date"},
+  { data: "customer_type"},
+  { data: "dayBook_name"},
+  {data: "customer"},
+  {data:"employee"},
+  {data:"vendor"},
+  {data:"status"},
+  {data:"dayBook_amount"},
+  ],
+
+  data: {% autoescape off %}{{data}}{% endautoescape %}
+  });
+</script>
+{% endblock %}

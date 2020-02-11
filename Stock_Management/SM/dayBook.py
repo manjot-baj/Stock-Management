@@ -21,7 +21,7 @@ class DayBook(BaseModel):
         ("Other", "Other")
     )
     customer_type = models.CharField(max_length=32, choices=customerType, default="Other")
-    name = models.CharField(max_length=100, null=True, blank=False)
+    name = models.CharField(max_length=100, null=True, blank=True)
     customer_name = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)
     employee_name = models.ForeignKey(Employee, on_delete=models.CASCADE, null=True, blank=True)
     vendor_name = models.ForeignKey(Vendor, on_delete=models.CASCADE, null=True, blank=True)

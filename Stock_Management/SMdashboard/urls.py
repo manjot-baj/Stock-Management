@@ -11,4 +11,6 @@ urlpatterns = [
                   path('new_vendor/', views.VendorView.as_view(), {'vendor_form': ''}, name="new_vendor"),
                   path('enquiry_form/', views.Enquiry.as_view(), {'enquiry_form': ''}, name="enquiry_form"),
                   path('enquiry/', views.Enquiry.as_view(), name="enquiry"),
+                  path('daybook/', views.DayBookView.as_view(), name="daybook"),
+                  path('daybook_form/', views.DayBookView.as_view(), {'daybook_form': ''}, name="daybook_form"),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

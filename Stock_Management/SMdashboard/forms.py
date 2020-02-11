@@ -1,6 +1,6 @@
 import os
 from django import forms
-from SM import enquiry
+from SM import enquiry, dayBook
 
 
 class ClientForm(forms.Form):
@@ -45,8 +45,7 @@ class EnqueryForm(forms.ModelForm):
     class Meta:
         model = enquiry.Enquiry
         fields = ['first_name', 'last_name', 'customer_type', 'address', 'handled_by', 'enquiry_type', 'product_name',
-                  'description', 'startPrice', 'endPrice', 'mobile_no', 'whatsapp_no', 'contact_no', 'email_id',
-                  ]
+                  'description', 'startPrice', 'endPrice', 'mobile_no', 'whatsapp_no', 'contact_no', 'email_id']
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -62,4 +61,23 @@ class EnqueryForm(forms.ModelForm):
             'whatsapp_no': forms.TextInput(attrs={'class': 'form-control'}),
             'contact_no': forms.TextInput(attrs={'class': 'form-control'}),
             'email_id': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class DayBookForm(forms.ModelForm):
+    class Meta:
+        model = dayBook.DayBook
+        fields = ['number', 'date', 'customer_type', 'name', 'customer_name', 'employee_name', 'vendor_name',
+                  'description', 'status', 'amount']
+        widgets = {
+            'number': forms.HiddenInput(attrs={'class': 'form-control-sm'}),
+            'date': forms.HiddenInput(attrs={'class': 'form-control-sm'}),
+            'customer_type': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'customer_name': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'employee_name': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'vendor_name': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'description': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control-sm'}),
+            'status': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'amount': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
         }

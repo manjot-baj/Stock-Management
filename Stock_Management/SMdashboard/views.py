@@ -1,3 +1,4 @@
+from django.db.models.functions import Coalesce
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, View
 from SM.company_data import Client, Vendor
@@ -7,7 +8,7 @@ from django.views.generic import ListView, View
 from django.db.models import (Case, CharField, Count, DateTimeField,
                               ExpressionWrapper, F, FloatField, Func, Max, Min,
                               Prefetch, Q, Sum, Value, When, Subquery)
-from SM import enquiry
+from SM import enquiry, dayBook
 
 
 class Dashboard(View):
@@ -287,3 +288,57 @@ class Enquiry(View):
             )
             return redirect(to='enquiry')
         return redirect(to='enquiry_form')
+
+
+class DayBookView(View):
+    from .forms import DayBookForm
+    form = DayBookForm
+    dashboard_template = 'SMdashboard/dashboard.html'
+    form_template = 'SMdashboard/daybookform.html'
+    data_template = 'SMdashboard/daybook-table.html'
+    model = dayBook.DayBook
+
+    def get_data(self):
+
+        data = self.model.objects.all().values('pk', 'number', 'customer_type',
+                                               'description', 'status').annotate(
+            dayBook_name=Coalesce('name', Value("-")),
+            customer=Coalesce('customer_name__name', Value("-")),
+            employee=Coalesce('employee_name__name', Value("-")),
+            vendor=Coalesce('vendor_name__name', Value("-")),
+            dayBook_date=ExpressionWrapper(Func(F('date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                           output_field=CharField()),
+            dayBook_amount=ExpressionWrapper(
+                F('amount'), output_field=FloatField())
+        ).order_by("-dayBook_date")
+
+        return list(data)
+
+    def get(self, request, *args, **kwargs):
+        if 'daybook_form' in kwargs:
+            return render(request, self.form_template, {'daybook': self.form()})
+        data = self.get_data()
+        print(data)
+        return render(request, self.data_template, {'data': data})
+
+    def post(self, request, *args, **kwargs):
+        form = self.DayBookForm(request.POST)
+        print(form.is_valid())
+        print(form)
+        if form.is_valid():
+            number = form.cleaned_data.get('number')
+            date = form.cleaned_data.get('date')
+            customer_type = form.cleaned_data.get('customer_type')
+            name = form.cleaned_data.get('name')
+            customer_name = form.cleaned_data.get('customer_name')
+            employee_name = form.cleaned_data.get('employee_name')
+            vendor_name = form.cleaned_data.get('vendor_name')
+            description = form.cleaned_data.get('description')
+            status = form.cleaned_data.get('status')
+            amount = form.cleaned_data.get('amount')
+            self.model.objects.create(
+                number=number, date=date, customer_type=customer_type, name=name,
+                customer_name=customer_name, employee_name=employee_name, vendor_name=vendor_name,
+                description=description, status=status, amount=amount)
+            return redirect(to='daybook')
+        return redirect(to='daybook_form')
