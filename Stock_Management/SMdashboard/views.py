@@ -238,6 +238,7 @@ class Enquiry(View):
     enquiryForm_table = 'SMdashboard/table-enquiry.html'
 
     model = enquiry.Enquiry
+
     # enquiry_tableTemplate = 'dashboard/table-enquiry.html'
 
     def get_data(self):
@@ -290,6 +291,7 @@ class Enquiry(View):
             )
             return redirect(to='enquiry')
         return redirect(to='enquiry_form')
+
 
 class DayBookView(View):
     from .forms import DayBookForm
@@ -344,6 +346,7 @@ class DayBookView(View):
             return redirect(to='daybook')
         return redirect(to='daybook_form')
 
+
 class Employee(View):
     from .forms import EmployeeForm
     form = EmployeeForm
@@ -372,7 +375,7 @@ class Employee(View):
         return render(request, self.employeeForm_table, {'data': data})
 
     def post(self, request, *args, **kwargs):
-        form = self.EmployeeForm(request.POST, request.FILES,)
+        form = self.EmployeeForm(request.POST, request.FILES, )
         print(form.is_valid)
         print(form)
         if form.is_valid():
@@ -399,6 +402,7 @@ class Employee(View):
             return redirect(to="employee")
         return redirect(to="employee_form")
 
+
 class Service(View):
     from .forms import ServiceForm
     form = ServiceForm
@@ -414,7 +418,7 @@ class Service(View):
             service_client=F('client__name'),
             service=F('service_type__name'),
             service_date=ExpressionWrapper(Func(F('date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
-                                   output_field=CharField()),
+                                           output_field=CharField()),
         ).order_by("-service_date")
         return list(data)
 
@@ -426,7 +430,7 @@ class Service(View):
         return render(request, self.serviceForm_table, {'data': data})
 
     def post(self, request, *args, **kwargs):
-        form = self.ServiceForm(request.POST, request.FILES,)
+        form = self.ServiceForm(request.POST, request.FILES, )
         print(form.is_valid())
         if form.is_valid():
             service_number = form.cleaned_data.get('service_number')
