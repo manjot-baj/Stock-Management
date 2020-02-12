@@ -17,4 +17,6 @@ urlpatterns = [
                   path('employee_form/', views.Employee.as_view(), {'employee_form': ''}, name="employee_form"),
                   path('service/', views.Service.as_view(), name="service"),
                   path('service_form/', views.Service.as_view(), {'service_form': ''}, name="service_form"),
+                  path('product_data/', views.ProductView.as_view(), name="product_data"),
+                  path('new_product/', views.ProductView.as_view(), {'product_form': ''}, name="new_product"),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
