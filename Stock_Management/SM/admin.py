@@ -77,10 +77,10 @@ class ServiceAdmin(admin.ModelAdmin):
 
 @admin.register(AMC)
 class AMCAdmin(admin.ModelAdmin):
-    list_display = ['start_date', 'number', 'client_name', 'invoice_no', 'product_types', 'end_date']
-    list_select_related = ['client_name', 'invoice_no', 'product_types']
-    list_filter = ['start_date', 'number', 'client_name', 'invoice_no', 'product_types', 'end_date']
-    search_fields = ['start_date', 'number', 'client_name', 'invoice_no', 'product_types']
+    list_display = ['start_date', 'number', 'client_name', 'product_types', 'end_date']
+    list_select_related = ['client_name', 'product_types']
+    list_filter = ['start_date', 'number', 'client_name', 'product_types', 'end_date']
+    search_fields = ['start_date', 'number', 'client_name', 'product_types']
 
 
 @admin.register(Product)
