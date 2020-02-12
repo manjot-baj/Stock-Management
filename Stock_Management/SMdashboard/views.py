@@ -9,8 +9,8 @@ from django.db.models import (Case, CharField, Count, DateTimeField,
                               ExpressionWrapper, F, FloatField, Func, Max, Min,
                               Prefetch, Q, Sum, Value, When, Subquery)
 
-from SM import enquiry, dayBook
-from SM import enquiry, employee_data, service
+from SM import enquiry, employee_data, service,  dayBook
+from SM.invoice import Invoice
 
 
 class Dashboard(View):

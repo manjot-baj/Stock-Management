@@ -101,10 +101,10 @@ class EmployeeForm(forms.ModelForm):
             'country': forms.TextInput(attrs={'class': 'form-control-sm'}),
             'mobile_no': forms.TextInput(attrs={'class': 'form-control-sm'}),
             'email_id': forms.TextInput(attrs={'class': 'form-control-sm'}),
-            'qualification': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control-sm'}),
+            'qualification': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control-sm '}),
             'type': forms.Select(attrs={'class': 'form-control-sm'}),
             'job_profile': forms.TextInput(attrs={'class': 'form-control-sm'}),
-            'job_description': forms.TextInput(attrs={'class': 'form-control-sm'}),
+            'job_description': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control-sm'}),
         }
 
 
