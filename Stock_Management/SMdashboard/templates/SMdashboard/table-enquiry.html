@@ -58,6 +58,16 @@ var table = $('#sampleTable').DataTable({
     { data: "last_name"},
     { data: "mobile_no"},
   ],
+
+  columnDefs: [
+			{
+				targets: [1],
+				render: function (data, type, row, meta) {
+					return "<a href=" + "{% url 'view_enquiry' 12345 %}".replace(/12345/, row.pk) + ">" + data + "</a>"
+				}
+			}
+		],
+
   data: {% autoescape off %}{{data}}{% endautoescape %}
   });
 
