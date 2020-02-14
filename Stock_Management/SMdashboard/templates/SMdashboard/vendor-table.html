@@ -74,6 +74,14 @@ var table = $('#sampleTable').DataTable({
   {data:"details"},
   {data:"GSTIN"},
   ],
+  columnDefs: [
+			{
+				targets: [0],
+				render: function (data, type, row, meta) {
+					return "<a href=" + "{% url 'viewvendor' 12345 %}".replace(/12345/, row.pk) + ">" + data + "</a>"
+				}
+			}
+		],
   data: {% autoescape off %}{{data}}{% endautoescape %}
   });
 </script>

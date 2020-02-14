@@ -26,6 +26,7 @@ class ClientView(View):
     dashboard_template = 'SMdashboard/dashboard.html'
     data_template = 'SMdashboard/client-table.html'
     form_template = 'SMdashboard/clientform.html'
+    detailed_view = 'SMdashboard/view-client.html'
     form = ClientForm
     model = Client
 
@@ -41,6 +42,10 @@ class ClientView(View):
     def get(self, request, *args, **kwargs):
         if 'client_form' in kwargs:
             return render(request, self.form_template, {'form': self.form})
+        elif 'object_id' in kwargs:
+            from .reports import ClientReport
+            data = ClientReport().get_data(request, client_id=kwargs.get('object_id'))
+            return render(request, self.detailed_view, data)
         data = self.get_data()
         print(data)
         return render(request, self.data_template, {'data': data})
@@ -220,6 +225,7 @@ class VendorView(View):
     dashboard_template = 'SMdashboard/dashboard.html'
     data_template = 'SMdashboard/vendor-table.html'
     form_template = 'SMdashboard/vendorform.html'
+    detailed_view = 'SMdashboard/view-vendor.html'
     form = VendorForm
     model = Vendor
 
@@ -235,6 +241,10 @@ class VendorView(View):
     def get(self, request, *args, **kwargs):
         if 'vendor_form' in kwargs:
             return render(request, self.form_template, {'form': self.form})
+        elif 'object_id' in kwargs:
+            from .reports import VendorReport
+            data = VendorReport().get_data(request, vendor_id=kwargs.get('object_id'))
+            return render(request, self.detailed_view, data)
         data = self.get_data()
         print(data)
         return render(request, self.data_template, {'data': data})
