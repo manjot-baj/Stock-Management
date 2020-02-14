@@ -133,6 +133,7 @@ class ProductView(View):
     dashboard_template = 'SMdashboard/dashboard.html'
     data_template = 'SMdashboard/product-table.html'
     form_template = 'SMdashboard/productform.html'
+    detailed_template_view = 'SMdashboard/product.html'
     form = ProductForm
     model = invoice.Product
 
@@ -147,6 +148,12 @@ class ProductView(View):
     def get(self, request, *args, **kwargs):
         if 'product_form' in kwargs:
             return render(request, self.form_template, {'form': self.form})
+        elif 'object_id' in kwargs:
+            from .reports import ProductReport
+            data = ProductReport().get_data(request, product_id=kwargs.get('object_id'))
+            template = self.detailed_template_view
+            return render(request, template, data)
+
         data = self.get_data()
         print(data)
         return render(request, self.data_template, {'data': data})
@@ -321,6 +328,7 @@ class Enquiry(View):
     # dashboard_template = 'SMdashboard/dashboard.html'
     enquiryForm_template = 'SMdashboard/enquiry_form.html'
     enquiryForm_table = 'SMdashboard/table-enquiry.html'
+    detailed_template_view = 'SMdashboard/enquiry.html'
 
     model = enquiry.Enquiry
 
@@ -344,6 +352,11 @@ class Enquiry(View):
     def get(self, request, *args, **kwargs):
         if 'enquiry_form' in kwargs:
             return render(request, self.enquiryForm_template, {'enquiry': self.form()})
+        elif 'object_id' in kwargs:
+            from .reports import EnquiryReport
+            data = EnquiryReport().get_data(request, enquiry_id=kwargs.get('object_id'))
+            template = self.detailed_template_view
+            return render(request, template, data)
         data = self.get_data()
         print(data)
         return render(request, self.enquiryForm_table, {'data': data})
@@ -438,6 +451,8 @@ class Employee(View):
 
     model = employee_data.Employee
 
+    detailed_template_view = 'SMdashboard/employee.html'
+
     # dashboard_template = 'SMdashboard/dashboard.html'
     employeeForm_template = 'SMdashboard/employee_form.html'
     employeeForm_table = 'SMdashboard/table-employee.html'
@@ -455,6 +470,13 @@ class Employee(View):
     def get(self, request, *args, **kwargs):
         if 'employee_form' in kwargs:
             return render(request, self.employeeForm_template, {'employee': self.form()})
+
+        elif 'object_id' in kwargs:
+            from .reports import EmployeeReport
+            data = EmployeeReport().get_data(request, employee_id=kwargs.get('object_id'))
+            template = self.detailed_template_view
+            return render(request, template, data)
+
         data = self.get_data()
         print(data)
         return render(request, self.employeeForm_table, {'data': data})

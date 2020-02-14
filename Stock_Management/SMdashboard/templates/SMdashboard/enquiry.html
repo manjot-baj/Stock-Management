@@ -1,0 +1,112 @@
+{% extends 'SMdashboard/base.html' %}
+{% load static %}
+{% block content %}
+<div class="app-title">
+    <div>
+        <h1><i class="fa fa-edit"></i> Detailed Enquiry </h1>
+        <p>You will see detailed enquiry here.</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile">
+            <h3 class="tile-title">Enquiry Details</h3>
+            <div class="tile-body">
+
+                    <div class="form-group row">
+                        <label class="control-label col-md-2">First Name: </label>
+                        <div class="col-md-8">
+                            {{enquiry_first_name}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-2">Last Name: </label>
+                        <div class="col-md-8">
+                            {{enquiry_last_name}}
+                        </div>
+                    </div>
+                     <div class="form-group row">
+                        <label class="control-label col-md-2">Customer Type: </label>
+                        <div class="col-md-8">
+                            {{enquiry_customer_type}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-2">Address: </label>
+                        <div class="col-md-8">
+                            {{enquiry_address}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-2">Handled By: </label>
+                        <div class="col-md-8">
+                            {{enquiry_handled_by}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-2">Enquiry Type: </label>
+                        <div class="col-md-8">
+                            {{enq_type}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-2">Product Name: </label>
+                        <div class="col-md-8">
+                            {{enquiry_product_name}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-2">Description: </label>
+                        <div class="col-md-8">
+                            {{enquiry_description}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-2">Start Price: </label>
+                        <div class="col-md-8">
+                            {{enquiry_startPrice}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-2">End Price: </label>
+                        <div class="col-md-8">
+                            {{enquiry_endPrice}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-2">Mobile No. : </label>
+                        <div class="col-md-8">
+                            {{enquiry_mobile_no}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-2">Whats App No. : </label>
+                        <div class="col-md-8">
+                            {{enquiry_whatsapp_no}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-2">Contact No. : </label>
+                        <div class="col-md-8">
+                            {{enquiry_contact_no}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-2">Email Id: </label>
+                        <div class="col-md-8">
+                            {{enquiry_email_id}}
+                        </div>
+                    </div>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+    <div class="clearix"></div>
+</div>
+</div>
+{% endblock content %}
+
