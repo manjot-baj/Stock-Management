@@ -3,7 +3,6 @@ from django.db.models import Value as V
 from django.db.models.functions import Cast, Concat, Coalesce
 from django.shortcuts import redirect
 from SM.company_data import Client, Vendor
-from SM import employee_data, enquiry, invoice, dayBook
 from SM import employee_data, enquiry, invoice, service, dayBook
 
 
