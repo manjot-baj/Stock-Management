@@ -524,7 +524,7 @@ class Service(View):
     from .forms import ServiceForm
     form = ServiceForm
     model = service.Service
-
+    detailed_view = 'SMdashboard/view-service.html'
     serviceForm_template = 'SMdashboard/service_form.html'
     serviceForm_table = 'SMdashboard/table-service.html'
 
@@ -542,6 +542,11 @@ class Service(View):
     def get(self, request, *args, **kwargs):
         if 'service_form' in kwargs:
             return render(request, self.serviceForm_template, {'service': self.form()})
+        elif 'object_id' in kwargs:
+            from .reports import ServiceReport
+            data = ServiceReport().get_data(request, service_id=kwargs.get('object_id'))
+            template = self.detailed_view
+            return render(request, template, data)
         data = self.get_data()
         print(data)
         return render(request, self.serviceForm_table, {'data': data})
@@ -554,7 +559,7 @@ class Service(View):
             date = form.cleaned_data.get('date')
             client = form.cleaned_data.get('client')
             service_type = form.cleaned_data.get('service_type')
-            description = form.cleaned_data.get('service_type')
+            description = form.cleaned_data.get('description')
             photo = form.cleaned_data.get('photo')
             status = form.cleaned_data.get('status')
             service.Service.objects.create(

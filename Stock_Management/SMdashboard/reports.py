@@ -3,7 +3,7 @@ from django.db.models import Value as V
 from django.db.models.functions import Cast, Concat
 from django.shortcuts import redirect
 from SM.company_data import Client, Vendor
-from SM import employee_data, enquiry, invoice
+from SM import employee_data, enquiry, invoice, service
 
 
 class ClientReport:
@@ -52,7 +52,6 @@ class EmployeeReport:
     def get_data(self, request, employee_id=None):
         data = {}
         record = employee_data.Employee.objects.filter(pk=employee_id).annotate(
-            employee_photo=F('photo'),
             employee_name=F('name'),
             employee_address=F('address'),
             employee_city=F('city'),
@@ -73,7 +72,7 @@ class EmployeeReport:
         for each in record:
             data.update({
                 'pk': each.pk,
-                'employee_photo': each.employee_photo,
+                'employee_photo': each.photo.url,
                 'employee_name': each.employee_name,
                 'employee_address': each.employee_address,
                 'employee_city': each.employee_city,
@@ -219,6 +218,36 @@ class ProductReport:
                 'product_tax': each.product_tax,
                 'product_c_e_s_s_percent': each.product_c_e_s_s_percent,
                 'product_c_e_s_s': each.product_c_e_s_s,
+            })
+            print(data)
+        return data
+
+
+class ServiceReport:
+
+    def get_data(self, request, service_id=None):
+        data = {}
+        record = service.Service.objects.filter(pk=service_id).annotate(
+            number=F('service_number'),
+            service_date=ExpressionWrapper(Func(F('date'), V("DD/MM/YYYY"), function='TO_CHAR'),
+                                           output_field=CharField()),
+            service_client=F('client__name'),
+            service_description=F('description'),
+            service_name=F('service_type__name'),
+            service_status=F('status'),
+        )
+        print(record)
+
+        for each in record:
+            data.update({
+                'pk': each.pk,
+                'number': each.number,
+                'service_date': each.service_date,
+                'service_client': each.service_client,
+                'service_description': each.service_description,
+                'service_name': each.service_name,
+                'service_photo': each.photo.url,
+                'service_status': each.service_status,
             })
             print(data)
         return data
