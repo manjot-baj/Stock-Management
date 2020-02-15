@@ -116,12 +116,21 @@
                         </div>
                     </div>
 
+                    {% if product_s_k_u == "" %}
+                    <div class="form-group row">
+                        <label class="control-label col-md-2">SKU: </label>
+                        <div class="col-md-8">
+                            <h4> - </h4>
+                        </div>
+                    </div>
+                    {% else %}
                     <div class="form-group row">
                         <label class="control-label col-md-2">SKU: </label>
                         <div class="col-md-8">
                             {{product_s_k_u}}
                         </div>
                     </div>
+                    {% endif %}
 
                      <div class="form-group row">
                         <label class="control-label col-md-2">Tax: </label>
