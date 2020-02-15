@@ -1,9 +1,9 @@
 from django.db.models import CharField, ExpressionWrapper, F, Func, Prefetch, Q
 from django.db.models import Value as V
-from django.db.models.functions import Cast, Concat
+from django.db.models.functions import Cast, Concat, Coalesce
 from django.shortcuts import redirect
 from SM.company_data import Client, Vendor
-from SM import employee_data, enquiry, invoice
+from SM import employee_data, enquiry, invoice, dayBook
 
 
 class ClientReport:
@@ -52,7 +52,7 @@ class EmployeeReport:
     def get_data(self, request, employee_id=None):
         data = {}
         record = employee_data.Employee.objects.filter(pk=employee_id).annotate(
-            employee_photo=F('photo'),
+            # employee_photo=F('photo'),
             employee_name=F('name'),
             employee_address=F('address'),
             employee_city=F('city'),
@@ -73,7 +73,7 @@ class EmployeeReport:
         for each in record:
             data.update({
                 'pk': each.pk,
-                'employee_photo': each.employee_photo,
+                'employee_photo': each.photo.url,  # employee_
                 'employee_name': each.employee_name,
                 'employee_address': each.employee_address,
                 'employee_city': each.employee_city,
@@ -219,6 +219,44 @@ class ProductReport:
                 'product_tax': each.product_tax,
                 'product_c_e_s_s_percent': each.product_c_e_s_s_percent,
                 'product_c_e_s_s': each.product_c_e_s_s,
+            })
+            print(data)
+        return data
+
+
+class DayBookReport:
+
+    def get_data(self, request, daybook_id=None):
+        data = {}
+        record = dayBook.DayBook.objects.filter(pk=daybook_id).annotate(
+            daybook_number=F('number'),
+            daybook_customer_type=F('customer_type'),
+            dayBook_name=Coalesce('name', V("-")),
+            daybook_customer_name=Coalesce('customer_name__name', V("-")),
+            daybook_employee_name=Coalesce('employee_name__name', V("-")),
+            daybook_vendor_name=Coalesce('vendor_name__name', V("-")),
+            daybook_description=F('description'),
+            daybook_status=F('status'),
+            daybook_amount=F('amount'),
+            daybook_date=ExpressionWrapper(Func(F('date'), V("DD/MM/YYYY"), function='TO_CHAR'),
+                                           output_field=CharField()),
+        )
+        print(record)
+
+        for each in record:
+            data.update({
+                'pk': each.pk,
+                'daybook_number': each.daybook_number,
+                'daybook_customer_type': each.daybook_customer_type,
+                'daybook_name': each.dayBook_name,
+                'daybook_customer_name': each.daybook_customer_name,
+                'daybook_employee_name': each.daybook_employee_name,
+                'daybook_vendor_name': each.daybook_vendor_name,
+                'daybook_description': each.daybook_description,
+                'daybook_status': each.daybook_status,
+                'daybook_amount': each.daybook_amount,
+                'daybook_date': each.daybook_date,
+
             })
             print(data)
         return data
