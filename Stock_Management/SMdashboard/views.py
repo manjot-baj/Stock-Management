@@ -347,13 +347,22 @@ class Enquiry(View):
     def get_data(self):
 
         data = self.model.objects.all().values(
-            'first_name', 'last_name', 'product_name', 'description', 'startPrice', 'endPrice', 'mobile_no',
-            'email_id', 'address', 'contact_no', 'whatsapp_no', 'pk',
+            'first_name', 'last_name', 'mobile_no',
+            'address', 'pk',
 
         ).annotate(
             customer=F('customer_type__name'),
             handled=F('handled_by__name'),
             enquiry=F('enquiry_type__name'),
+
+            enquiry_product_name=Coalesce('product_name', Value("-")),
+            enquiry_description=Coalesce('description', Value("-")),
+            enquiry_startPrice=Coalesce('startPrice', Value("-")),
+            enquiry_endPrice=Coalesce('endPrice', Value("-")),
+            enquiry_whatsapp_no=Coalesce('whatsapp_no', Value("-")),
+            enquiry_contact_no=Coalesce('contact_no', Value("-")),
+            enquiry_email_id=Coalesce('email_id', Value("-")),
+
             date=ExpressionWrapper(Func(F('enquiry_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
                                    output_field=CharField()),
         ).order_by("-date")
@@ -485,6 +494,7 @@ class Employee(View):
             from .reports import EmployeeReport
             data = EmployeeReport().get_data(request, employee_id=kwargs.get('object_id'))
             template = self.detailed_template_view
+
             return render(request, template, data)
 
         data = self.get_data()
