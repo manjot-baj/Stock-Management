@@ -12,9 +12,17 @@
         <div class="tile">
             <h3 class="tile-title">DayBook Details</h3>
             <div class="tile-body">
-                    <div class="form-group row">
-                        <label class="control-label col-md-3"><h3>Number: {{daybook_number}}</h3></label>
-
+                <div class="form-group row">
+                        <label class="control-label col-md-2">Date: </label>
+                        <div class="col-md-8">
+                            {{daybook_date}}
+                        </div>
+                    </div>
+                <div class="form-group row">
+                        <label class="control-label col-md-2">Number: </label>
+                        <div class="col-md-8">
+                            {{daybook_number}}
+                        </div>
                     </div>
 
                     <div class="form-group row">
@@ -67,12 +75,7 @@
                             {{daybook_amount}}
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">Date: </label>
-                        <div class="col-md-8">
-                            {{daybook_date}}
-                        </div>
-                    </div>
+
 
             </div>
 

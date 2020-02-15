@@ -1,0 +1,39 @@
+{% extends 'SMdashboard/base.html' %}
+{% load static %}
+{% block content %}
+{{ block.super }}
+<div class="app-title">
+  <div>
+    <h1><i class="fa fa-file-text-o"></i> Service Information</h1>
+    <p>Service Information</p>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="tile">
+      <section class="invoice">
+
+        <div class="row invoice-info">
+          <div class="col-4">
+              <h6><strong>Service No :&nbsp; &nbsp; {{number}}</strong></h6><br/>
+              <h6><strong>Date:&nbsp; &nbsp; {{service_date}}</strong></h6><br/>
+              <h6><strong>Client:&nbsp; &nbsp; {{service_client}}</strong></h6><br>
+
+              {% if service_description == "" %}
+              <h6><strong>Description:&nbsp; &nbsp; -</strong></h6><br/>
+              {% else %}
+              <h6><strong>Description:&nbsp; &nbsp; {{service_description}}</strong></h6><br>
+              {% endif %}
+
+              <h6><strong>Service Type:&nbsp; &nbsp; {{service_name}}</strong></h6><br>
+              <h6><strong> Photo:&nbsp; &nbsp; <img src="{{service_photo}}" height="150px" width="300px"></strong></h6><br>
+              <h6><strong> Status:&nbsp; &nbsp; {{service_status}}</strong></h6><br>
+          </div>
+
+
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+{% endblock %}

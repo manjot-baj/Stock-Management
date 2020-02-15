@@ -4,9 +4,7 @@ from django.db.models.functions import Cast, Concat, Coalesce
 from django.shortcuts import redirect
 from SM.company_data import Client, Vendor
 from SM import employee_data, enquiry, invoice, dayBook
-from django.db.models import (Case, CharField, Count, DateTimeField,
-                              ExpressionWrapper, F, FloatField, Func, Max, Min,
-                              Prefetch, Q, Sum, Value, When, Subquery)
+from SM import employee_data, enquiry, invoice, service, dayBook
 
 
 class ClientReport:
@@ -55,7 +53,6 @@ class EmployeeReport:
     def get_data(self, request, employee_id=None):
         data = {}
         record = employee_data.Employee.objects.filter(pk=employee_id).annotate(
-            # employee_photo=F('photo'),
             employee_name=F('name'),
             employee_address=F('address'),
             employee_city=F('city'),
@@ -76,7 +73,7 @@ class EmployeeReport:
         for each in record:
             data.update({
                 'pk': each.pk,
-                'employee_photo': each.photo.url,  # employee_
+                'employee_photo': each.photo.url,
                 'employee_name': each.employee_name,
                 'employee_address': each.employee_address,
                 'employee_city': each.employee_city,
@@ -227,6 +224,35 @@ class ProductReport:
         return data
 
 
+class ServiceReport:
+
+    def get_data(self, request, service_id=None):
+        data = {}
+        record = service.Service.objects.filter(pk=service_id).annotate(
+            number=F('service_number'),
+            service_date=ExpressionWrapper(Func(F('date'), V("DD/MM/YYYY"), function='TO_CHAR'),
+                                           output_field=CharField()),
+            service_client=F('client__name'),
+            service_description=F('description'),
+            service_name=F('service_type__name'),
+            service_status=F('status'))
+        print(record)
+
+        for each in record:
+            data.update({
+                'pk': each.pk,
+                'number': each.number,
+                'service_date': each.service_date,
+                'service_client': each.service_client,
+                'service_description': each.service_description,
+                'service_name': each.service_name,
+                'service_photo': each.photo.url,
+                'service_status': each.service_status,
+            })
+        print(data)
+        return data
+
+
 class DayBookReport:
 
     def get_data(self, request, daybook_id=None):
@@ -242,9 +268,8 @@ class DayBookReport:
             daybook_status=F('status'),
             daybook_amount=F('amount'),
             daybook_date=ExpressionWrapper(Func(F('date'), V("DD/MM/YYYY"), function='TO_CHAR'),
-                                           output_field=CharField()),
+                                           output_field=CharField())
         )
-        print(record)
 
         for each in record:
             data.update({
@@ -259,7 +284,6 @@ class DayBookReport:
                 'daybook_status': each.daybook_status,
                 'daybook_amount': each.daybook_amount,
                 'daybook_date': each.daybook_date,
-
             })
             print(data)
         return data
