@@ -66,20 +66,20 @@ class EnquiryForm(forms.ModelForm):
         fields = ['first_name', 'last_name', 'customer_type', 'address', 'handled_by', 'enquiry_type', 'product_name',
                   'description', 'startPrice', 'endPrice', 'mobile_no', 'whatsapp_no', 'contact_no', 'email_id']
         widgets = {
-            'first_name': forms.TextInput(attrs={'class': ' form-control-sm'}),
-            'last_name': forms.TextInput(attrs={'class': 'form-control-sm'}),
-            'customer_type': forms.Select(attrs={'class': 'form-control-sm'}),
-            'address': forms.Textarea(attrs={'rows': 3, 'cols': 58, 'class': 'form-control-sm'}),
-            'handled_by': forms.Select(attrs={'class': 'form-control-sm'}),
-            'enquiry_type': forms.Select(attrs={'class': 'form-control-sm'}),
-            'product_name': forms.TextInput(attrs={'class': 'form-control-sm'}),
-            'description': forms.Textarea(attrs={'rows': 3, 'cols': 58, 'class': 'form-control-sm'}),
-            'startPrice': forms.TextInput(attrs={'class': 'form-control-sm'}),
-            'endPrice': forms.TextInput(attrs={'class': 'form-control-sm'}),
-            'mobile_no': forms.TextInput(attrs={'class': 'form-control-sm'}),
-            'whatsapp_no': forms.TextInput(attrs={'class': 'form-control-sm'}),
-            'contact_no': forms.TextInput(attrs={'class': 'form-control-sm'}),
-            'email_id': forms.TextInput(attrs={'class': 'form-control-sm'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'customer_type': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'address': forms.Textarea(attrs={'rows': 3, 'cols': 58, 'class': 'form-control form-control-sm'}),
+            'handled_by': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'enquiry_type': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'product_name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'description': forms.Textarea(attrs={'rows': 3, 'cols': 58, 'class': 'form-control form-control-sm'}),
+            'startPrice': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'endPrice': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'mobile_no': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'whatsapp_no': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'contact_no': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'email_id': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
         }
 
 
@@ -96,7 +96,7 @@ class DayBookForm(forms.ModelForm):
             'customer_name': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'employee_name': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'vendor_name': forms.Select(attrs={'class': 'form-control form-control-sm'}),
-            'description': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control-sm'}),
+            'description': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control form-control-sm'}),
             'status': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'amount': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
         }
@@ -110,19 +110,19 @@ class EmployeeForm(forms.ModelForm):
                   'qualification', 'type', 'job_profile', 'job_description',
                   ]
         widgets = {
-            'join_date': forms.widgets.DateInput(attrs={'type': 'date'}),
-            'name': forms.TextInput(attrs={'class': 'form-control-sm'}),
-            'address': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control-sm'}),
-            'city': forms.TextInput(attrs={'class': 'form-control-sm'}),
-            'state': forms.TextInput(attrs={'class': 'form-control-sm'}),
-            'pin_code': forms.TextInput(attrs={'class': 'form-control-sm'}),
-            'country': forms.TextInput(attrs={'class': 'form-control-sm'}),
-            'mobile_no': forms.TextInput(attrs={'class': 'form-control-sm'}),
-            'email_id': forms.TextInput(attrs={'class': 'form-control-sm'}),
-            'qualification': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control-sm '}),
-            'type': forms.Select(attrs={'class': 'form-control-sm'}),
-            'job_profile': forms.TextInput(attrs={'class': 'form-control-sm'}),
-            'job_description': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control-sm'}),
+            'join_date': forms.widgets.DateInput(attrs={'type': 'date', 'class': 'form-control form-control-sm'}),
+            'name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'address': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control form-control-sm'}),
+            'city': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'state': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'pin_code': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'country': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'mobile_no': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'email_id': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'qualification': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control form-control-sm '}),
+            'type': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'job_profile': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'job_description': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control form-control-sm'}),
         }
 
 
@@ -135,9 +135,9 @@ class ServiceForm(forms.ModelForm):
 
         widgets = {
             'service_number': forms.HiddenInput(attrs={'class': 'form-control-sm'}),
-            'date': forms.widgets.DateInput(attrs={'type': 'date'}),
-            'client': forms.Select(attrs={'class': 'form-control-sm'}),
-            'service_type': forms.Select(attrs={'class': 'form-control-sm'}),
-            'description': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control-sm'}),
-            'status': forms.Select(attrs={'class': 'form-control-sm'}),
+            'date': forms.widgets.DateInput(attrs={'type': 'date', 'class': 'form-control form-control-sm'}),
+            'client': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'service_type': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'description': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control form-control-sm'}),
+            'status': forms.Select(attrs={'class': 'form-control form-control-sm'}),
         }
