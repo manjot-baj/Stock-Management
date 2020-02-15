@@ -1,9 +1,9 @@
 from django.db.models import CharField, ExpressionWrapper, F, Func, Prefetch, Q
 from django.db.models import Value as V
-from django.db.models.functions import Cast, Concat
+from django.db.models.functions import Cast, Concat, Coalesce
 from django.shortcuts import redirect
 from SM.company_data import Client, Vendor
-from SM import employee_data, enquiry, invoice, service
+from SM import employee_data, enquiry, invoice, service, dayBook
 
 
 class ClientReport:
@@ -234,8 +234,7 @@ class ServiceReport:
             service_client=F('client__name'),
             service_description=F('description'),
             service_name=F('service_type__name'),
-            service_status=F('status'),
-        )
+            service_status=F('status'))
         print(record)
 
         for each in record:
@@ -248,6 +247,42 @@ class ServiceReport:
                 'service_name': each.service_name,
                 'service_photo': each.photo.url,
                 'service_status': each.service_status,
+            })
+        print(data)
+        return data
+
+
+class DayBookReport:
+
+    def get_data(self, request, daybook_id=None):
+        data = {}
+        record = dayBook.DayBook.objects.filter(pk=daybook_id).annotate(
+            daybook_number=F('number'),
+            daybook_customer_type=F('customer_type'),
+            dayBook_name=Coalesce('name', V("-")),
+            daybook_customer_name=Coalesce('customer_name__name', V("-")),
+            daybook_employee_name=Coalesce('employee_name__name', V("-")),
+            daybook_vendor_name=Coalesce('vendor_name__name', V("-")),
+            daybook_description=F('description'),
+            daybook_status=F('status'),
+            daybook_amount=F('amount'),
+            daybook_date=ExpressionWrapper(Func(F('date'), V("DD/MM/YYYY"), function='TO_CHAR'),
+                                           output_field=CharField())
+        )
+
+        for each in record:
+            data.update({
+                'pk': each.pk,
+                'daybook_number': each.daybook_number,
+                'daybook_customer_type': each.daybook_customer_type,
+                'daybook_name': each.dayBook_name,
+                'daybook_customer_name': each.daybook_customer_name,
+                'daybook_employee_name': each.daybook_employee_name,
+                'daybook_vendor_name': each.daybook_vendor_name,
+                'daybook_description': each.daybook_description,
+                'daybook_status': each.daybook_status,
+                'daybook_amount': each.daybook_amount,
+                'daybook_date': each.daybook_date,
             })
             print(data)
         return data

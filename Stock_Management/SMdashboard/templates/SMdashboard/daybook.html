@@ -1,0 +1,86 @@
+{% extends 'SMdashboard/base.html' %}
+{% load static %}
+{% block content %}
+<div class="app-title">
+    <div>
+        <h1><i class="fa fa-edit"></i> Detailed DayBook </h1>
+        <p>You will see detailed DayBook here.</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile">
+            <h3 class="tile-title">DayBook Details</h3>
+            <div class="tile-body">
+                <div class="form-group row">
+                        <label class="control-label col-md-2">Date: </label>
+                        <div class="col-md-8">
+                            {{daybook_date}}
+                        </div>
+                    </div>
+                <div class="form-group row">
+                        <label class="control-label col-md-2">Number: </label>
+                        <div class="col-md-8">
+                            {{daybook_number}}
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="control-label col-md-2">Customer Type: </label>
+                        <div class="col-md-8">
+                            {{daybook_customer_type}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-2">Name: </label>
+                        <div class="col-md-8">
+                            {{daybook_name}}
+                        </div>
+                    </div>
+                     <div class="form-group row">
+                        <label class="control-label col-md-2">Customer Name: </label>
+                        <div class="col-md-8">
+                            {{daybook_customer_name}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-2">Employee Name: </label>
+                        <div class="col-md-8">
+                            {{daybook_employee_name}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-2">Vendor Name: </label>
+                        <div class="col-md-8">
+                            {{daybook_vendor_name}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-2">Description: </label>
+                        <div class="col-md-8">
+                            {{daybook_description}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-2">Status: </label>
+                        <div class="col-md-8">
+                            {{daybook_status}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-2">Amount: </label>
+                        <div class="col-md-8">
+                            {{daybook_amount}}
+                        </div>
+                    </div>
+
+
+            </div>
+
+        </div>
+    </div>
+    <div class="clearix"></div>
+</div>
+</div>
+{% endblock content %}
+

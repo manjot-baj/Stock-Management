@@ -347,13 +347,22 @@ class Enquiry(View):
     def get_data(self):
 
         data = self.model.objects.all().values(
-            'first_name', 'last_name', 'product_name', 'description', 'startPrice', 'endPrice', 'mobile_no',
-            'email_id', 'address', 'contact_no', 'whatsapp_no', 'pk',
+            'first_name', 'last_name', 'mobile_no',
+            'address', 'pk',
 
         ).annotate(
             customer=F('customer_type__name'),
             handled=F('handled_by__name'),
             enquiry=F('enquiry_type__name'),
+
+            enquiry_product_name=Coalesce('product_name', Value("-")),
+            enquiry_description=Coalesce('description', Value("-")),
+            enquiry_startPrice=Coalesce('startPrice', Value("-")),
+            enquiry_endPrice=Coalesce('endPrice', Value("-")),
+            enquiry_whatsapp_no=Coalesce('whatsapp_no', Value("-")),
+            enquiry_contact_no=Coalesce('contact_no', Value("-")),
+            enquiry_email_id=Coalesce('email_id', Value("-")),
+
             date=ExpressionWrapper(Func(F('enquiry_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
                                    output_field=CharField()),
         ).order_by("-date")
@@ -407,6 +416,7 @@ class DayBookView(View):
     dashboard_template = 'SMdashboard/dashboard.html'
     form_template = 'SMdashboard/daybookform.html'
     data_template = 'SMdashboard/daybook-table.html'
+    detailed_template_view = 'SMdashboard/daybook.html'
     model = dayBook.DayBook
 
     def get_data(self):
@@ -428,6 +438,11 @@ class DayBookView(View):
     def get(self, request, *args, **kwargs):
         if 'daybook_form' in kwargs:
             return render(request, self.form_template, {'daybook': self.form()})
+        elif 'object_id' in kwargs:
+            from .reports import DayBookReport
+            data = DayBookReport().get_data(request, daybook_id=kwargs.get('object_id'))
+            template = self.detailed_template_view
+            return render(request, template, data)
         data = self.get_data()
         print(data)
         return render(request, self.data_template, {'data': data})
@@ -485,6 +500,7 @@ class Employee(View):
             from .reports import EmployeeReport
             data = EmployeeReport().get_data(request, employee_id=kwargs.get('object_id'))
             template = self.detailed_template_view
+
             return render(request, template, data)
 
         data = self.get_data()
