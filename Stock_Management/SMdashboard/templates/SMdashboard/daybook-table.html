@@ -61,7 +61,7 @@ var table = $('#sampleTable').DataTable({
 
    columnDefs: [
 			{
-				targets: [1],
+				targets: [0],
 				render: function (data, type, row, meta) {
 					return "<a href=" + "{% url 'view_daybook' 12345 %}".replace(/12345/, row.pk) + ">" + data + "</a>"
 				}

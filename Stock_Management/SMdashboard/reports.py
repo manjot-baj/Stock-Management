@@ -4,6 +4,9 @@ from django.db.models.functions import Cast, Concat, Coalesce
 from django.shortcuts import redirect
 from SM.company_data import Client, Vendor
 from SM import employee_data, enquiry, invoice, dayBook
+from django.db.models import (Case, CharField, Count, DateTimeField,
+                              ExpressionWrapper, F, FloatField, Func, Max, Min,
+                              Prefetch, Q, Sum, Value, When, Subquery)
 
 
 class ClientReport:
