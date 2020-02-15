@@ -568,7 +568,7 @@ class Service(View):
         return render(request, self.serviceForm_table, {'data': data})
 
     def post(self, request, *args, **kwargs):
-        form = self.ServiceForm(request.POST, request.FILES, )
+        form = self.ServiceForm(request.POST, request.FILES)
         print(form.is_valid())
         if form.is_valid():
             service_number = form.cleaned_data.get('service_number')
@@ -582,5 +582,5 @@ class Service(View):
                 service_number=service_number, date=date, client=client, service_type=service_type,
                 description=description, photo=photo, status=status
             )
-            return redirect(to="service")
-        return redirect(to="service_form")
+            return redirect(to="service_form")
+        return redirect(to="service")
