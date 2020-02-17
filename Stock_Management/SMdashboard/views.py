@@ -584,5 +584,34 @@ class Service(View):
                 service_number=service_number, date=date, client=client, service_type=service_type,
                 description=description, photo=photo, status=status
             )
-            return redirect(to="service_form")
+        return redirect(to="service")
+
+
+class ServiceEdit(View):
+    from .forms import ServiceEditForm
+    editform = ServiceEditForm
+    model = service.Service
+    service_edit_Form_template = 'SMdashboard/service_edit_form.html'
+
+    def get(self, request, *args, **kwargs):
+        if 'service_edit_form' in kwargs:
+            record = self.model.objects.get(id=kwargs.get('object_id'))
+            print(record)
+            form = self.ServiceEditForm(instance=record)
+            return render(request, self.service_edit_Form_template, {'service': form})
+
+    def post(self, request, *args, **kwargs):
+        editform = self.ServiceEditForm(request.POST, request.FILES)
+        if editform.is_valid():
+            service_number = editform.cleaned_data.get('service_number')
+            date = editform.cleaned_data.get('date')
+            client = editform.cleaned_data.get('client')
+            service_type = editform.cleaned_data.get('service_type')
+            description = editform.cleaned_data.get('description')
+            # photo = editform.cleaned_data.get('photo')
+            status = editform.cleaned_data.get('status')
+            service.Service.objects.filter(pk=kwargs.get('object_id')).update(
+                service_number=service_number, date=date, client=client, service_type=service_type,
+                description=description, status=status
+            )
         return redirect(to="service")
