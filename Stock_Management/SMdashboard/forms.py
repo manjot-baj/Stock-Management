@@ -126,6 +126,30 @@ class EmployeeForm(forms.ModelForm):
         }
 
 
+class EmployeeEditForm(forms.ModelForm):
+    class Meta:
+        model = employee_data.Employee
+        fields = ['join_date', 'name', 'address', 'city', 'state', 'pin_code', 'country', 'mobile_no',
+                  'email_id',
+                  'qualification', 'type', 'job_profile', 'job_description',
+                  ]
+        widgets = {
+            'join_date': forms.widgets.DateInput(attrs={'type': 'date', 'class': 'form-control form-control-sm'}),
+            'name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'address': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control form-control-sm'}),
+            'city': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'state': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'pin_code': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'country': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'mobile_no': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'email_id': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'qualification': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control form-control-sm '}),
+            'type': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'job_profile': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'job_description': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control form-control-sm'}),
+        }
+
+
 class ServiceForm(forms.ModelForm):
     class Meta:
         model = service.Service
@@ -147,7 +171,7 @@ class ServiceEditForm(forms.ModelForm):
     class Meta:
         model = service.Service
         fields = [
-            'service_number', 'date', 'client', 'service_type', 'description','status'
+            'service_number', 'date', 'client', 'service_type', 'description', 'status'
         ]
 
         widgets = {

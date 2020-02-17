@@ -536,6 +536,47 @@ class Employee(View):
         return redirect(to="employee_form")
 
 
+class EmployeeEdit(View):
+    from .forms import EmployeeEditForm
+    editform = EmployeeEditForm
+    model = employee_data.Employee
+    employee_edit_Form_template = 'SMdashboard/employee_edit_form.html'
+
+    def get(self, request, *args, **kwargs):
+        if 'employee_edit_form' in kwargs:
+            record = self.model.objects.get(id=kwargs.get('object_id'))
+            editform = self.EmployeeEditForm(instance=record)
+            return render(request, self.employee_edit_Form_template, {'employee': editform})
+
+    def post(self, request, *args, **kwargs):
+        form = self.EmployeeEditForm(request.POST, request.FILES, )
+        # print(form.is_valid)
+        # print(form)
+        if form.is_valid():
+            # photo = form.cleaned_data.get('photo')
+            join_date = form.cleaned_data.get('join_date')
+            name = form.cleaned_data.get('name')
+            address = form.cleaned_data.get('address')
+            city = form.cleaned_data.get('city')
+            state = form.cleaned_data.get('state')
+            pin_code = form.cleaned_data.get('pin_code')
+            country = form.cleaned_data.get('country')
+            mobile_no = form.cleaned_data.get('mobile_no')
+            email_id = form.cleaned_data.get('email_id')
+            qualification = form.cleaned_data.get('qualification')
+            type = form.cleaned_data.get('type')
+            job_profile = form.cleaned_data.get('job_profile')
+            job_description = form.cleaned_data.get('job_description')
+
+            employee_data.Employee.objects.filter(pk=kwargs.get('object_id')).update(
+                join_date=join_date, name=name, address=address, city=city, state=state, pin_code=pin_code,
+                country=country, mobile_no=mobile_no, email_id=email_id, qualification=qualification, type=type,
+                job_profile=job_profile, job_description=job_description,
+            )
+            return redirect(to="employee")
+        return redirect(to="employee_form")
+
+
 class Service(View):
     from .forms import ServiceForm
     form = ServiceForm

@@ -20,6 +20,8 @@ urlpatterns = [
                   path('employee/', views.Employee.as_view(), name="employee"),
                   path('employee_form/', views.Employee.as_view(), {'employee_form': ''}, name="employee_form"),
                   path('viewEmployee/<int:object_id>', views.Employee.as_view(), name="view_employee"),
+                  path('employee_edit_form/<int:object_id>', views.EmployeeEdit.as_view(), {'employee_edit_form': ''},
+                       name="employee_edit_form"),
                   path('service/', views.Service.as_view(), name="service"),
                   path('service_form/', views.Service.as_view(), {'service_form': ''}, name="service_form"),
                   path('viewservice/<int:object_id>', views.Service.as_view(), name="viewservice"),
