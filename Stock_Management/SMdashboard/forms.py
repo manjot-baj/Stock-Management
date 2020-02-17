@@ -141,3 +141,20 @@ class ServiceForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control form-control-sm'}),
             'status': forms.Select(attrs={'class': 'form-control form-control-sm'}),
         }
+
+
+class ServiceEditForm(forms.ModelForm):
+    class Meta:
+        model = service.Service
+        fields = [
+            'service_number', 'date', 'client', 'service_type', 'description','status'
+        ]
+
+        widgets = {
+            'service_number': forms.HiddenInput(attrs={'class': 'form-control-sm'}),
+            'date': forms.widgets.DateInput(attrs={'type': 'date', 'class': 'form-control form-control-sm'}),
+            'client': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'service_type': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'description': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control form-control-sm'}),
+            'status': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+        }
