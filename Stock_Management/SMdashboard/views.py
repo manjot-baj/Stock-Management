@@ -376,6 +376,8 @@ class Enquiry(View):
             data = EnquiryReport().get_data(request, enquiry_id=kwargs.get('object_id'))
             template = self.detailed_template_view
             return render(request, template, data)
+
+
         data = self.get_data()
         print(data)
         return render(request, self.enquiryForm_table, {'data': data})
