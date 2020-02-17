@@ -82,6 +82,52 @@ class EnquiryForm(forms.ModelForm):
             'email_id': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
         }
 
+class EnquiryForm(forms.ModelForm):
+    class Meta:
+        model = enquiry.Enquiry
+        fields = ['first_name', 'last_name', 'customer_type', 'address', 'handled_by', 'enquiry_type', 'product_name',
+                  'description', 'startPrice', 'endPrice', 'mobile_no', 'whatsapp_no', 'contact_no', 'email_id']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'customer_type': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'address': forms.Textarea(attrs={'rows': 3, 'cols': 58, 'class': 'form-control form-control-sm'}),
+            'handled_by': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'enquiry_type': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'product_name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'description': forms.Textarea(attrs={'rows': 3, 'cols': 58, 'class': 'form-control form-control-sm'}),
+            'startPrice': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'endPrice': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'mobile_no': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'whatsapp_no': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'contact_no': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'email_id': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+        }
+
+class EnquiryEditForm(forms.ModelForm):
+    class Meta:
+        model = enquiry.Enquiry
+        fields = ['first_name', 'last_name', 'customer_type', 'address', 'handled_by', 'enquiry_type', 'product_name',
+                  'description', 'startPrice', 'endPrice', 'mobile_no', 'whatsapp_no', 'contact_no', 'email_id']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'customer_type': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'address': forms.Textarea(attrs={'rows': 3, 'cols': 58, 'class': 'form-control form-control-sm'}),
+            'handled_by': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'enquiry_type': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'product_name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'description': forms.Textarea(attrs={'rows': 3, 'cols': 58, 'class': 'form-control form-control-sm'}),
+            'startPrice': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'endPrice': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'mobile_no': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'whatsapp_no': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'contact_no': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'email_id': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+        }
+
+
+
 
 class DayBookForm(forms.ModelForm):
     class Meta:

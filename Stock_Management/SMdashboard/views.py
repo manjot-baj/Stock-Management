@@ -376,6 +376,8 @@ class Enquiry(View):
             data = EnquiryReport().get_data(request, enquiry_id=kwargs.get('object_id'))
             template = self.detailed_template_view
             return render(request, template, data)
+
+
         data = self.get_data()
         print(data)
         return render(request, self.enquiryForm_table, {'data': data})
@@ -408,6 +410,57 @@ class Enquiry(View):
             )
             return redirect(to='enquiry')
         return redirect(to='enquiry_form')
+
+class EnquiryEdit(View):
+    from .forms import EnquiryEditForm
+    form = EnquiryEditForm
+    enquiryForm_template = 'SMdashboard/enquiry_form.html'
+    enquiryForm_table = 'SMdashboard/table-enquiry.html'
+    detailed_template_view = 'SMdashboard/enquiry.html'
+    enquiry_edit_Form_template = 'SMdashboard/enquiry_edit_form.html'
+
+    model = enquiry.Enquiry
+
+
+
+
+    def get(self, request, *args, **kwargs):
+        if 'enquiry_edit_form' in kwargs:
+            record = self.model.objects.get(id=kwargs.get('object_id'))
+            print(record)
+            form = self.form(instance=record)
+            return render(request, self.enquiry_edit_Form_template, {'enquiry': form})
+
+    def post(self, request, *args, **kwargs):
+        editform = self.form(request.POST, request.FILES)
+        if editform.is_valid():
+            first_name = editform.cleaned_data.get('first_name')
+            last_name = editform.cleaned_data.get('last_name')
+            customer_type = editform.cleaned_data.get('customer_type')
+            address = editform.cleaned_data.get('address')
+            handled_by = editform.cleaned_data.get('handled_by')
+            enquiry_type = editform.cleaned_data.get('enquiry_type')
+            product_name = editform.cleaned_data.get('product_name')
+            description = editform.cleaned_data.get('description')
+            startPrice = editform.cleaned_data.get('startPrice')
+            endPrice = editform.cleaned_data.get('endPrice')
+            mobile_no = editform.cleaned_data.get('mobile_no')
+            whatsapp_no = editform.cleaned_data.get('whatsapp_no')
+            contact_no = editform.cleaned_data.get('contact_no')
+            email_id = editform.cleaned_data.get('email_id')
+            enquiry.Enquiry.objects.filter(pk=kwargs.get('object_id')).update(
+                first_name=first_name, last_name=last_name, customer_type=customer_type, address=address,
+                handled_by=handled_by,
+                enquiry_type=enquiry_type, product_name=product_name, description=description,
+                startPrice=startPrice,
+                endPrice=endPrice, mobile_no=mobile_no, whatsapp_no=whatsapp_no, contact_no=contact_no,
+                email_id=email_id
+                )
+            return redirect(to='enquiry')
+        return redirect(to='enquiry_edit_Form_template')
+
+
+
 
 
 class DayBookView(View):

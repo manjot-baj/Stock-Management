@@ -178,6 +178,8 @@ class EnquiryReport:
         return data
 
 
+
+
 class ProductReport:
 
     def get_data(self, request, product_id=None):
