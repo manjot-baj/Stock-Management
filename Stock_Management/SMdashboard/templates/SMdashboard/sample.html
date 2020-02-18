@@ -5,50 +5,51 @@
     <title>Title</title>
 </head>
 <body>
-<tr><td colspan="2"><ul class="errorlist nonfield"><li>(Hidden field number) This field is required.</li><li>(Hidden field date) This field is required.</li></ul></td></tr>
-<tr><th><label for="id_customer_type">Customer type:</label></th><td><select name="customer_type" class="form-control form-control-sm" id="id_customer_type">
+<tr><th><label for="id_customer_type">Customer type:</label></th><td><select name="customer_type" class="form-control form-control-sm" required id="id_customer_type">
+  <option value="">---------</option>
+
   <option value="Customer">Customer</option>
 
-  <option value="Employee">Employee</option>
+  <option value="Employee" selected>Employee</option>
 
   <option value="Vendor">Vendor</option>
 
-  <option value="Other" selected>Other</option>
+  <option value="Other">Other</option>
 
 </select></td></tr>
-<tr><th><label for="id_name">Name:</label></th><td><input type="text" name="name" value="B" class="form-control form-control-sm" maxlength="100" required id="id_name"></td></tr>
+<tr><th><label for="id_name">Name:</label></th><td><input type="text" name="name" class="form-control form-control-sm" maxlength="100" id="id_name"></td></tr>
 <tr><th><label for="id_customer_name">Customer name:</label></th><td><select name="customer_name" class="form-control form-control-sm" id="id_customer_name">
   <option value="" selected>---------</option>
 
-  <option value="3">J &amp; E Hall International</option>
+  <option value="1">J &amp; E Hall International</option>
 
-  <option value="4">Low Voltage Products &amp; Systems Ltd</option>
+  <option value="2">Low Voltage Products &amp; Systems Ltd</option>
 
-  <option value="5">Transformers Ltd</option>
+  <option value="3">Transformers Ltd</option>
 
-  <option value="6">A &amp; P Group Ltd</option>
+  <option value="4">A &amp; P Group Ltd</option>
 
-  <option value="7">BASTER SRL</option>
+  <option value="5">BASTER SRL</option>
 
-  <option value="8">SibiuPeople.ro</option>
+  <option value="6">SibiuPeople.ro</option>
 
-  <option value="9">Ventyx Inc.TEST</option>
+  <option value="7">Ventyx Inc.TEST</option>
 
-  <option value="10">Mumbai Garments</option>
+  <option value="8">Mumbai Garments</option>
 
-  <option value="11">Anand Dresses</option>
+  <option value="9">Anand Dresses</option>
 
-  <option value="12">Pune Collection</option>
+  <option value="10">Pune Collection</option>
 
-  <option value="13">Lore Garments</option>
+  <option value="11">Lore Garments</option>
 
-  <option value="14">IBM </option>
+  <option value="12">IBM </option>
 
 </select></td></tr>
 <tr><th><label for="id_employee_name">Employee name:</label></th><td><select name="employee_name" class="form-control form-control-sm" id="id_employee_name">
-  <option value="" selected>---------</option>
+  <option value="">---------</option>
 
-  <option value="5">nilesh pereira</option>
+  <option value="1" selected>nilesh pereira</option>
 
 </select></td></tr>
 <tr><th><label for="id_vendor_name">Vendor name:</label></th><td><select name="vendor_name" class="form-control form-control-sm" id="id_vendor_name">
@@ -59,8 +60,8 @@
   <option value="2">Imports Exports Pune</option>
 
 </select></td></tr>
-<tr><th><label for="id_description">Description:</label></th><td><textarea name="description" cols="58" rows="5" class="form-control-sm" maxlength="200" required id="id_description">
-trtr</textarea></td></tr>
+<tr><th><label for="id_description">Description:</label></th><td><textarea name="description" cols="58" rows="5" class="form-control form-control-sm" maxlength="200" required id="id_description">
+ytwy</textarea></td></tr>
 <tr><th><label for="id_status">Status:</label></th><td><select name="status" class="form-control form-control-sm" required id="id_status">
   <option value="">---------</option>
 
@@ -68,12 +69,9 @@ trtr</textarea></td></tr>
 
   <option value="Debit">Debit</option>
 
-  <option value="Cash">Cash</option>
-
-  <option value="Others">Others</option>
-
 </select></td></tr>
-<tr><th><label for="id_amount">Amount:</label></th><td><input type="text" name="amount" value="100" class="form-control form-control-sm" required id="id_amount"><input type="hidden" name="number" class="form-control-sm" id="id_number"><input type="hidden" name="initial-number" id="initial-id_number"><input type="hidden" name="date" class="form-control-sm" id="id_date"><input type="hidden" name="initial-date" id="initial-id_date"></td></tr>
+<tr><th><label for="id_credit_amount">Credit amount:</label></th><td><input type="text" name="credit_amount" value="100" class="form-control form-control-sm" required id="id_credit_amount"></td></tr>
+<tr><th><label for="id_debit_amount">Debit amount:</label></th><td><ul class="errorlist"><li>This field is required.</li></ul><input type="text" name="debit_amount" class="form-control form-control-sm" required id="id_debit_amount"><input type="hidden" name="number" value="81533" class="form-control-sm" id="id_number"><input type="hidden" name="initial-number" value="81533" id="initial-id_number"><input type="hidden" name="date" value="2020-02-18 13:52:11.770013" class="form-control-sm" id="id_date"><input type="hidden" name="initial-date" value="2020-02-18 13:52:11.770013" id="initial-id_date"></td></tr>
 
 </body>
 </html>

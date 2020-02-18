@@ -20,7 +20,7 @@ class DayBook(BaseModel):
         ("Vendor", "Vendor"),
         ("Other", "Other")
     )
-    customer_type = models.CharField(max_length=32, choices=customerType, default="Other")
+    customer_type = models.CharField(max_length=32, choices=customerType)
     name = models.CharField(max_length=100, null=True, blank=True)
     customer_name = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)
     employee_name = models.ForeignKey(Employee, on_delete=models.CASCADE, null=True, blank=True)
@@ -31,8 +31,8 @@ class DayBook(BaseModel):
         ("Debit", "Debit"),
     )
     status = models.CharField(max_length=100, choices=statusType)
-    credit_amount = models.DecimalField(max_digits=30, decimal_places=2, default=0)
-    debit_amount = models.DecimalField(max_digits=30, decimal_places=2, default=0)
+    credit_amount = models.DecimalField(max_digits=30, decimal_places=2, default=0.0)
+    debit_amount = models.DecimalField(max_digits=30, decimal_places=2, default=0.0)
 
     def __str__(self):
         return self.number
