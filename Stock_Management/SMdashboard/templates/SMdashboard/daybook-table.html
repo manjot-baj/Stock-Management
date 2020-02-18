@@ -26,10 +26,19 @@
                 <tbody></tbody>
               </table>
             </div>
+            <div class="tile-footer">
+                        <div class="row text-right">
+                            <div class="col-md-8 col-md-offset-3">
+                              Total Credited = {{credited}}&nbsp;&nbsp;|&nbsp;&nbsp;
+                               Total Debited = {{debited}}
+                            </div>
+                        </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
 {% endblock %}
 {% block script %}
 {{ block.super }}

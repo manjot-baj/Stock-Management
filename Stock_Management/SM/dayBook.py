@@ -35,4 +35,4 @@ class DayBook(BaseModel):
     debit_amount = models.DecimalField(max_digits=30, decimal_places=2, default=0)
 
     def __str__(self):
-        return self.name
+        return self.number

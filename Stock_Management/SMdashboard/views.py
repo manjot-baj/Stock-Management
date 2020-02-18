@@ -467,7 +467,6 @@ class DayBookView(View):
     model = dayBook.DayBook
 
     def get_data(self):
-
         data = self.model.objects.all().values('pk', 'number', 'customer_type',
                                                'description', 'status').annotate(
             dayBook_name=Coalesce('name', Value("-")),
@@ -479,7 +478,7 @@ class DayBookView(View):
             dayBook_credit_amount=ExpressionWrapper(
                 F('credit_amount'), output_field=FloatField()),
             dayBook_debit_amount=ExpressionWrapper(
-                F('debit_amount'), output_field=FloatField())
+                F('debit_amount'), output_field=FloatField()),
         ).order_by("-dayBook_date")
         return list(data)
 
@@ -493,7 +492,14 @@ class DayBookView(View):
             return render(request, template, data)
         data = self.get_data()
         print(data)
-        return render(request, self.data_template, {'data': data})
+        credit_total = []
+        debit_total = []
+        for i in range(len(data)):
+            credit_total.append(data[i].get("dayBook_credit_amount"))
+            debit_total.append(data[i].get("dayBook_debit_amount"))
+        credited = sum(credit_total)
+        debited = sum(debit_total)
+        return render(request, self.data_template, {'data': data, 'credited': credited, 'debited': debited})
 
     def post(self, request, *args, **kwargs):
         form = self.DayBookForm(request.POST)
