@@ -32,31 +32,38 @@
                         </div>
                     </div>
 
-
+                    {% if daybook_customer_type == "Other" %}
                     <div class="form-group row">
                         <label class="control-label col-md-2">Name: </label>
                         <div class="col-md-8">
                             {{daybook_name}}
                         </div>
                     </div>
+                    {% endif %}
+                {% if daybook_customer_type == "Customer" %}
                      <div class="form-group row">
                         <label class="control-label col-md-2">Customer Name: </label>
                         <div class="col-md-8">
                             {{daybook_customer_name}}
                         </div>
                     </div>
+                {% endif %}
+                {% if daybook_customer_type == "Employee" %}
                     <div class="form-group row">
                         <label class="control-label col-md-2">Employee Name: </label>
                         <div class="col-md-8">
                             {{daybook_employee_name}}
                         </div>
                     </div>
+                {% endif %}
+                {% if daybook_customer_type == "Vendor" %}
                     <div class="form-group row">
                         <label class="control-label col-md-2">Vendor Name: </label>
                         <div class="col-md-8">
                             {{daybook_vendor_name}}
                         </div>
                     </div>
+                {% endif %}
                     <div class="form-group row">
                         <label class="control-label col-md-2">Description: </label>
                         <div class="col-md-8">
@@ -69,13 +76,22 @@
                             {{daybook_status}}
                         </div>
                     </div>
+                {% if daybook_status == "Credit" %}
                     <div class="form-group row">
-                        <label class="control-label col-md-2">Amount: </label>
+                        <label class="control-label col-md-2">Credit Amount: </label>
                         <div class="col-md-8">
-                            {{daybook_amount}}
+                            {{daybook_credit_amount}}
                         </div>
                     </div>
-
+                {% endif %}
+                {% if daybook_status == "Debit" %}
+                <div class="form-group row">
+                        <label class="control-label col-md-2">Debit Amount: </label>
+                        <div class="col-md-8">
+                            {{daybook_debit_amount}}
+                        </div>
+                    </div>
+                {% endif %}
 
             </div>
 

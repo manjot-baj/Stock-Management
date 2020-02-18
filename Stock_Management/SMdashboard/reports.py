@@ -267,7 +267,8 @@ class DayBookReport:
             daybook_vendor_name=Coalesce('vendor_name__name', V("-")),
             daybook_description=F('description'),
             daybook_status=F('status'),
-            daybook_amount=F('amount'),
+            daybook_credit_amount=F('credit_amount'),
+            daybook_debit_amount=F('debit_amount'),
             daybook_date=ExpressionWrapper(Func(F('date'), V("DD/MM/YYYY"), function='TO_CHAR'),
                                            output_field=CharField())
         )
@@ -283,7 +284,8 @@ class DayBookReport:
                 'daybook_vendor_name': each.daybook_vendor_name,
                 'daybook_description': each.daybook_description,
                 'daybook_status': each.daybook_status,
-                'daybook_amount': each.daybook_amount,
+                'daybook_credit_amount': each.daybook_credit_amount,
+                'daybook_debit_amount': each.daybook_debit_amount,
                 'daybook_date': each.daybook_date,
             })
             print(data)

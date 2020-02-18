@@ -377,7 +377,6 @@ class Enquiry(View):
             template = self.detailed_template_view
             return render(request, template, data)
 
-
         data = self.get_data()
         print(data)
         return render(request, self.enquiryForm_table, {'data': data})
@@ -411,6 +410,7 @@ class Enquiry(View):
             return redirect(to='enquiry')
         return redirect(to='enquiry_form')
 
+
 class EnquiryEdit(View):
     from .forms import EnquiryEditForm
     form = EnquiryEditForm
@@ -420,9 +420,6 @@ class EnquiryEdit(View):
     enquiry_edit_Form_template = 'SMdashboard/enquiry_edit_form.html'
 
     model = enquiry.Enquiry
-
-
-
 
     def get(self, request, *args, **kwargs):
         if 'enquiry_edit_form' in kwargs:
@@ -455,12 +452,9 @@ class EnquiryEdit(View):
                 startPrice=startPrice,
                 endPrice=endPrice, mobile_no=mobile_no, whatsapp_no=whatsapp_no, contact_no=contact_no,
                 email_id=email_id
-                )
+            )
             return redirect(to='enquiry')
         return redirect(to='enquiry_edit_Form_template')
-
-
-
 
 
 class DayBookView(View):
@@ -482,10 +476,11 @@ class DayBookView(View):
             vendor=Coalesce('vendor_name__name', Value("-")),
             dayBook_date=ExpressionWrapper(Func(F('date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
                                            output_field=CharField()),
-            dayBook_amount=ExpressionWrapper(
-                F('amount'), output_field=FloatField())
+            dayBook_credit_amount=ExpressionWrapper(
+                F('credit_amount'), output_field=FloatField()),
+            dayBook_debit_amount=ExpressionWrapper(
+                F('debit_amount'), output_field=FloatField())
         ).order_by("-dayBook_date")
-
         return list(data)
 
     def get(self, request, *args, **kwargs):
@@ -514,11 +509,12 @@ class DayBookView(View):
             vendor_name = form.cleaned_data.get('vendor_name')
             description = form.cleaned_data.get('description')
             status = form.cleaned_data.get('status')
-            amount = form.cleaned_data.get('amount')
+            credit_amount = form.cleaned_data.get('credit_amount')
+            debit_amount = form.cleaned_data.get('debit_amount')
             self.model.objects.create(
                 number=number, date=date, customer_type=customer_type, name=name,
                 customer_name=customer_name, employee_name=employee_name, vendor_name=vendor_name,
-                description=description, status=status, amount=amount)
+                description=description, status=status, credit_amount=credit_amount, debit_amount=debit_amount)
             return redirect(to='daybook')
         return redirect(to='daybook_form')
 

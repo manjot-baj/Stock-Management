@@ -29,11 +29,10 @@ class DayBook(BaseModel):
     statusType = (
         ("Credit", "Credit"),
         ("Debit", "Debit"),
-        ("Cash", "Cash"),
-        ("Others", "Others"),
     )
     status = models.CharField(max_length=100, choices=statusType)
-    amount = models.DecimalField(max_digits=30, decimal_places=2)
+    credit_amount = models.DecimalField(max_digits=30, decimal_places=2, default=0)
+    debit_amount = models.DecimalField(max_digits=30, decimal_places=2, default=0)
 
     def __str__(self):
         return self.name

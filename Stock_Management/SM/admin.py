@@ -61,7 +61,7 @@ class EnquiryAdmin(admin.ModelAdmin):
 @admin.register(DayBook)
 class DayBookAdmin(admin.ModelAdmin):
     list_display = ['date', 'number', 'name', 'customer_type', 'customer_name', 'employee_name', 'vendor_name',
-                    'status', 'amount']
+                    'status', 'credit_amount', 'debit_amount']
     list_select_related = ['customer_name', 'employee_name', 'vendor_name']
     list_filter = ['customer_type', 'status', 'date']
     search_fields = ['customer_type', 'status', 'date', 'number']

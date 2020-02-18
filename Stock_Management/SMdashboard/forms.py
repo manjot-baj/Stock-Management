@@ -82,6 +82,7 @@ class EnquiryForm(forms.ModelForm):
             'email_id': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
         }
 
+
 class EnquiryForm(forms.ModelForm):
     class Meta:
         model = enquiry.Enquiry
@@ -103,6 +104,7 @@ class EnquiryForm(forms.ModelForm):
             'contact_no': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'email_id': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
         }
+
 
 class EnquiryEditForm(forms.ModelForm):
     class Meta:
@@ -127,13 +129,11 @@ class EnquiryEditForm(forms.ModelForm):
         }
 
 
-
-
 class DayBookForm(forms.ModelForm):
     class Meta:
         model = dayBook.DayBook
         fields = ['number', 'date', 'customer_type', 'name', 'customer_name', 'employee_name', 'vendor_name',
-                  'description', 'status', 'amount']
+                  'description', 'status', 'credit_amount', 'debit_amount']
         widgets = {
             'number': forms.HiddenInput(attrs={'class': 'form-control-sm'}),
             'date': forms.HiddenInput(attrs={'class': 'form-control-sm'}),
@@ -144,7 +144,8 @@ class DayBookForm(forms.ModelForm):
             'vendor_name': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'description': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control form-control-sm'}),
             'status': forms.Select(attrs={'class': 'form-control form-control-sm'}),
-            'amount': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'credit_amount': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'debit_amount': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
         }
 
 
