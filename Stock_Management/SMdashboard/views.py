@@ -1,6 +1,7 @@
 from django.db.models.functions import Coalesce
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, View
+from django.http import JsonResponse
 from SM.company_data import Client, Vendor
 import xlrd
 from django.shortcuts import render, redirect
@@ -466,7 +467,25 @@ class DayBookView(View):
     detailed_template_view = 'SMdashboard/daybook.html'
     model = dayBook.DayBook
 
-    def get_data(self):
+    def get_data(self, request, **kwargs):
+        if 'filter_date' in kwargs:
+            data = self.model.objects.filter(date__gte=request.POST.get('fromDate'),
+                                             date__lte=request.POST.get('toDate')).values('pk', 'number',
+                                                                                          'customer_type',
+                                                                                          'description',
+                                                                                          'status').annotate(
+                dayBook_name=Coalesce('name', Value("-")),
+                customer=Coalesce('customer_name__name', Value("-")),
+                employee=Coalesce('employee_name__name', Value("-")),
+                vendor=Coalesce('vendor_name__name', Value("-")),
+                dayBook_date=ExpressionWrapper(Func(F('date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                               output_field=CharField()),
+                dayBook_credit_amount=ExpressionWrapper(
+                    F('credit_amount'), output_field=FloatField()),
+                dayBook_debit_amount=ExpressionWrapper(
+                    F('debit_amount'), output_field=FloatField()),
+            )
+            return list(data)
         data = self.model.objects.all().values('pk', 'number', 'customer_type',
                                                'description', 'status').annotate(
             dayBook_name=Coalesce('name', Value("-")),
@@ -490,7 +509,7 @@ class DayBookView(View):
             data = DayBookReport().get_data(request, daybook_id=kwargs.get('object_id'))
             template = self.detailed_template_view
             return render(request, template, data)
-        data = self.get_data()
+        data = self.get_data(request)
         print(data)
         credit_total = []
         debit_total = []
@@ -502,6 +521,18 @@ class DayBookView(View):
         return render(request, self.data_template, {'data': data, 'credited': credited, 'debited': debited})
 
     def post(self, request, *args, **kwargs):
+        if 'filterDate' in kwargs:
+            data = self.get_data(request, filter_date='')
+            credit_total = []
+            debit_total = []
+            for i in range(len(data)):
+                credit_total.append(data[i].get("dayBook_credit_amount"))
+                debit_total.append(data[i].get("dayBook_debit_amount"))
+            credited = sum(credit_total)
+            debited = sum(debit_total)
+            context = [{'credited': credited, 'debited': debited},]
+            print(context)
+            return JsonResponse(data, safe=False)
         form = self.DayBookForm(request.POST)
         print(form.is_valid())
         print(form)

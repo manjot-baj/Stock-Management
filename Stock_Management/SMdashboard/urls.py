@@ -18,6 +18,8 @@ urlpatterns = [
                        name="enquiry_edit_form"),
                   path('daybook/', views.DayBookView.as_view(), name="daybook"),
                   path('daybook_form/', views.DayBookView.as_view(), {'daybook_form': ''}, name="daybook_form"),
+                  path('filterDayBookDate/', views.DayBookView.as_view(), {'filterDate': ''},
+                       name="filter_day_book_date"),
                   path('viewdaybook/<int:object_id>', views.DayBookView.as_view(), name="view_daybook"),
                   path('employee/', views.Employee.as_view(), name="employee"),
                   path('employee_form/', views.Employee.as_view(), {'employee_form': ''}, name="employee_form"),

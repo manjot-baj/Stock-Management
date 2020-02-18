@@ -7,6 +7,14 @@
         <h1><i class="fa fa-th-list"></i>Day Book Entry's</h1>
         <p>Entry's</p>
       </div>
+    <div class="input-group input-daterange  col-md-3 ">
+        <input type="text" autocomplete="off" class="form-control" id="fromDate" value="" placeholder="From Date">
+        <div class="input-group-append"><span class="input-group-text">-</span></div>
+        <input type="text" autocomplete="off" class="form-control" id="toDate" value="" placeholder="To Date">
+        <div class="input-group-append">
+            <button id="id_btn_filter_date" class="btn btn-primary fa fa-filter" onclick="filterByDate()"></button>
+        </div>
+    </div>
     </div>
     <div class="row">
       <div class="col-md-12">
@@ -28,7 +36,7 @@
             </div>
             <div class="tile-footer">
                         <div class="row text-right">
-                            <div class="col-md-8 col-md-offset-3">
+                            <div class="col-md-8 col-md-offset-3 total">
                               Total Credited = {{credited}}&nbsp;&nbsp;|&nbsp;&nbsp;
                                Total Debited = {{debited}}
                             </div>
@@ -71,5 +79,35 @@ var table = $('#sampleTable').DataTable({
 
   data: {% autoescape off %}{{data}}{% endautoescape %}
   });
+
+  $('#fromDate').datepicker({
+      	format: "yyyy-mm-dd",
+      	autoclose: true,
+      	todayHighlight: true
+      });
+     $('#toDate').datepicker({
+      	format: "yyyy-mm-dd",
+      	autoclose: true,
+      	todayHighlight: true
+      });
+     function filterByDate(){
+        var fromDate = $('#fromDate').val()
+        var toDate = $('#toDate').val()
+        $.ajax({
+            url: '{% url 'filter_day_book_date' %}',
+            method: 'POST',
+            data: {'fromDate': fromDate, 'toDate': toDate},
+            headers: {"X-CSRFToken": '{{ csrf_token }}'},
+            success: function(data, status, jqXHR){
+                console.log(status, data)
+                if(jqXHR.status == 200){
+                    table.clear();
+                    table.rows.add(data).draw();
+            }
+            }
+        })
+     }
+
+
 </script>
 {% endblock %}
