@@ -543,16 +543,16 @@ class DayBookView(View):
 
     def post(self, request, *args, **kwargs):
         if 'filterDate' in kwargs:
-            data = self.get_data(request, filter_date='')
+            data = {'data':self.get_data(request, filter_date='')}
             credit_total = []
             debit_total = []
-            for i in range(len(data)):
-                credit_total.append(data[i].get("dayBook_credit_amount"))
-                debit_total.append(data[i].get("dayBook_debit_amount"))
+            for i in range(len(data.get('data'))):
+                print(i)
+                credit_total.append(data.get('data')[i].get("dayBook_credit_amount"))
+                debit_total.append(data.get('data')[i].get("dayBook_debit_amount"))
             credited = sum(credit_total)
             debited = sum(debit_total)
-            context = [{'credited': credited, 'debited': debited}, ]
-            print(context)
+            data.update({'credited': credited, 'debited': debited})
             return JsonResponse(data, safe=False)
         form = self.DayBookForm(request.POST)
         print(form.is_valid())
