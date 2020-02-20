@@ -75,34 +75,18 @@
                     </div>
                     {% endif %}
 
-                    {% if data.enquiry_startPrice == None %}
+                    {% if data.enquiry_price == None %}
                     <div class="form-group row">
-                        <label class="control-label col-md-3">Start Price: </label>
+                        <label class="control-label col-md-3">Price: </label>
                         <div class="col-md-8">
                             <h4> - </h4>
                         </div>
                     </div>
                     {% else %}
                     <div class="form-group row">
-                        <label class="control-label col-md-3">Start Price: </label>
+                        <label class="control-label col-md-3">Price: </label>
                         <div class="col-md-8">
-                            {{data.enquiry_startPrice}}
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    {% if data.enquiry_endPrice == None %}
-                    <div class="form-group row">
-                        <label class="control-label col-md-3">End Price: </label>
-                        <div class="col-md-8">
-                            <h4> - </h4>
-                        </div>
-                    </div>
-                    {% else %}
-                    <div class="form-group row">
-                        <label class="control-label col-md-3">End Price: </label>
-                        <div class="col-md-8">
-                            {{data.enquiry_endPrice}}
+                            {{data.enquiry_price}}
                         </div>
                     </div>
                     {% endif %}
@@ -115,37 +99,6 @@
                         </div>
                     </div>
 
-                    {% if data.enquiry_whatsapp_no == None %}
-                    <div class="form-group row">
-                        <label class="control-label col-md-3">Whats App No. : </label>
-                        <div class="col-md-8">
-                            <h4> - </h4>
-                        </div>
-                    </div>
-                    {% else %}
-                    <div class="form-group row">
-                        <label class="control-label col-md-3">Whats App No. : </label>
-                        <div class="col-md-8">
-                            {{data.enquiry_whatsapp_no}}
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    {% if data.enquiry_contact_no == None %}
-                    <div class="form-group row">
-                        <label class="control-label col-md-3">Contact No. : </label>
-                        <div class="col-md-8">
-                            <h4> - </h4>
-                        </div>
-                    </div>
-                    {% else %}
-                    <div class="form-group row">
-                        <label class="control-label col-md-3">Contact No. : </label>
-                        <div class="col-md-8">
-                            {{data.enquiry_contact_no}}
-                        </div>
-                    </div>
-                    {% endif %}
 
                     {% if data.enquiry_email_id == None %}
                     <div class="form-group row">

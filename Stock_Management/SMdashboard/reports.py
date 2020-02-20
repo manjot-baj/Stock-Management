@@ -143,12 +143,9 @@ class EnquiryReport:
             enq_type=F('enquiry_type__name'),
             enquiry_product_name=F('product_name'),
             enquiry_description=F('description'),
-            enquiry_startPrice=F('startPrice'),
-            enquiry_endPrice=F('endPrice'),
+            enquiry_price=F('price'),
             enquiry_mobile_no=F('mobile_no'),
-            enquiry_whatsapp_no=F('whatsapp_no'),
-            enquiry_contact_no=F('contact_no'),
-            enquiry_email_id=F('contact_no'),
+            enquiry_email_id=F('email_id'),
 
             date=ExpressionWrapper(Func(F('enquiry_date'), V("DD/MM/YYYY"), function='TO_CHAR'),
                                    output_field=CharField()),
@@ -166,11 +163,8 @@ class EnquiryReport:
                 'enq_type': each.enq_type,
                 'enquiry_product_name': each.enquiry_product_name,
                 'enquiry_description': each.enquiry_description,
-                'enquiry_startPrice': each.enquiry_startPrice,
-                'enquiry_endPrice': each.enquiry_endPrice,
+                'enquiry_price': each.enquiry_price,
                 'enquiry_mobile_no': each.enquiry_mobile_no,
-                'enquiry_whatsapp_no': each.enquiry_whatsapp_no,
-                'enquiry_contact_no': each.enquiry_contact_no,
                 'enquiry_email_id': each.enquiry_email_id,
 
             })

@@ -356,12 +356,8 @@ class Enquiry(View):
 
             enquiry_product_name=Coalesce('product_name', Value("-")),
             enquiry_description=Coalesce('description', Value("-")),
-            enquiry_startPrice=Coalesce('startPrice', Value("-")),
-            enquiry_endPrice=Coalesce('endPrice', Value("-")),
-            enquiry_whatsapp_no=Coalesce('whatsapp_no', Value("-")),
-            enquiry_contact_no=Coalesce('contact_no', Value("-")),
+            enquiry_price=Coalesce('price', Value("-")),
             enquiry_email_id=Coalesce('email_id', Value("-")),
-
             date=ExpressionWrapper(Func(F('enquiry_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
                                    output_field=CharField()),
         ).order_by("-date")
@@ -395,18 +391,14 @@ class Enquiry(View):
             enquiry_type = form.cleaned_data.get('enquiry_type')
             product_name = form.cleaned_data.get('product_name')
             description = form.cleaned_data.get('description')
-            startPrice = form.cleaned_data.get('startPrice')
-            endPrice = form.cleaned_data.get('endPrice')
+            price = form.cleaned_data.get('price')
             mobile_no = form.cleaned_data.get('mobile_no')
-            whatsapp_no = form.cleaned_data.get('whatsapp_no')
-            contact_no = form.cleaned_data.get('contact_no')
             email_id = form.cleaned_data.get('email_id')
             enquiry.Enquiry.objects.create(
                 first_name=first_name, last_name=last_name, customer_type=customer_type, address=address,
                 handled_by=handled_by,
-                enquiry_type=enquiry_type, product_name=product_name, description=description, startPrice=startPrice,
-                endPrice=endPrice, mobile_no=mobile_no, whatsapp_no=whatsapp_no, contact_no=contact_no,
-                email_id=email_id
+                enquiry_type=enquiry_type, product_name=product_name, description=description, price=price,
+                mobile_no=mobile_no, email_id=email_id
             )
             return redirect(to='enquiry')
         return redirect(to='enquiry_form')
@@ -440,19 +432,14 @@ class EnquiryEdit(View):
             enquiry_type = editform.cleaned_data.get('enquiry_type')
             product_name = editform.cleaned_data.get('product_name')
             description = editform.cleaned_data.get('description')
-            startPrice = editform.cleaned_data.get('startPrice')
-            endPrice = editform.cleaned_data.get('endPrice')
+            price = editform.cleaned_data.get('price')
             mobile_no = editform.cleaned_data.get('mobile_no')
-            whatsapp_no = editform.cleaned_data.get('whatsapp_no')
-            contact_no = editform.cleaned_data.get('contact_no')
             email_id = editform.cleaned_data.get('email_id')
             enquiry.Enquiry.objects.filter(pk=kwargs.get('object_id')).update(
                 first_name=first_name, last_name=last_name, customer_type=customer_type, address=address,
                 handled_by=handled_by,
                 enquiry_type=enquiry_type, product_name=product_name, description=description,
-                startPrice=startPrice,
-                endPrice=endPrice, mobile_no=mobile_no, whatsapp_no=whatsapp_no, contact_no=contact_no,
-                email_id=email_id
+                price=price, mobile_no=mobile_no, email_id=email_id,
             )
             return redirect(to='enquiry')
         return redirect(to='enquiry_edit_Form_template')
