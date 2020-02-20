@@ -7,427 +7,224 @@
         <p>You will see detailed enquiry here.</p>
     </div>
 </div>
-
-<!--<div class="row">-->
-<!--    <div class="col-md-12">-->
-<!--        <div class="tile">-->
-<!--            <h3 class="tile-title">Enquiry Details</h3>-->
-<!--            <div class="tile-body">-->
-
-<!--                    <div class="form-group row">-->
-<!--                        <label class="control-label col-md-2">First Name: </label>-->
-<!--                        <div class="col-md-8">-->
-<!--                            {{enquiry_first_name}}-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="form-group row">-->
-<!--                        <label class="control-label col-md-2">Last Name: </label>-->
-<!--                        <div class="col-md-8">-->
-<!--                            {{enquiry_last_name}}-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                     <div class="form-group row">-->
-<!--                        <label class="control-label col-md-2">Customer Type: </label>-->
-<!--                        <div class="col-md-8">-->
-<!--                            {{enquiry_customer_type}}-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="form-group row">-->
-<!--                        <label class="control-label col-md-2">Address: </label>-->
-<!--                        <div class="col-md-8">-->
-<!--                            {{enquiry_address}}-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="form-group row">-->
-<!--                        <label class="control-label col-md-2">Handled By: </label>-->
-<!--                        <div class="col-md-8">-->
-<!--                            {{enquiry_handled_by}}-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="form-group row">-->
-<!--                        <label class="control-label col-md-2">Enquiry Type: </label>-->
-<!--                        <div class="col-md-8">-->
-<!--                            {{enq_type}}-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="form-group row">-->
-<!--                        <label class="control-label col-md-2">Product Name: </label>-->
-<!--                        <div class="col-md-8">-->
-<!--                            {{enquiry_product_name}}-->
-<!--                        </div>-->
-<!--                    </div>-->
-
-<!--                    {% if enquiry_description == "" %}-->
-<!--                    <div class="form-group row">-->
-<!--                        <label class="control-label col-md-2">Description: </label>-->
-<!--                        <div class="col-md-8">-->
-<!--                            <h4> - </h4>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    {% else %}-->
-<!--                    <div class="form-group row">-->
-<!--                        <label class="control-label col-md-2">Description: </label>-->
-<!--                        <div class="col-md-8">-->
-<!--                            {{enquiry_description}}-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    {% endif %}-->
-
-<!--                    {% if enquiry_startPrice == None %}-->
-<!--                    <div class="form-group row">-->
-<!--                        <label class="control-label col-md-2">Start Price: </label>-->
-<!--                        <div class="col-md-8">-->
-<!--                            <h4> - </h4>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    {% else %}-->
-<!--                    <div class="form-group row">-->
-<!--                        <label class="control-label col-md-2">Start Price: </label>-->
-<!--                        <div class="col-md-8">-->
-<!--                            {{enquiry_startPrice}}-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    {% endif %}-->
-
-<!--                    {% if enquiry_endPrice == None %}-->
-<!--                    <div class="form-group row">-->
-<!--                        <label class="control-label col-md-2">End Price: </label>-->
-<!--                        <div class="col-md-8">-->
-<!--                            <h4> - </h4>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    {% else %}-->
-<!--                    <div class="form-group row">-->
-<!--                        <label class="control-label col-md-2">End Price: </label>-->
-<!--                        <div class="col-md-8">-->
-<!--                            {{enquiry_endPrice}}-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    {% endif %}-->
-
-
-<!--                    <div class="form-group row">-->
-<!--                        <label class="control-label col-md-2">Mobile No. : </label>-->
-<!--                        <div class="col-md-8">-->
-<!--                            {{enquiry_mobile_no}}-->
-<!--                        </div>-->
-<!--                    </div>-->
-
-<!--                    {% if enquiry_whatsapp_no == None %}-->
-<!--                    <div class="form-group row">-->
-<!--                        <label class="control-label col-md-2">Whats App No. : </label>-->
-<!--                        <div class="col-md-8">-->
-<!--                            <h4> - </h4>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    {% else %}-->
-<!--                    <div class="form-group row">-->
-<!--                        <label class="control-label col-md-2">Whats App No. : </label>-->
-<!--                        <div class="col-md-8">-->
-<!--                            {{enquiry_whatsapp_no}}-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    {% endif %}-->
-
-<!--                    {% if enquiry_contact_no == None %}-->
-<!--                    <div class="form-group row">-->
-<!--                        <label class="control-label col-md-2">Contact No. : </label>-->
-<!--                        <div class="col-md-8">-->
-<!--                            <h4> - </h4>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    {% else %}-->
-<!--                    <div class="form-group row">-->
-<!--                        <label class="control-label col-md-2">Contact No. : </label>-->
-<!--                        <div class="col-md-8">-->
-<!--                            {{enquiry_contact_no}}-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    {% endif %}-->
-
-<!--                    {% if enquiry_email_id == None %}-->
-<!--                    <div class="form-group row">-->
-<!--                        <label class="control-label col-md-2">Email Id: </label>-->
-<!--                        <div class="col-md-8">-->
-<!--                            <h4> - </h4>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    {% else %}-->
-<!--                    <div class="form-group row">-->
-<!--                        <label class="control-label col-md-2">Email Id: </label>-->
-<!--                        <div class="col-md-8">-->
-<!--                            {{enquiry_email_id}}-->
-
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    {% endif %}-->
-
-<!--            </div>-->
-<!--            <div class="tile-footer">-->
-<!--                        <div class="row">-->
-<!--                            <div class="col-md-5 col-md-offset-3">-->
-<!--                                <a class='btn btn-primary' role='button' href=" {% url 'enquiry_edit_form' pk %} ">Edit</a>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--              </div>-->
-
-<!--        </div>-->
-
-
-
-<!--    </div>-->
-
-
-
-
-
-
-<!--    <div class="clearix"></div>-->
-<!--</div>-->
-
-
 <div class="container">
-        <!-- Example row of columns -->
-        <div class="row">
-          <div class="col-md-5">
+    <!-- Example row of columns -->
+    <div class="row">
+        <div class="col-md-5">
 
-              <div class="tile">
-            <h3 class="tile-title">Enquiry Details</h3>
-            <div class="tile-body">
+            <div class="tile">
+                <h3 class="tile-title">Enquiry Details</h3>
+                <div class="tile-body">
 
                     <div class="form-group row">
-                        <label class="control-label col-md-2">First Name: </label>
+                        <label class="control-label col-md-3">First Name: </label>
                         <div class="col-md-8">
-                            {{enquiry_first_name}}
+                            {{data.enquiry_first_name}}
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="control-label col-md-2">Last Name: </label>
+                        <label class="control-label col-md-3">Last Name: </label>
                         <div class="col-md-8">
-                            {{enquiry_last_name}}
-                        </div>
-                    </div>
-                     <div class="form-group row">
-                        <label class="control-label col-md-2">Customer Type: </label>
-                        <div class="col-md-8">
-                            {{enquiry_customer_type}}
+                            {{data.enquiry_last_name}}
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="control-label col-md-2">Address: </label>
+                        <label class="control-label col-md-3">Customer Type: </label>
                         <div class="col-md-8">
-                            {{enquiry_address}}
+                            {{data.enquiry_customer_type}}
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="control-label col-md-2">Handled By: </label>
+                        <label class="control-label col-md-3">Address: </label>
                         <div class="col-md-8">
-                            {{enquiry_handled_by}}
+                            {{data.enquiry_address}}
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="control-label col-md-2">Enquiry Type: </label>
+                        <label class="control-label col-md-3">Handled By: </label>
                         <div class="col-md-8">
-                            {{enq_type}}
+                            {{data.enquiry_handled_by}}
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="control-label col-md-2">Product Name: </label>
+                        <label class="control-label col-md-3">Enquiry Type: </label>
                         <div class="col-md-8">
-                            {{enquiry_product_name}}
+                            {{data.enq_type}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-3">Product Name: </label>
+                        <div class="col-md-8">
+                            {{data.enquiry_product_name}}
                         </div>
                     </div>
 
-                    {% if enquiry_description == "" %}
+                    {% if data.enquiry_description == "" %}
                     <div class="form-group row">
-                        <label class="control-label col-md-2">Description: </label>
-                        <div class="col-md-8">
-                            <h4> - </h4>
-                        </div>
-                    </div>
-                    {% else %}
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">Description: </label>
-                        <div class="col-md-8">
-                            {{enquiry_description}}
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    {% if enquiry_startPrice == None %}
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">Start Price: </label>
+                        <label class="control-label col-md-3">Description: </label>
                         <div class="col-md-8">
                             <h4> - </h4>
                         </div>
                     </div>
                     {% else %}
                     <div class="form-group row">
-                        <label class="control-label col-md-2">Start Price: </label>
+                        <label class="control-label col-md-3">Description: </label>
                         <div class="col-md-8">
-                            {{enquiry_startPrice}}
+                            {{data.enquiry_description}}
                         </div>
                     </div>
                     {% endif %}
 
-                    {% if enquiry_endPrice == None %}
+                    {% if data.enquiry_startPrice == None %}
                     <div class="form-group row">
-                        <label class="control-label col-md-2">End Price: </label>
+                        <label class="control-label col-md-3">Start Price: </label>
                         <div class="col-md-8">
                             <h4> - </h4>
                         </div>
                     </div>
                     {% else %}
                     <div class="form-group row">
-                        <label class="control-label col-md-2">End Price: </label>
+                        <label class="control-label col-md-3">Start Price: </label>
                         <div class="col-md-8">
-                            {{enquiry_endPrice}}
+                            {{data.enquiry_startPrice}}
                         </div>
                     </div>
                     {% endif %}
 
-
+                    {% if data.enquiry_endPrice == None %}
                     <div class="form-group row">
-                        <label class="control-label col-md-2">Mobile No. : </label>
-                        <div class="col-md-8">
-                            {{enquiry_mobile_no}}
-                        </div>
-                    </div>
-
-                    {% if enquiry_whatsapp_no == None %}
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">Whats App No. : </label>
+                        <label class="control-label col-md-3">End Price: </label>
                         <div class="col-md-8">
                             <h4> - </h4>
                         </div>
                     </div>
                     {% else %}
                     <div class="form-group row">
-                        <label class="control-label col-md-2">Whats App No. : </label>
+                        <label class="control-label col-md-3">End Price: </label>
                         <div class="col-md-8">
-                            {{enquiry_whatsapp_no}}
+                            {{data.enquiry_endPrice}}
                         </div>
                     </div>
                     {% endif %}
 
-                    {% if enquiry_contact_no == None %}
+
                     <div class="form-group row">
-                        <label class="control-label col-md-2">Contact No. : </label>
+                        <label class="control-label col-md-3">Mobile No. : </label>
+                        <div class="col-md-8">
+                            {{data.enquiry_mobile_no}}
+                        </div>
+                    </div>
+
+                    {% if data.enquiry_whatsapp_no == None %}
+                    <div class="form-group row">
+                        <label class="control-label col-md-3">Whats App No. : </label>
                         <div class="col-md-8">
                             <h4> - </h4>
                         </div>
                     </div>
                     {% else %}
                     <div class="form-group row">
-                        <label class="control-label col-md-2">Contact No. : </label>
+                        <label class="control-label col-md-3">Whats App No. : </label>
                         <div class="col-md-8">
-                            {{enquiry_contact_no}}
+                            {{data.enquiry_whatsapp_no}}
                         </div>
                     </div>
                     {% endif %}
 
-                    {% if enquiry_email_id == None %}
+                    {% if data.enquiry_contact_no == None %}
                     <div class="form-group row">
-                        <label class="control-label col-md-2">Email Id: </label>
+                        <label class="control-label col-md-3">Contact No. : </label>
                         <div class="col-md-8">
                             <h4> - </h4>
                         </div>
                     </div>
                     {% else %}
                     <div class="form-group row">
-                        <label class="control-label col-md-2">Email Id: </label>
+                        <label class="control-label col-md-3">Contact No. : </label>
                         <div class="col-md-8">
-                            {{enquiry_email_id}}
+                            {{data.enquiry_contact_no}}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if data.enquiry_email_id == None %}
+                    <div class="form-group row">
+                        <label class="control-label col-md-3">Email Id: </label>
+                        <div class="col-md-8">
+                            <h4> - </h4>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="form-group row">
+                        <label class="control-label col-md-3">Email Id: </label>
+                        <div class="col-md-8">
+                            {{data.enquiry_email_id}}
 
                         </div>
                     </div>
                     {% endif %}
 
-            </div>
-            <div class="tile-footer">
-                        <div class="row">
-                            <div class="col-md-5 col-md-offset-3">
-                                <a class='btn btn-primary' role='button' href=" {% url 'enquiry_edit_form' pk %} ">Edit</a>
-                            </div>
-
-                            <div class="col-md-5 col-md-offset-3">
-                                <a class='btn btn-primary' role='button' href=" {% url 'enquiry_reply_form' %} ">Reply</a>
-                            </div>
-
-
+                </div>
+                <div class="tile-footer">
+                    <div class="row">
+                        <div class="col-md-5 col-md-offset-3">
+                            <a class='btn btn-primary' role='button' href=" {% url 'enquiry_edit_form' data.pk %} ">Edit</a>
                         </div>
-              </div>
 
-
-        </div>
-
-
-          </div>
-
-            <div class="col-md-5">
-
-              <div class="tile">
-            <h3 class="tile-title">Enquiry Reply</h3>
-            <div class="tile-body">
-
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">Name: </label>
-                        <div class="col-md-8">
-                            {{replyEnquiry_enquiryDetails}}
+                        <div class="col-md-5 col-md-offset-3">
+                            <a class='btn btn-primary' role='button'
+                               href=" {% url 'enquiry_reply_form' data.pk %} ">Take Action</a>
                         </div>
+
+
                     </div>
-
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">Date: </label>
-                        <div class="col-md-8">
-                            {{replyEnquiry_reply_date}}
-                        </div>
-                    </div>
-
-
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">Status: </label>
-                        <div class="col-md-8">
-                            {{replyEnquiry_status}}
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">Comments: </label>
-                        <div class="col-md-12">
-                            {{replyEnquiry_comments}}
-                        </div>
-                    </div>
+                </div>
 
 
             </div>
-<!--            <div class="tile-footer">-->
-<!--                        <div class="row">-->
-<!--                            <div class="col-md-5 col-md-offset-3">-->
-<!--                                <a class='btn btn-primary' role='button' href=" {% url 'enquiry_edit_form' pk %} ">Edit</a>-->
-<!--                            </div>-->
-
-<!--                            <div class="col-md-5 col-md-offset-3">-->
-<!--                                <a class='btn btn-primary' role='button' href=" {% url 'enquiry_reply_form' %} ">Reply</a>-->
-<!--                            </div>-->
-
-
-<!--                        </div>-->
-<!--              </div>-->
 
 
         </div>
+        <div class="col-md-5">
+            {%  for each in data_list %}
+            <div class="tile">
+                <h3 class="tile-title">Action Entry No : {{forloop.counter}}</h3>
+                <div class="tile-body">
+
+                    <div class="form-group row">
+                        <label class="control-label col-md-3">Name: </label>
+                        <div class="col-md-8">
+                            {{each.replyEnquiry_enquiryDetails}}
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="control-label col-md-3">Date: </label>
+                        <div class="col-md-8">
+                            {{each.reply_date}}
+                        </div>
+                    </div>
 
 
-          </div>
-
-
+                    <div class="form-group row">
+                        <label class="control-label col-md-3">Status: </label>
+                        <div class="col-md-8">
+                            {{each.replyEnquiry_status}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-3">Comments: </label>
+                        <div class="col-md-8">
+                            {{each.replyEnquiry_comments}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
         </div>
 
-        <hr>
-
-      </div>
-
+    </div>
+</div>
 
 
 <!--</div>-->

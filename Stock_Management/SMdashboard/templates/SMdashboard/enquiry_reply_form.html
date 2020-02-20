@@ -17,12 +17,6 @@
                 <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="form-group row">
-                        <label class="control-label col-md-2">{{replyEnquiry.enquiryDetails.label}} : </label>
-                        <div class="col-md-3">
-                            {{replyEnquiry.enquiryDetails}}
-                        </div>
-                    </div>
-                    <div class="form-group row">
                         <label class="control-label col-md-2">{{replyEnquiry.status.label}} : </label>
                         <div class="col-md-3">
                             {{replyEnquiry.status}}
