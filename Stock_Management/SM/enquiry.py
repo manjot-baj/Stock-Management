@@ -37,7 +37,8 @@ class Enquiry(BaseModel):
     email_id = models.CharField(max_length=50, null=True, blank=True, )
 
     def __str__(self):
-        # return 'Name : {0},  Enquiry_For:{1},  Date : {2}'.format(self.first_name, self.enquiry_type, self.enquiry_date)
+        # return 'Name : {0},  Enquiry_For:{1},  Date : {2}'.format(self.first_name, self.enquiry_type,
+        # self.enquiry_date)
         return self.first_name
 
 
@@ -52,3 +53,6 @@ class EnquiryRecord(BaseModel):
     )
     status = models.CharField(max_length=32, choices=statusType, null=True, blank=True)
     comments = models.TextField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        return self.enquiryDetails
