@@ -52,7 +52,7 @@ class EmployeeAdmin(admin.ModelAdmin):
 @admin.register(Enquiry)
 class EnquiryAdmin(admin.ModelAdmin):
     list_display = ['enquiry_date', 'customer_type', 'first_name', 'last_name', 'enquiry_type', 'handled_by',
-                    'product_name', 'startPrice', 'endPrice', 'mobile_no', 'whatsapp_no', 'email_id']
+                    'product_name', 'price', 'mobile_no', 'email_id']
     list_select_related = ['customer_type', 'enquiry_type', 'handled_by']
     list_filter = ['customer_type', 'enquiry_date', 'handled_by']
     search_fields = ['first_name', 'enquiry_date', 'mobile_no']

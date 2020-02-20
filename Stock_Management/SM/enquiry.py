@@ -29,11 +29,8 @@ class Enquiry(BaseModel):
 
     product_name = models.CharField(max_length=100, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
-    startPrice = models.CharField(max_length=100, null=True, blank=True)
-    endPrice = models.CharField(max_length=100, null=True, blank=True)
+    price = models.CharField(max_length=100, null=True, blank=True)
     mobile_no = models.CharField(max_length=15, null=True, blank=False, )
-    whatsapp_no = models.CharField(max_length=15, null=True, blank=True, )
-    contact_no = models.CharField(max_length=15, null=True, blank=True, )
     email_id = models.CharField(max_length=50, null=True, blank=True, )
 
     def __str__(self):
