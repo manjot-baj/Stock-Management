@@ -31,10 +31,24 @@ class Enquiry(BaseModel):
     description = models.TextField(null=True, blank=True)
     startPrice = models.CharField(max_length=100, null=True, blank=True)
     endPrice = models.CharField(max_length=100, null=True, blank=True)
-    mobile_no = models.CharField(max_length=15, null=True, blank=False,)
-    whatsapp_no = models.CharField(max_length=15, null=True, blank=True,)
+    mobile_no = models.CharField(max_length=15, null=True, blank=False, )
+    whatsapp_no = models.CharField(max_length=15, null=True, blank=True, )
     contact_no = models.CharField(max_length=15, null=True, blank=True, )
     email_id = models.CharField(max_length=50, null=True, blank=True, )
 
     def __str__(self):
-        return 'Name : {0},  Enquiry_For:{1},  Date : {2}'.format(self.first_name, self.enquiry_type, self.enquiry_date)
+        # return 'Name : {0},  Enquiry_For:{1},  Date : {2}'.format(self.first_name, self.enquiry_type, self.enquiry_date)
+        return self.first_name
+
+
+class EnquiryRecord(BaseModel):
+    enquiryDetails = models.ForeignKey(Enquiry, on_delete=models.CASCADE, null=True, blank=False,)
+    date = models.DateTimeField(default=timezone.now, null=True, blank=False)
+    statusType = (
+        ("Pending", "Pending"),
+        ("OnProgress", "OnProgress"),
+        ("Completed", "Completed")
+
+    )
+    status = models.CharField(max_length=32, choices=statusType, null=True, blank=True)
+    comments = models.TextField(max_length=100, null=True, blank=True)

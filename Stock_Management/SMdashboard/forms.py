@@ -127,6 +127,17 @@ class EnquiryEditForm(forms.ModelForm):
             'contact_no': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'email_id': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
         }
+class EnquiryReplyForm(forms.ModelForm):
+    class Meta:
+        model = enquiry.EnquiryRecord
+        fields = ['enquiryDetails', 'status', 'comments']  # 'date',
+        widgets = {
+
+            'enquiryDetails': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'status': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'comments': forms.Textarea(attrs={'rows': 3, 'cols': 58, 'class': 'form-control form-control-sm'}),
+
+        }
 
 
 class DayBookForm(forms.ModelForm):

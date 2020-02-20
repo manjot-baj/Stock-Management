@@ -57,6 +57,13 @@ class EnquiryAdmin(admin.ModelAdmin):
     list_filter = ['customer_type', 'enquiry_date', 'handled_by']
     search_fields = ['first_name', 'enquiry_date', 'mobile_no']
 
+@admin.register(EnquiryRecord)
+class EnquiryRecordAdmin(admin.ModelAdmin):
+     list_display = ['enquiryDetails', 'date', 'status', 'comments']
+#     list_select_related = ['enquiryDetails','status', ]
+#     list_filter = ['enquiryDetails', 'date', 'status', 'comments']
+#     search_fields = ['enquiryDetails', 'date', 'status', 'comments']
+
 
 @admin.register(DayBook)
 class DayBookAdmin(admin.ModelAdmin):

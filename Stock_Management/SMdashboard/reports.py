@@ -177,6 +177,35 @@ class EnquiryReport:
             print(data)
         return data
 
+    def get_data_Reply(self, request, enquiry_id=None):
+        data = {}
+        record_object = enquiry.Enquiry.objects.filter(pk=enquiry_id).values().annotate(
+            replyEnquiry_enquiryDetails=F('first_name'),
+        )
+
+
+
+        record = enquiry.EnquiryRecord.objects.all().annotate(
+            replyEnquiry_enquiryDetails=F('enquiryDetails__first_name'),   # enquiryDetails__first_name
+            replyEnquiry_status=F('status'),
+            replyEnquiry_comments=F('comments'),
+
+            reply_date=ExpressionWrapper(Func(F('date'), V("DD/MM/YYYY"), function='TO_CHAR'),
+                                   output_field=CharField()),
+        )
+        for each in record:
+            data.update({
+                'replyEnquiry_pk': each.pk,
+                'replyEnquiry_enquiryDetails': each.replyEnquiry_enquiryDetails,
+                'replyEnquiry_status': each.replyEnquiry_status,
+                'replyEnquiry_comments': each.replyEnquiry_comments,
+                'replyEnquiry_reply_date': each.reply_date,
+
+            })
+            print(data)
+        return data
+
+
 
 
 

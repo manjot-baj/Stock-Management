@@ -345,6 +345,27 @@ class Enquiry(View):
 
     # enquiry_tableTemplate = 'dashboard/table-enquiry.html'
 
+    def get_data_Reply(self):
+        data = {}
+        record = enquiry.EnquiryRecord.objects.all().annotate(
+            replyEnquiry_enquiryDetails=F('enquiryDetails__first_name'),
+            replyEnquiry_status=F('status'),
+            replyEnquiry_comments=F('comments'),
+
+            reply_date=ExpressionWrapper(Func(F('date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                         output_field=CharField()),
+        )
+        for each in record:
+            data.update({
+                'replyEnquiry_pk': each.pk,
+                'replyEnquiry_enquiryDetails': each.replyEnquiry_enquiryDetails,
+                'replyEnquiry_status': each.replyEnquiry_status,
+                'replyEnquiry_comments': each.replyEnquiry_comments,
+
+            })
+            print(data)
+        return data
+
     def get_data(self):
 
         data = self.model.objects.all().values(
@@ -375,8 +396,17 @@ class Enquiry(View):
         elif 'object_id' in kwargs:
             from .reports import EnquiryReport
             data = EnquiryReport().get_data(request, enquiry_id=kwargs.get('object_id'))
+            data1 = EnquiryReport().get_data_Reply(request, enquiry_id=kwargs.get('object_id'))
+            # data1 = self.get_data_Reply()
+
+            print(f'data {data}')
+            print(f'data1 {data1}')
+
+            data.update(data1)
+            print(f'data merging : {data}')
+
             template = self.detailed_template_view
-            return render(request, template, data)
+            return render(request, template, data)  # data
 
         data = self.get_data()
         print(data)
@@ -458,6 +488,37 @@ class EnquiryEdit(View):
         return redirect(to='enquiry_edit_Form_template')
 
 
+class EnquiryReply(View):
+    from .forms import EnquiryReplyForm
+    form = EnquiryReplyForm
+    # enquiryForm_template = 'SMdashboard/enquiry_form.html'
+    # enquiryForm_table = 'SMdashboard/table-enquiry.html'
+    # detailed_template_view = 'SMdashboard/enquiry.html'
+    enquiry_reply_Form_template = 'SMdashboard/enquiry_reply_form.html'
+
+    def get(self, request, *args, **kwargs):
+        if 'enquiry_reply_form' in kwargs:
+            # form = self.EnquiryReplyForm()
+            return render(request, self.enquiry_reply_Form_template, {'replyEnquiry': self.form()})
+
+    def post(self, request, *args, **kwargs):
+        replyForm = self.form(request.POST)
+        if replyForm.is_valid():
+            count = []
+            enquiryDetails = replyForm.cleaned_data.get('enquiryDetails')
+            status = replyForm.cleaned_data.get('status')
+            comments = replyForm.cleaned_data.get('comments')
+            a = enquiry.EnquiryRecord.objects.create(
+                enquiryDetails=enquiryDetails, status=status, comments=comments
+            )
+            count.append(a)
+
+            print(f'a {a}')
+            print(f'count {count}')
+            return redirect(to='enquiry')
+        return redirect(to='enquiry_form')
+
+
 class DayBookView(View):
     from .forms import DayBookForm
     form = DayBookForm
@@ -530,7 +591,7 @@ class DayBookView(View):
                 debit_total.append(data[i].get("dayBook_debit_amount"))
             credited = sum(credit_total)
             debited = sum(debit_total)
-            context = [{'credited': credited, 'debited': debited},]
+            context = [{'credited': credited, 'debited': debited}, ]
             print(context)
             return JsonResponse(data, safe=False)
         form = self.DayBookForm(request.POST)
