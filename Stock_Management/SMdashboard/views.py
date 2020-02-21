@@ -788,7 +788,7 @@ class ServiceReply(View):
 
     def post(self, request, *args, **kwargs):
         replyForm = self.form(request.POST, request.FILES)
-        print(replyForm)
+        print(f'object id : {replyForm}')
         print(kwargs.get('object_id'))
         if replyForm.is_valid():
             photo = replyForm.cleaned_data.get('photo'),
