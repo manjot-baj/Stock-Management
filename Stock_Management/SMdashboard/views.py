@@ -1,6 +1,7 @@
 from django.db.models.functions import Coalesce
-from django.shortcuts import render, redirect
-from django.views.generic import ListView, View
+from braces.views import GroupRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 from SM.company_data import Client, Vendor
 import xlrd
@@ -12,17 +13,43 @@ from django.db.models import (Case, CharField, Count, DateTimeField,
 from SM import enquiry, employee_data, service, dayBook, invoice
 
 
+class OwnerRequiredMinxin(GroupRequiredMixin):
+    OWNER_GROUP = "Owner"
+    group_required = OWNER_GROUP
+    login_url = 'login'
+
+
 class Dashboard(View):
+    login_required = False
+    login_template = 'SMdashboard/login.html'
     dashboard_template = 'SMdashboard/dashboard.html'
 
     def get(self, request, *args, **kwargs):
-        return render(request, self.dashboard_template)
+        if 'logout' in kwargs:
+            logout(request)
+            return render(request, self.login_template)
+        elif request.user.is_authenticated:
+            return render(request, self.dashboard_template)
+        else:
+            return render(request, self.login_template)
 
     def post(self, request, *args, **kwargs):
-        return render(request, self.dashboard_template)
+        if 'login' in kwargs:
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(request, username=username, password=password)
+            if user:
+                a = login(request, user)
+                return render(request, self.dashboard_template)
+        else:
+            return render(request, self.login_template)
 
 
-class ClientView(View):
+class DashboardLoginRequiredMixin(LoginRequiredMixin):
+    login_url = 'login'
+
+
+class ClientView(OwnerRequiredMinxin, ListView):
     from .forms import ClientForm
     dashboard_template = 'SMdashboard/dashboard.html'
     data_template = 'SMdashboard/client-table.html'
@@ -134,7 +161,7 @@ class ClientView(View):
         return redirect(to='new_client')
 
 
-class ProductView(View):
+class ProductView(OwnerRequiredMinxin, ListView):
     from .forms import ProductForm
     dashboard_template = 'SMdashboard/dashboard.html'
     data_template = 'SMdashboard/product-table.html'
@@ -228,7 +255,7 @@ class ProductView(View):
         return redirect(to='new_product')
 
 
-class VendorView(View):
+class VendorView(OwnerRequiredMinxin, ListView):
     from .forms import VendorForm
     dashboard_template = 'SMdashboard/dashboard.html'
     data_template = 'SMdashboard/vendor-table.html'
@@ -333,7 +360,7 @@ class VendorView(View):
         return redirect(to='new_vendor')
 
 
-class Enquiry(View):
+class Enquiry(DashboardLoginRequiredMixin, ListView):
     from .forms import EnquiryForm
     form = EnquiryForm
     # dashboard_template = 'SMdashboard/dashboard.html'
@@ -404,7 +431,7 @@ class Enquiry(View):
         return redirect(to='enquiry_form')
 
 
-class EnquiryEdit(View):
+class EnquiryEdit(DashboardLoginRequiredMixin, ListView):
     from .forms import EnquiryEditForm
     form = EnquiryEditForm
     enquiryForm_template = 'SMdashboard/enquiry_form.html'
@@ -445,7 +472,7 @@ class EnquiryEdit(View):
         return redirect(to='enquiry_edit_Form_template')
 
 
-class EnquiryReply(View):
+class EnquiryReply(DashboardLoginRequiredMixin, ListView):
     from .forms import EnquiryReplyForm
     form = EnquiryReplyForm
     enquiry_reply_Form_template = 'SMdashboard/enquiry_reply_form.html'
@@ -466,7 +493,7 @@ class EnquiryReply(View):
         return redirect(to='enquiry_form')
 
 
-class DayBookView(View):
+class DayBookView(OwnerRequiredMinxin, ListView):
     from .forms import DayBookForm
     form = DayBookForm
     dashboard_template = 'SMdashboard/dashboard.html'
@@ -564,7 +591,7 @@ class DayBookView(View):
         return redirect(to='daybook_form')
 
 
-class Employee(View):
+class Employee(OwnerRequiredMinxin, ListView):
     from .forms import EmployeeForm
     form = EmployeeForm
 
@@ -630,7 +657,7 @@ class Employee(View):
         return redirect(to="employee_form")
 
 
-class EmployeeEdit(View):
+class EmployeeEdit(OwnerRequiredMinxin, ListView):
     from .forms import EmployeeEditForm
     editform = EmployeeEditForm
     model = employee_data.Employee
