@@ -5,6 +5,8 @@ from . import views
 
 urlpatterns = [
                   path('', views.Dashboard.as_view(), name="dashboard"),
+                  path('login/', views.Dashboard.as_view(), {'login': ''}, name="login"),
+                  path('logout/', views.Dashboard.as_view(), {'logout': ''}, name="logout"),
                   path('client_data/', views.ClientView.as_view(), name="client_data"),
                   path('new_client/', views.ClientView.as_view(), {'client_form': ''}, name="new_client"),
                   path('viewclient/<int:object_id>', views.ClientView.as_view(), name="viewclient"),

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load sm_tags %}
 <html lang="en">
 <head>
     <meta name="description"
@@ -101,7 +102,7 @@
         <li class="dropdown"><a class="app-nav__item" href="#" data-toggle="dropdown" aria-label="Open Profile Menu"><i
                 class="fa fa-user fa-lg"></i></a>
             <ul class="dropdown-menu settings-menu dropdown-menu-right">
-                <li><a class="dropdown-item" href="page-login.html"><i class="fa fa-sign-out fa-lg"></i> Logout</a></li>
+                <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fa fa-sign-out fa-lg"></i> Logout</a></li>
             </ul>
         </li>
     </ul>
@@ -109,17 +110,16 @@
 <!-- Sidebar menu-->
 <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
 <aside class="app-sidebar">
-    <div class="app-sidebar__user"><img class="app-sidebar__user-avatar"
-                                        src="https://s3.amazonaws.com/uifaces/faces/twitter/jsa/48.jpg"
-                                        alt="User Image">
+    <div class="app-sidebar__user">
         <div>
-            <p class="app-sidebar__user-name">John Doe</p>
-            <p class="app-sidebar__user-designation">Frontend Developer</p>
+            <p class="app-sidebar__user-name">{% firstof user.get_full_name  user.get_username %}</p>
+          <p class="app-sidebar__user-designation">{% if request.user|is_owner %}Owner{% else %}Employee{% endif %}</p>
         </div>
     </div>
     <ul class="app-menu">
         <li><a class="app-menu__item" href="{% url 'dashboard' %}"><i class="app-menu__icon fa fa-dashboard"></i><span
                 class="app-menu__label">Dashboard</span></a></li>
+        {% if request.user|is_owner %}
         <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview">
             <i class="app-menu__icon fa fa-user" aria-hidden="true"></i><span class="app-menu__label">Client</span>
             <i class="treeview-indicator fa fa-angle-right"></i></a>
@@ -169,6 +169,7 @@
                 <li><a class="treeview-item" href="{% url 'daybook' %}"><i class="icon fa fa-circle-o"></i>Day Book Entry's</a></li>
             </ul>
         </li>
+        {% endif %}
         <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview">
             <i class="app-menu__icon fa fa-question-circle" aria-hidden="true"></i><span class="app-menu__label">Enquiry</span>
             <i class="treeview-indicator fa fa-angle-right"></i></a>
