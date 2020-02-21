@@ -110,7 +110,7 @@
 <!-- Sidebar menu-->
 <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
 <aside class="app-sidebar">
-    <div class="app-sidebar__user">
+    <div class="app-sidebar__user"><img class="app-sidebar__user-avatar" src="{% static 'SMdashboard/images/avatar-icon-male-person-symbol-circle-user-vector-20924449.jpg' %}" height="50", width="50" alt="User Image">
         <div>
             <p class="app-sidebar__user-name">{% firstof user.get_full_name  user.get_username %}</p>
           <p class="app-sidebar__user-designation">{% if request.user|is_owner %}Owner{% else %}Employee{% endif %}</p>

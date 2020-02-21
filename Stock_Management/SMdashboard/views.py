@@ -11,6 +11,7 @@ from django.db.models import (Case, CharField, Count, DateTimeField,
                               ExpressionWrapper, F, FloatField, Func, Max, Min,
                               Prefetch, Q, Sum, Value, When, Subquery)
 from SM import enquiry, employee_data, service, dayBook, invoice
+from django.utils import timezone
 
 
 class OwnerRequiredMinxin(GroupRequiredMixin):
@@ -24,12 +25,47 @@ class Dashboard(View):
     login_template = 'SMdashboard/login.html'
     dashboard_template = 'SMdashboard/dashboard.html'
 
+    def dashboard_info(self, request):
+        client_info = Client.objects.all().count()
+        context = {"client": client_info}
+        vendor_info = Vendor.objects.all().count()
+        context.update({"vendor": vendor_info})
+        employee_info = employee_data.Employee.objects.all().count()
+        context.update({"employee": employee_info})
+        product_info = invoice.Product.objects.all().count()
+        context.update({"product": product_info})
+        dayBook_data = dayBook.DayBook.objects.all().values('pk').annotate(
+            dayBook_date=ExpressionWrapper(Func(F('date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                           output_field=CharField()),
+            dayBook_credit_amount=ExpressionWrapper(
+                F('credit_amount'), output_field=FloatField()),
+            dayBook_debit_amount=ExpressionWrapper(
+                F('debit_amount'), output_field=FloatField()),
+        )
+        dayBook_data_list = list(dayBook_data)
+        credit_total = []
+        debit_total = []
+        for i in range(len(dayBook_data_list)):
+            credit_total.append(dayBook_data_list[i].get("dayBook_credit_amount"))
+            debit_total.append(dayBook_data_list[i].get("dayBook_debit_amount"))
+        credited = sum(credit_total)
+        debited = sum(debit_total)
+        context.update({'credited': credited, 'debited': debited})
+        enquiry_info = enquiry.Enquiry.objects.all().count()
+        context.update({"enquiry": enquiry_info})
+        service_info = service.Service.objects.all().count()
+        context.update({"service": service_info})
+        print(context)
+        # print(timezone.now().time())
+        return context
+
     def get(self, request, *args, **kwargs):
         if 'logout' in kwargs:
             logout(request)
             return render(request, self.login_template)
         elif request.user.is_authenticated:
-            return render(request, self.dashboard_template)
+            context = self.dashboard_info(request)
+            return render(request, self.dashboard_template, context=context)
         else:
             return render(request, self.login_template)
 
@@ -40,7 +76,9 @@ class Dashboard(View):
             user = authenticate(request, username=username, password=password)
             if user:
                 a = login(request, user)
-                return render(request, self.dashboard_template)
+                return redirect(to='dashboard')
+            else:
+                return render(request, self.login_template)
         else:
             return render(request, self.login_template)
 
@@ -791,9 +829,9 @@ class ServiceReply(View):
         print(f'object id : {replyForm}')
         print(kwargs.get('object_id'))
         if replyForm.is_valid():
-            photo = replyForm.cleaned_data.get('photo'),
-            status = replyForm.cleaned_data.get('status'),
-            comment = replyForm.cleaned_data.get('comment'),
+            photo = replyForm.cleaned_data.get('photo')
+            status = replyForm.cleaned_data.get('status')
+            comment = replyForm.cleaned_data.get('comment')
             service.ServiceRecord.objects.create(service_number_id=kwargs.get('object_id'),
                                                  photo=photo, status=status, comment=comment)
             return redirect(to="service")
