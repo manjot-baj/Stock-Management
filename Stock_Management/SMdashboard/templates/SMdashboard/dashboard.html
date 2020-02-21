@@ -11,100 +11,92 @@
 </div>
 <div class="row">
     <div class="col-md-6 col-lg-3">
+        <a href="{% url 'client_data' %}">
         <div class="widget-small primary coloured-icon"><i class="icon fa fa-user fa-3x"></i>
             <div class="info">
                 <h4>Clients</h4>
-                <p><b>5</b></p>
+                <p><b>{{client}}</b></p>
             </div>
         </div>
+        </a>
     </div>
     <div class="col-md-6 col-lg-3">
         <div class="widget-small info coloured-icon"><i class="icon fa fa-user fa-3x"></i>
             <div class="info">
                 <h4>Clients Under AMC</h4>
-                <p><b>500</b></p>
+                <p><b>0</b></p>
             </div>
         </div>
     </div>
     <div class="col-md-6 col-lg-3">
+        <a href="{% url 'vendor_data' %}">
         <div class="widget-small primary coloured-icon"><i class="icon fa fa-users fa-3x"></i>
             <div class="info">
                 <h4>Vendors</h4>
-                <p><b>25</b></p>
+                <p><b>{{vendor}}</b></p>
             </div>
         </div>
+        </a>
     </div>
     <div class="col-md-6 col-lg-3">
+        <a href="{% url 'employee' %}">
         <div class="widget-small primary coloured-icon"><i class="icon fa fa-address-card-o fa-3x"></i>
             <div class="info">
                 <h4>Employees</h4>
-                <p><b>10</b></p>
+                <p><b>{{employee}}</b></p>
             </div>
         </div>
+        </a>
     </div>
     <div class="col-md-6 col-lg-3">
+        <a href="{% url 'product_data' %}">
         <div class="widget-small primary coloured-icon"><i class="icon fa fa-shopping-bag fa-3x"></i>
             <div class="info">
                 <h4>Products</h4>
-                <p><b>500</b></p>
+                <p><b>{{product}}</b></p>
             </div>
         </div>
+        </a>
     </div>
     <div class="col-md-6 col-lg-3">
+        <a href="{% url 'daybook' %}">
         <div class="widget-small info coloured-icon"><i class="icon fa fa-rupee fa-3x"></i>
             <div class="info">
                 <h4>Total Credit Amount</h4>
-                <p><b>500</b></p>
+                <p><b>{{credited}}</b></p>
             </div>
         </div>
+        </a>
     </div>
     <div class="col-md-6 col-lg-3">
+        <a href="{% url 'daybook' %}">
         <div class="widget-small info coloured-icon"><i class="icon fa fa-rupee fa-3x"></i>
             <div class="info">
                 <h4>Total Debit Amount</h4>
-                <p><b>500</b></p>
+                <p><b>{{debited}}</b></p>
             </div>
         </div>
+        </a>
     </div>
     <div class="col-md-6 col-lg-3">
+        <a href="{% url 'enquiry' %}">
         <div class="widget-small primary coloured-icon"><i class="icon fa fa-question-circle fa-3x"></i>
             <div class="info">
                 <h4>Total Enquiries</h4>
-                <p><b>500</b></p>
+                <p><b>{{enquiry}}</b></p>
             </div>
         </div>
+        </a>
     </div>
     <div class="col-md-6 col-lg-3">
+        <a href="{% url 'service' %}">
         <div class="widget-small primary coloured-icon"><i class="icon fa fa-briefcase fa-3x"></i>
             <div class="info">
                 <h4>Total Services</h4>
-                <p><b>500</b></p>
+                <p><b>{{service}}</b></p>
             </div>
         </div>
-    </div>
-    <div class="col-md-6 col-lg-3">
-        <div class="widget-small danger coloured-icon"><i class="icon fa fa-hourglass-start fa-3x"></i>
-            <div class="info">
-                <h4>Pending Services</h4>
-                <p><b>500</b></p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6 col-lg-3">
-        <div class="widget-small warning coloured-icon"><i class="icon fa fa-hourglass-half fa-3x"></i>
-            <div class="info">
-                <h4>On Progress Services</h4>
-                <p><b>500</b></p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6 col-lg-3">
-        <div class="widget-small info coloured-icon"><i class="icon fa fa-hourglass-end fa-3x"></i>
-            <div class="info">
-                <h4>Completed Services</h4>
-                <p><b>500</b></p>
-            </div>
-        </div>
+        </a>
     </div>
 </div>
 <!--<div class="row">-->
