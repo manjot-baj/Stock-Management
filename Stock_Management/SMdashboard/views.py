@@ -829,9 +829,9 @@ class ServiceReply(View):
         print(replyForm)
         print(kwargs.get('object_id'))
         if replyForm.is_valid():
-            photo = replyForm.cleaned_data.get('photo'),
-            status = replyForm.cleaned_data.get('status'),
-            comment = replyForm.cleaned_data.get('comment'),
+            photo = replyForm.cleaned_data.get('photo')
+            status = replyForm.cleaned_data.get('status')
+            comment = replyForm.cleaned_data.get('comment')
             service.ServiceRecord.objects.create(service_number_id=kwargs.get('object_id'),
                                                  photo=photo, status=status, comment=comment)
             return redirect(to="service")

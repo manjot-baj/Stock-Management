@@ -256,7 +256,7 @@ class ServiceReport:
         return data
 
     def get_data_Reply(self, request, service_id=None):
-        record = service.ServiceRecord.objects.filter(service_number_id=service_id).values("pk", "photo").annotate(
+        record = service.ServiceRecord.objects.filter(service_number_id=service_id).annotate(
             replyService_service_number=F('service_number__service_number'),
             replyService_status=F('status'),
             replyService_comment=F('comment'),
@@ -264,6 +264,7 @@ class ServiceReport:
             reply_date=ExpressionWrapper(Func(F('date'), V("DD/MM/YYYY"), function='TO_CHAR'),
                                          output_field=CharField()),
         )
+        print(record)
         return list(record)
 
 

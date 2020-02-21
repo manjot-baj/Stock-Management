@@ -60,7 +60,6 @@ class VendorForm(forms.Form):
             return input_excel
 
 
-
 class EnquiryForm(forms.ModelForm):
     class Meta:
         model = enquiry.Enquiry
@@ -192,7 +191,7 @@ class ServiceForm(forms.ModelForm):
             'client': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'service_type': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'description': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control form-control-sm'}),
-            }
+        }
 
 
 class ServiceEditForm(forms.ModelForm):
@@ -211,6 +210,7 @@ class ServiceEditForm(forms.ModelForm):
 
         }
 
+
 class ServiceReplyForm(forms.ModelForm):
     class Meta:
         model = service.ServiceRecord
@@ -221,4 +221,3 @@ class ServiceReplyForm(forms.ModelForm):
             'status': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'comment': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control form-control-sm'}),
         }
-
