@@ -234,8 +234,7 @@ class ServiceReport:
         data = {}
         record = service.Service.objects.filter(pk=service_id).annotate(
             number=F('service_number'),
-            service_date=ExpressionWrapper(Func(F('date'), V("DD/MM/YYYY"), function='TO_CHAR'),
-                                           output_field=CharField()),
+            service_date=F('date'),
             service_client=F('client__name'),
             service_description=F('description'),
             service_name=F('service_type__name'),
@@ -260,9 +259,7 @@ class ServiceReport:
             replyService_service_number=F('service_number__service_number'),
             replyService_status=F('status'),
             replyService_comment=F('comment'),
-
-            reply_date=ExpressionWrapper(Func(F('date'), V("DD/MM/YYYY"), function='TO_CHAR'),
-                                         output_field=CharField()),
+            reply_date=F('date'),
         )
         print(record)
         return list(record)
