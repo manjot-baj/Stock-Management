@@ -25,6 +25,14 @@ class Service(BaseModel):
     service_type = models.ForeignKey(ServiceType, on_delete=models.CASCADE, null=True, blank=False)
     description = models.TextField(max_length=200, null=True, blank=True)
     photo = models.ImageField(upload_to='uploads/', null=True, blank=True)
+
+    def __str__(self):
+        return self.service_number
+
+class ServiceRecord(BaseModel):
+    service_number = models.ForeignKey(Service, on_delete=models.CASCADE, null=True, blank=False)
+    date = models.DateTimeField(default=timezone.now, null=True, blank=False)
+    photo = models.ImageField(upload_to='uploads/', null=True, blank=True)
     status_type = (
         ("Start", "start"),
         ("Pending", "pending"),
@@ -33,6 +41,7 @@ class Service(BaseModel):
     )
 
     status = models.CharField(max_length=100, choices=status_type, default='Start')
+    comment = models.TextField(max_length=200, null=True, blank=True)
 
     def __str__(self):
-        return self.service_number
+        return self.status

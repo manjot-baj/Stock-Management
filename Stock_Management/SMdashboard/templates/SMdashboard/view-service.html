@@ -1,46 +1,109 @@
 {% extends 'SMdashboard/base.html' %}
 {% load static %}
 {% block content %}
-{{ block.super }}
 <div class="app-title">
-  <div>
-    <h1><i class="fa fa-file-text-o"></i> Service Information</h1>
-    <p>Service Information</p>
-  </div>
+    <div>
+        <h1><i class="fa fa-edit"></i> Detailed Service </h1>
+        <p>You will see detailed service here.</p>
+    </div>
 </div>
-<div class="row">
-  <div class="col-md-12">
-    <div class="tile">
-      <section class="invoice">
+<div class="container">
 
-        <div class="row invoice-info">
-          <div class="col-4">
-              <h6><strong>Service No :&nbsp; &nbsp; {{number}}</strong></h6><br/>
-              <h6><strong>Date:&nbsp; &nbsp; {{service_date}}</strong></h6><br/>
-              <h6><strong>Client:&nbsp; &nbsp; {{service_client}}</strong></h6><br>
+    <div class="row">
 
-              {% if service_description == "" %}
+        <div class="col-md-5">
+
+            <div class="tile">
+                <h3 class="tile-title">Enquiry Details</h3>
+                <div class="tile-body">
+
+                    <h6><strong>Service No :&nbsp; &nbsp; {{data.number}}</strong></h6><br/>
+              <h6><strong>Date:&nbsp; &nbsp; {{data.service_date}}</strong></h6><br/>
+              <h6><strong>Client:&nbsp; &nbsp; {{data.service_client}}</strong></h6><br>
+
+              {% if data.service_description == "" %}
               <h6><strong>Description:&nbsp; &nbsp; -</strong></h6><br/>
               {% else %}
-              <h6><strong>Description:&nbsp; &nbsp; {{service_description}}</strong></h6><br>
+              <h6><strong>Description:&nbsp; &nbsp; {{data.service_description}}</strong></h6><br>
               {% endif %}
 
-              <h6><strong>Service Type:&nbsp; &nbsp; {{service_name}}</strong></h6><br>
-              <h6><strong> Photo:&nbsp; &nbsp; <img src="{{service_photo}}" height="150px" width="300px"></strong></h6><br>
-              <h6><strong> Status:&nbsp; &nbsp; {{service_status}}</strong></h6><br>
-              <div class="tile-footer">
-                        <div class="row">
-                            <div class="col-md-5 col-md-offset-3">
-                                <a class='btn btn-primary' role='button' href=" {% url 'service_edit_form' pk %} ">Edit</a>
-                            </div>
+              <h6><strong>Service Type:&nbsp; &nbsp; {{data.service_name}}</strong></h6><br>
+
+              <h6><strong> Photo:&nbsp; &nbsp; <img src="{{data.service_photo}}" height="150px" width="300px"></strong></h6><br>
+
+
+
+                </div>
+                <div class="tile-footer">
+                    <div class="row">
+                        <div class="col-md-5 col-md-offset-3">
+                            <a class='btn btn-primary' role='button' href=" {% url 'service_edit_form' data.pk %} ">Edit</a>
                         </div>
-              </div>
-          </div>
+
+                        <div class="col-md-5 col-md-offset-3">
+                            <a class='btn btn-primary' role='button'
+                               href=" {% url 'service_reply_form' data.pk %} ">Take Action</a>
+                        </div>
+
+
+                    </div>
+                </div>
+
+
+            </div>
 
 
         </div>
-      </section>
+
+
+
+        <div class="col-md-5">
+            {%  for each in data_list %}
+            <div class="tile">
+                <h3 class="tile-title">Action Entry No : {{forloop.counter}}</h3>
+                <div class="tile-body">
+
+                    <div class="form-group row">
+                        <label class="control-label col-md-3">Service No: </label>
+                        <div class="col-md-8">
+                            {{each.replyService_service_number}}
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="control-label col-md-3">Date: </label>
+                        <div class="col-md-8">
+                            {{each.reply_date}}
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label class="control-label col-md-3">photo: </label>
+                        <div class="col-md-8">
+<!--                            {{each.photo.url}}-->
+                            <img src="{{each.photo.url}}" height="150px" width="150px">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-3">Status: </label>
+                        <div class="col-md-8">
+                            {{each.replyService_status}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-3">Comments: </label>
+                        <div class="col-md-8">
+                            {{each.replyService_comment}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
     </div>
-  </div>
 </div>
-{% endblock %}
+
+{% endblock content %}
+

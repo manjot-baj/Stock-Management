@@ -183,7 +183,7 @@ class ServiceForm(forms.ModelForm):
     class Meta:
         model = service.Service
         fields = [
-            'service_number', 'date', 'client', 'service_type', 'description', 'photo', 'status'
+            'service_number', 'date', 'client', 'service_type', 'description', 'photo'
         ]
 
         widgets = {
@@ -192,15 +192,14 @@ class ServiceForm(forms.ModelForm):
             'client': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'service_type': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'description': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control form-control-sm'}),
-            'status': forms.Select(attrs={'class': 'form-control form-control-sm'}),
-        }
+            }
 
 
 class ServiceEditForm(forms.ModelForm):
     class Meta:
         model = service.Service
         fields = [
-            'service_number', 'date', 'client', 'service_type', 'description', 'status'
+            'service_number', 'date', 'client', 'service_type', 'description'
         ]
 
         widgets = {
@@ -209,5 +208,17 @@ class ServiceEditForm(forms.ModelForm):
             'client': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'service_type': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'description': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control form-control-sm'}),
-            'status': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+
         }
+
+class ServiceReplyForm(forms.ModelForm):
+    class Meta:
+        model = service.ServiceRecord
+        fields = [
+            'photo', 'status', 'comment'
+        ]
+        Widgets = {
+            'status': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'comment': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control form-control-sm'}),
+        }
+

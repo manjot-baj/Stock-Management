@@ -746,7 +746,7 @@ class Service(View):
 
     def get_data(self):
         data = self.model.objects.all().values(
-            'service_number', 'description', 'photo', 'status', 'pk'
+            'service_number', 'description', 'photo', 'pk'
         ).annotate(
             service_client=F('client__name'),
             service=F('service_type__name'),
@@ -761,8 +761,9 @@ class Service(View):
         elif 'object_id' in kwargs:
             from .reports import ServiceReport
             data = ServiceReport().get_data(request, service_id=kwargs.get('object_id'))
+            data1 = ServiceReport().get_data_Reply(request, service_id=kwargs.get('object_id'))
             template = self.detailed_view
-            return render(request, template, data)
+            return render(request, template, {"data": data, "data_list": data1})
         data = self.get_data()
         print(data)
         return render(request, self.serviceForm_table, {'data': data})
@@ -777,10 +778,9 @@ class Service(View):
             service_type = form.cleaned_data.get('service_type')
             description = form.cleaned_data.get('description')
             photo = form.cleaned_data.get('photo')
-            status = form.cleaned_data.get('status')
             service.Service.objects.create(
                 service_number=service_number, date=date, client=client, service_type=service_type,
-                description=description, photo=photo, status=status
+                description=description, photo=photo
             )
         return redirect(to="service")
 
@@ -807,9 +807,32 @@ class ServiceEdit(View):
             service_type = editform.cleaned_data.get('service_type')
             description = editform.cleaned_data.get('description')
             # photo = editform.cleaned_data.get('photo')
-            status = editform.cleaned_data.get('status')
+
             service.Service.objects.filter(pk=kwargs.get('object_id')).update(
                 service_number=service_number, date=date, client=client, service_type=service_type,
-                description=description, status=status
+                description=description
             )
         return redirect(to="service")
+
+
+class ServiceReply(View):
+    from .forms import ServiceReplyForm
+    form = ServiceReplyForm
+    service_reply_Form_template = 'SMdashboard/service_reply_form.html'
+
+    def get(self, request, *args, **kwargs):
+        if 'service_reply_form' in kwargs:
+            return render(request, self.service_reply_Form_template, {'replyService': self.form()})
+
+    def post(self, request, *args, **kwargs):
+        replyForm = self.form(request.POST, request.FILES)
+        print(replyForm)
+        print(kwargs.get('object_id'))
+        if replyForm.is_valid():
+            photo = replyForm.cleaned_data.get('photo'),
+            status = replyForm.cleaned_data.get('status'),
+            comment = replyForm.cleaned_data.get('comment'),
+            service.ServiceRecord.objects.create(service_number_id=kwargs.get('object_id'),
+                                                 photo=photo, status=status, comment=comment)
+            return redirect(to="service")
+        return redirect(to='service_form')

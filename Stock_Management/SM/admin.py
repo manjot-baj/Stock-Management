@@ -57,12 +57,21 @@ class EnquiryAdmin(admin.ModelAdmin):
     list_filter = ['customer_type', 'enquiry_date', 'handled_by']
     search_fields = ['first_name', 'enquiry_date', 'mobile_no']
 
+
 @admin.register(EnquiryRecord)
 class EnquiryRecordAdmin(admin.ModelAdmin):
-     list_display = ['enquiryDetails', 'date', 'status', 'comments']
-#     list_select_related = ['enquiryDetails','status', ]
-#     list_filter = ['enquiryDetails', 'date', 'status', 'comments']
-#     search_fields = ['enquiryDetails', 'date', 'status', 'comments']
+    list_display = ['enquiryDetails', 'date', 'status', 'comments']
+    list_select_related = ['enquiryDetails']
+    list_filter = ['enquiryDetails', 'date', 'status']
+    search_fields = ['date', 'status']
+
+
+@admin.register(ServiceRecord)
+class ServiceRecordAdmin(admin.ModelAdmin):
+    list_display = ['service_number', 'date', 'status', 'comment']
+    list_select_related = ['service_number']
+    list_filter = ['service_number', 'date', 'status']
+    search_fields = ['date', 'status']
 
 
 @admin.register(DayBook)
@@ -76,10 +85,10 @@ class DayBookAdmin(admin.ModelAdmin):
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ['date', 'service_number', 'client', 'service_type', 'status']
+    list_display = ['date', 'service_number', 'client', 'service_type']
     list_select_related = ['client', 'service_type']
-    list_filter = ['service_number', 'status', 'date']
-    search_fields = ['service_number', 'status', 'date', 'client']
+    list_filter = ['service_number', 'date']
+    search_fields = ['service_number', 'date', 'client']
 
 
 @admin.register(AMC)

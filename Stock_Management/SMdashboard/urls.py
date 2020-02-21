@@ -37,6 +37,8 @@ urlpatterns = [
                   path('viewservice/<int:object_id>', views.Service.as_view(), name="viewservice"),
                   path('service_edit_form/<int:object_id>/', views.ServiceEdit.as_view(), {'service_edit_form': ''},
                        name="service_edit_form"),
+                  path('service_reply_form/<int:object_id>', views.ServiceReply.as_view(), {'service_reply_form': ''},
+                       name="service_reply_form"),
                   path('product_data/', views.ProductView.as_view(), name="product_data"),
                   path('viewProduct/<int:object_id>', views.ProductView.as_view(), name="view_product"),
                   path('new_product/', views.ProductView.as_view(), {'product_form': ''}, name="new_product"),
