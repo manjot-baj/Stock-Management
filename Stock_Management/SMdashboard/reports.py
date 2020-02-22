@@ -238,7 +238,7 @@ class ServiceReport:
             service_client=F('client__name'),
             service_description=F('description'),
             service_name=F('service_type__name'),
-            )
+        )
         print(record)
 
         for each in record:
@@ -250,7 +250,7 @@ class ServiceReport:
                 'service_description': each.service_description,
                 'service_name': each.service_name,
                 'service_photo': each.photo.url,
-                })
+            })
         print(data)
         return data
 
@@ -263,7 +263,6 @@ class ServiceReport:
         )
         print(record)
         return list(record)
-
 
 
 class DayBookReport:
