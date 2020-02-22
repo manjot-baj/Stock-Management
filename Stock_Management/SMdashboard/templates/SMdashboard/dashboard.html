@@ -1,6 +1,7 @@
 {% extends 'SMdashboard/base.html' %}
 {% load static %}
 {% block content %}
+{% load sm_tags %}
 {{ block.super }}
 <div class="app-title">
     <div>
@@ -58,6 +59,7 @@
         </div>
         </a>
     </div>
+    {% if request.user|is_owner %}
     <div class="col-md-6 col-lg-3">
         <a href="{% url 'daybook' %}">
         <div class="widget-small info coloured-icon"><i class="icon fa fa-rupee fa-3x"></i>
@@ -78,6 +80,7 @@
         </div>
         </a>
     </div>
+    {% endif %}
     <div class="col-md-6 col-lg-3">
         <a href="{% url 'enquiry' %}">
         <div class="widget-small primary coloured-icon"><i class="icon fa fa-question-circle fa-3x"></i>
