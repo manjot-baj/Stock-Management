@@ -87,7 +87,7 @@ class DashboardLoginRequiredMixin(LoginRequiredMixin):
     login_url = 'login'
 
 
-class ClientView(OwnerRequiredMinxin, ListView):
+class ClientView(DashboardLoginRequiredMixin, ListView):
     from .forms import ClientForm
     dashboard_template = 'SMdashboard/dashboard.html'
     data_template = 'SMdashboard/client-table.html'
@@ -214,7 +214,7 @@ class ClientView(OwnerRequiredMinxin, ListView):
         return redirect(to='new_client')
 
 
-class ClientAdd(OwnerRequiredMinxin, ListView):
+class ClientAdd(DashboardLoginRequiredMixin, ListView):
     from .forms import ClientAddForm
     dashboard_template = 'SMdashboard/dashboard.html'
     data_template = 'SMdashboard/client-table.html'
@@ -222,7 +222,6 @@ class ClientAdd(OwnerRequiredMinxin, ListView):
     detailed_view = 'SMdashboard/view-client.html'
     form = ClientAddForm
     model = Client
-
 
     def get(self, request, *args, **kwargs):
         if 'client_form_fill' in kwargs:
@@ -254,15 +253,16 @@ class ClientAdd(OwnerRequiredMinxin, ListView):
             balance = form.cleaned_data.get('balance')
 
             Client.objects.create(
-                name=name, contact_Name=contact_Name, TIN=TIN, email=email, phone=phone, billing_address=billing_address,
-                billing_zip=billing_zip, billing_city=billing_city, billing_state=billing_state, billing_country=billing_country,
+                name=name, contact_Name=contact_Name, TIN=TIN, email=email, phone=phone,
+                billing_address=billing_address,
+                billing_zip=billing_zip, billing_city=billing_city, billing_state=billing_state,
+                billing_country=billing_country,
                 shipping_address=shipping_address, shipping_zip=shipping_zip, shipping_city=shipping_city,
                 shipping_state=shipping_state, shipping_country=shipping_country, details=details, GSTIN=GSTIN,
                 PAN=PAN, balance=balance
             )
             return redirect(to='client_data')
         return redirect(to='new_client_add')
-
 
 
 class ProductView(OwnerRequiredMinxin, ListView):
