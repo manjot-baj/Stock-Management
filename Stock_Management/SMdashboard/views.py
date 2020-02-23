@@ -97,12 +97,26 @@ class ClientView(OwnerRequiredMinxin, ListView):
     model = Client
 
     def get_data(self):
-        data = self.model.objects.all().values('pk', 'name', 'contact_Name', 'TIN', 'email', 'phone',
-                                               'billing_address', 'billing_zip', 'billing_city',
-                                               'billing_state', 'billing_country',
-                                               'shipping_address', 'shipping_zip', 'shipping_city',
-                                               'shipping_state', 'shipping_country', 'details',
-                                               'GSTIN', 'PAN', 'balance').order_by("-pk")
+        data = self.model.objects.all().values('pk', 'name', 'contact_Name').annotate(
+            client_TIN=Coalesce('TIN', Value("-")),
+            client_email=Coalesce('email', Value("-")),
+            client_phone=Coalesce('phone', Value("-")),
+            client_billing_address=Coalesce('billing_address', Value("-")),
+            client_billing_zip=Coalesce('billing_zip', Value("-")),
+            client_billing_city=Coalesce('billing_city', Value("-")),
+            client_billing_state=Coalesce('billing_state', Value("-")),
+            client_billing_country=Coalesce('billing_country', Value("-")),
+            client_shipping_address=Coalesce('shipping_address', Value("-")),
+            client_shipping_zip=Coalesce('shipping_zip', Value("-")),
+            client_shipping_city=Coalesce('shipping_city', Value("-")),
+            client_shipping_state=Coalesce('shipping_state', Value("-")),
+            client_shipping_country=Coalesce('shipping_country', Value("-")),
+            client_details=Coalesce('details', Value("-")),
+            client_GSTIN=Coalesce('GSTIN', Value("-")),
+            client_PAN=Coalesce('PAN', Value("-")),
+            client_balance=Coalesce('balance', Value("-")),
+
+        ).order_by("-pk")
         return list(data)
 
     def get(self, request, *args, **kwargs):
@@ -111,6 +125,7 @@ class ClientView(OwnerRequiredMinxin, ListView):
         elif 'object_id' in kwargs:
             from .reports import ClientReport
             data = ClientReport().get_data(request, client_id=kwargs.get('object_id'))
+            print(f'check data {data}')
             return render(request, self.detailed_view, data)
         data = self.get_data()
         print(data)
@@ -197,6 +212,57 @@ class ClientView(OwnerRequiredMinxin, ListView):
                                                  balance=balance[i])
             return redirect(to='client_data')
         return redirect(to='new_client')
+
+
+class ClientAdd(OwnerRequiredMinxin, ListView):
+    from .forms import ClientAddForm
+    dashboard_template = 'SMdashboard/dashboard.html'
+    data_template = 'SMdashboard/client-table.html'
+    form_template = 'SMdashboard/clientform-fill.html'
+    detailed_view = 'SMdashboard/view-client.html'
+    form = ClientAddForm
+    model = Client
+
+
+    def get(self, request, *args, **kwargs):
+        if 'client_form_fill' in kwargs:
+            return render(request, self.form_template, {'form': self.form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form(request.POST)
+        print(form.is_valid())
+        print(form)
+        if form.is_valid():
+            name = form.cleaned_data.get('name')
+            contact_Name = form.cleaned_data.get('contact_Name')
+            TIN = form.cleaned_data.get('TIN')
+            email = form.cleaned_data.get('email')
+            phone = form.cleaned_data.get('phone')
+            billing_address = form.cleaned_data.get('billing_address')
+            billing_zip = form.cleaned_data.get('billing_zip')
+            billing_city = form.cleaned_data.get('billing_city')
+            billing_state = form.cleaned_data.get('billing_state')
+            billing_country = form.cleaned_data.get('billing_country')
+            shipping_address = form.cleaned_data.get('shipping_address')
+            shipping_zip = form.cleaned_data.get('shipping_zip')
+            shipping_city = form.cleaned_data.get('shipping_city')
+            shipping_state = form.cleaned_data.get('shipping_state')
+            shipping_country = form.cleaned_data.get('shipping_country')
+            details = form.cleaned_data.get('details')
+            GSTIN = form.cleaned_data.get('GSTIN')
+            PAN = form.cleaned_data.get('PAN')
+            balance = form.cleaned_data.get('balance')
+
+            Client.objects.create(
+                name=name, contact_Name=contact_Name, TIN=TIN, email=email, phone=phone, billing_address=billing_address,
+                billing_zip=billing_zip, billing_city=billing_city, billing_state=billing_state, billing_country=billing_country,
+                shipping_address=shipping_address, shipping_zip=shipping_zip, shipping_city=shipping_city,
+                shipping_state=shipping_state, shipping_country=shipping_country, details=details, GSTIN=GSTIN,
+                PAN=PAN, balance=balance
+            )
+            return redirect(to='client_data')
+        return redirect(to='new_client_add')
+
 
 
 class ProductView(OwnerRequiredMinxin, ListView):

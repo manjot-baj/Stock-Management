@@ -1,6 +1,6 @@
 import os
 from django import forms
-from SM import enquiry, employee_data, service, dayBook
+from SM import enquiry, employee_data, service, dayBook, company_data
 
 
 class ClientForm(forms.Form):
@@ -21,6 +21,36 @@ class ClientForm(forms.Form):
         else:
             return input_excel
 
+class ClientAddForm(forms.ModelForm):
+    class Meta:
+        model = company_data.Client
+
+        fields = ['name', 'contact_Name', 'TIN', 'email', 'phone', 'billing_address', 'billing_zip', 'billing_city',
+                   'billing_state', 'billing_country', 'shipping_address', 'shipping_zip', 'shipping_city',
+                   'shipping_state', 'shipping_country', 'details', 'GSTIN', 'PAN', 'balance'
+        ]
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'contact_Name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'TIN': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'email': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'billing_address': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'billing_zip': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'billing_city': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'billing_state': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'billing_country': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'shipping_address': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'shipping_zip': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'shipping_city': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'shipping_state': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'shipping_country': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'details': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'GSTIN': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'PAN': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'balance': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+
+        }
 
 class ProductForm(forms.Form):
     input_excel = forms.FileField(required=True, label=u"Upload the Excel file to import to the system.")

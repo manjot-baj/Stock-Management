@@ -9,6 +9,7 @@ urlpatterns = [
                   path('logout/', views.Dashboard.as_view(), {'logout': ''}, name="logout"),
                   path('client_data/', views.ClientView.as_view(), name="client_data"),
                   path('new_client/', views.ClientView.as_view(), {'client_form': ''}, name="new_client"),
+                  path('new_client_add/', views.ClientAdd.as_view(), {'client_form_fill': ''}, name="new_client_add"),
                   path('viewclient/<int:object_id>', views.ClientView.as_view(), name="viewclient"),
                   path('vendor_data/', views.VendorView.as_view(), name="vendor_data"),
                   path('new_vendor/', views.VendorView.as_view(), {'vendor_form': ''}, name="new_vendor"),

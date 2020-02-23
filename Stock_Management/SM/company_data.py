@@ -52,8 +52,8 @@ class Vendor(BaseModel):
 
 
 class Client(BaseModel):
-    name = models.CharField(max_length=100, null=True, blank=True)
-    contact_Name = models.CharField(max_length=100, null=True, blank=True)
+    name = models.CharField(max_length=100, null=True, blank=False)
+    contact_Name = models.CharField(max_length=100, null=True, blank=False)
     TIN = models.CharField(max_length=100, null=True, blank=True)
     email = models.CharField(max_length=100, null=True, blank=True)
     phone = models.CharField(max_length=100, null=True, blank=True)
