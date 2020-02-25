@@ -12,6 +12,10 @@ from django.db.models import (Case, CharField, Count, DateTimeField,
                               Prefetch, Q, Sum, Value, When, Subquery)
 from SM import enquiry, employee_data, service, dayBook, invoice
 from django.utils import timezone
+import http.client
+import json
+
+conn = http.client.HTTPSConnection("api.msg91.com")
 
 
 class OwnerRequiredMinxin(GroupRequiredMixin):
@@ -815,6 +819,7 @@ class Service(View):
             'service_number', 'description', 'photo', 'pk'
         ).annotate(
             service_client=F('client__name'),
+            service_client_phone=F('client__phone'),
             service=F('service_type__name'),
             service_date=ExpressionWrapper(Func(F('date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
                                            output_field=CharField()),
@@ -848,6 +853,35 @@ class Service(View):
                 service_number=service_number, date=date, client=client, service_type=service_type,
                 description=description, photo=photo
             )
+            my_client_data = list(service.Service.objects.filter(client=client).values('pk').annotate(
+                phone=F('client__phone')
+            ))
+            client_no = my_client_data[0].get('phone')
+            payload = {
+                "sender": "KIINFO",
+                "route": "4",
+                "country": "91",
+                "sms": [
+                    {
+                        "message": f"{client} Your Service number for {service_type} is {service_number} "
+                                   f"generated on {date}",
+                        "to": [
+                            client_no,
+                            "9922620357",
+                        ]
+                    }
+                ]
+            }
+            my_payload = json.dumps(payload)
+            print(my_payload)
+            headers = {
+                'authkey': "319771ADVdNvaEDkN5e525394P1",
+                'content-type': "application/json"
+            }
+            conn.request("POST", "/api/v2/sendsms", my_payload, headers)
+            res = conn.getresponse()
+            data = res.read()
+            print(data.decode("utf-8"))
         return redirect(to="service")
 
 
@@ -900,5 +934,46 @@ class ServiceReply(View):
             comment = replyForm.cleaned_data.get('comment')
             service.ServiceRecord.objects.create(service_number_id=kwargs.get('object_id'),
                                                  photo=photo, status=status, comment=comment)
+            my_client_data = list(service.ServiceRecord.objects.filter(
+                service_number_id=kwargs.get('object_id')).values('pk').annotate(
+                client=F('service_number__client__name'),
+                service_no=F('service_number__service_number'),
+                service_type=F('service_number__service_type__name'),
+                phone=F('service_number__client__phone'),
+            ))
+            print(my_client_data)
+            service_number = my_client_data[0].get('service_no')
+            service_type = my_client_data[0].get('service_type')
+            client_no = my_client_data[0].get('phone')
+            client = my_client_data[0].get('client')
+            # print(service_number)
+            # print(service_type)
+            # print(client_no)
+            # print(client)
+            payload = {
+                "sender": "KIINFO",
+                "route": "4",
+                "country": "91",
+                "sms": [
+                    {
+                        "message": f"{client} Your Service Status for {service_type} having Service no {service_number}"
+                                   f" is changed to {status}",
+                        "to": [
+                            client_no,
+                            "9922620357",
+                        ]
+                    }
+                ]
+            }
+            my_payload = json.dumps(payload)
+            print(my_payload)
+            headers = {
+                'authkey': "319771ADVdNvaEDkN5e525394P1",
+                'content-type': "application/json"
+            }
+            conn.request("POST", "/api/v2/sendsms", my_payload, headers)
+            res = conn.getresponse()
+            data = res.read()
+            print(data.decode("utf-8"))
             return redirect(to="service")
         return redirect(to='service_form')
