@@ -139,7 +139,7 @@ class EnquiryReport:
             enquiry_last_name=F('last_name'),
             enquiry_customer_type=F('customer_type__name'),
             enquiry_address=F('address'),
-            enquiry_handled_by=F('handled_by__name'),
+            enquiry_handled_by=F('create_user__first_name'),
             enq_type=F('enquiry_type__name'),
             enquiry_product_name=F('product_name'),
             enquiry_description=F('description'),

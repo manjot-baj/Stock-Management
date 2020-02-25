@@ -18,7 +18,6 @@ import json
 conn = http.client.HTTPSConnection("api.msg91.com")
 
 
-
 class OwnerRequiredMinxin(GroupRequiredMixin):
     OWNER_GROUP = "Owner"
     group_required = OWNER_GROUP
@@ -488,7 +487,7 @@ class Enquiry(DashboardLoginRequiredMixin, ListView):
 
         ).annotate(
             customer=F('customer_type__name'),
-            handled=F('handled_by__name'),
+            handled=F('create_user__first_name'),
             enquiry=F('enquiry_type__name'),
 
             enquiry_product_name=Coalesce('product_name', Value("-")),
@@ -524,7 +523,6 @@ class Enquiry(DashboardLoginRequiredMixin, ListView):
             last_name = form.cleaned_data.get('last_name')
             customer_type = form.cleaned_data.get('customer_type')
             address = form.cleaned_data.get('address')
-            handled_by = form.cleaned_data.get('handled_by')
             enquiry_type = form.cleaned_data.get('enquiry_type')
             product_name = form.cleaned_data.get('product_name')
             description = form.cleaned_data.get('description')
@@ -533,9 +531,8 @@ class Enquiry(DashboardLoginRequiredMixin, ListView):
             email_id = form.cleaned_data.get('email_id')
             enquiry.Enquiry.objects.create(
                 first_name=first_name, last_name=last_name, customer_type=customer_type, address=address,
-                handled_by=handled_by,
                 enquiry_type=enquiry_type, product_name=product_name, description=description, price=price,
-                mobile_no=mobile_no, email_id=email_id
+                mobile_no=mobile_no, email_id=email_id, create_user=request.user, write_user=request.user
             )
             return redirect(to='enquiry')
         return redirect(to='enquiry_form')
@@ -565,7 +562,7 @@ class EnquiryEdit(DashboardLoginRequiredMixin, ListView):
             last_name = editform.cleaned_data.get('last_name')
             customer_type = editform.cleaned_data.get('customer_type')
             address = editform.cleaned_data.get('address')
-            handled_by = editform.cleaned_data.get('handled_by')
+            # handled_by = editform.cleaned_data.get('handled_by')
             enquiry_type = editform.cleaned_data.get('enquiry_type')
             product_name = editform.cleaned_data.get('product_name')
             description = editform.cleaned_data.get('description')
@@ -574,9 +571,8 @@ class EnquiryEdit(DashboardLoginRequiredMixin, ListView):
             email_id = editform.cleaned_data.get('email_id')
             enquiry.Enquiry.objects.filter(pk=kwargs.get('object_id')).update(
                 first_name=first_name, last_name=last_name, customer_type=customer_type, address=address,
-                handled_by=handled_by,
                 enquiry_type=enquiry_type, product_name=product_name, description=description,
-                price=price, mobile_no=mobile_no, email_id=email_id,
+                price=price, mobile_no=mobile_no, email_id=email_id,create_user=request.user, write_user=request.user
             )
             return redirect(to='enquiry')
         return redirect(to='enquiry_edit_Form_template')
@@ -597,7 +593,8 @@ class EnquiryReply(DashboardLoginRequiredMixin, ListView):
             status = replyForm.cleaned_data.get('status')
             comments = replyForm.cleaned_data.get('comments')
             enquiry.EnquiryRecord.objects.create(
-                enquiryDetails_id=kwargs.get('object_id'), status=status, comments=comments
+                enquiryDetails_id=kwargs.get('object_id'), status=status, comments=comments,
+                create_user=request.user, write_user=request.user
             )
             return redirect(to='enquiry')
         return redirect(to='enquiry_form')
@@ -663,9 +660,10 @@ class DayBookView(OwnerRequiredMinxin, ListView):
             debit_total.append(data[i].get("dayBook_debit_amount"))
         credited = sum(credit_total)
         debited = sum(debit_total)
-        total = credited-debited
+        total = credited - debited
         print(total)
-        return render(request, self.data_template, {'data': data, 'credited': credited, 'debited': debited, 'total':total})
+        return render(request, self.data_template,
+                      {'data': data, 'credited': credited, 'debited': debited, 'total': total})
 
     def post(self, request, *args, **kwargs):
         if 'filterDate' in kwargs:
@@ -678,7 +676,8 @@ class DayBookView(OwnerRequiredMinxin, ListView):
                 debit_total.append(data.get('data')[i].get("dayBook_debit_amount"))
             credited = sum(credit_total)
             debited = sum(debit_total)
-            data.update({'credited': credited, 'debited': debited})
+            total = credited - debited
+            data.update({'credited': credited, 'debited': debited, 'total': total})
             return JsonResponse(data, safe=False)
         form = self.DayBookForm(request.POST)
         print(form.is_valid())

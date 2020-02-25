@@ -33,16 +33,16 @@ class Employee(BaseModel):
         from .utils import encode
         # post_str = encode()
         if self.pk is None:
-            usr_name = self.name.replace(" ", "")
-            res = super(Employee, self).save(force_insert=False, force_update=False, using=None, update_fields=None)
+            usr_name = self.name.replace(" ", "_")
             user_obj = User.objects.create_user(
-                username='USR_' + usr_name, password=None, is_staff=True, email=self.email_id,
+                username=usr_name, password='KI@123', is_staff=True, email=self.email_id,
                 first_name=self.name
             )
             user_data = list(User.objects.filter(username=user_obj).values('pk'))
             user_data[0].get('pk')
             print(user_data[0].get('pk'))
             self.user_id = user_data[0].get('pk')
+            res = super(Employee, self).save(force_insert=False, force_update=False, using=None, update_fields=None)
         else:
             res = super(Employee, self).save(force_insert=False, force_update=False, using=None, update_fields=None)
         return res

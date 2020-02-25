@@ -93,14 +93,13 @@ class VendorForm(forms.Form):
 class EnquiryForm(forms.ModelForm):
     class Meta:
         model = enquiry.Enquiry
-        fields = ['first_name', 'last_name', 'customer_type', 'address', 'handled_by', 'enquiry_type', 'product_name',
+        fields = ['first_name', 'last_name', 'customer_type', 'address', 'enquiry_type', 'product_name',
                   'description', 'price', 'mobile_no', 'email_id']
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'customer_type': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'address': forms.Textarea(attrs={'rows': 3, 'cols': 58, 'class': 'form-control form-control-sm'}),
-            'handled_by': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'enquiry_type': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'product_name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'description': forms.Textarea(attrs={'rows': 3, 'cols': 58, 'class': 'form-control form-control-sm'}),
@@ -113,14 +112,13 @@ class EnquiryForm(forms.ModelForm):
 class EnquiryEditForm(forms.ModelForm):
     class Meta:
         model = enquiry.Enquiry
-        fields = ['first_name', 'last_name', 'customer_type', 'address', 'handled_by', 'enquiry_type', 'product_name',
+        fields = ['first_name', 'last_name', 'customer_type', 'address', 'enquiry_type', 'product_name',
                   'description', 'price', 'mobile_no', 'email_id']
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'customer_type': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'address': forms.Textarea(attrs={'rows': 3, 'cols': 58, 'class': 'form-control form-control-sm'}),
-            'handled_by': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'enquiry_type': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'product_name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'description': forms.Textarea(attrs={'rows': 3, 'cols': 58, 'class': 'form-control form-control-sm'}),

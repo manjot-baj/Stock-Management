@@ -24,7 +24,6 @@ class Enquiry(BaseModel):
     customer_type = models.ForeignKey(CostumerType, on_delete=models.CASCADE, null=True, blank=False)
     address = models.TextField(max_length=200, null=True, blank=False, )
     enquiry_date = models.DateTimeField(default=timezone.now, null=True, blank=True)
-    handled_by = models.ForeignKey(Employee, on_delete=models.CASCADE, null=True, blank=False)
     enquiry_type = models.ForeignKey(EnquiryType, on_delete=models.CASCADE, null=True, blank=False)
 
     product_name = models.CharField(max_length=100, null=True, blank=True)
