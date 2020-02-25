@@ -14,6 +14,7 @@ from SM import enquiry, employee_data, service, dayBook, invoice
 from django.utils import timezone
 
 
+
 class OwnerRequiredMinxin(GroupRequiredMixin):
     OWNER_GROUP = "Owner"
     group_required = OWNER_GROUP
@@ -97,7 +98,8 @@ class ClientView(DashboardLoginRequiredMixin, ListView):
     model = Client
 
     def get_data(self):
-        data = self.model.objects.all().values('pk', 'name', 'contact_Name').annotate(
+        data = self.model.objects.all().values('pk', 'name').annotate(
+            client_contact_Name=Coalesce('contact_Name', Value("-")),
             client_TIN=Coalesce('TIN', Value("-")),
             client_email=Coalesce('email', Value("-")),
             client_phone=Coalesce('phone', Value("-")),
@@ -657,7 +659,9 @@ class DayBookView(OwnerRequiredMinxin, ListView):
             debit_total.append(data[i].get("dayBook_debit_amount"))
         credited = sum(credit_total)
         debited = sum(debit_total)
-        return render(request, self.data_template, {'data': data, 'credited': credited, 'debited': debited})
+        total = credited-debited
+        print(total)
+        return render(request, self.data_template, {'data': data, 'credited': credited, 'debited': debited, 'total':total})
 
     def post(self, request, *args, **kwargs):
         if 'filterDate' in kwargs:

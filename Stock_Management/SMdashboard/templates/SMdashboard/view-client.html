@@ -17,10 +17,10 @@
           <div class="col-4">
               <h6><strong>Name :&nbsp; &nbsp; {{client_name}}</strong></h6><br/>
 
-              {% if client_contact_Name == "" %}
-              <h6><strong>Contact Number:&nbsp; &nbsp; -</strong></h6><br/>
+              {% if client_contact_Name == "" or client_contact_Name == None %}
+              <h6><strong>Contact Name:&nbsp; &nbsp; -</strong></h6><br/>
               {% else %}
-              <h6><strong>Contact Number:&nbsp; &nbsp; {{client_contact_Name}}</strong></h6><br/>
+              <h6><strong>Contact Name:&nbsp; &nbsp; {{client_contact_Name}}</strong></h6><br/>
               {% endif %}
 
               {% if client_TIN == "" or client_TIN == None %}

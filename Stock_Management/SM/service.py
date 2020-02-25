@@ -35,7 +35,7 @@ class ServiceRecord(BaseModel):
     date = models.DateTimeField(default=timezone.now, null=True, blank=False)
     photo = models.ImageField(upload_to='uploads/', null=True, blank=False)
     status_type = (
-        ("Start", "start"),
+        ("Open", "open"),
         ("Pending", "pending"),
         ("On progress", "on progress"),
         ("Completed", "completed")

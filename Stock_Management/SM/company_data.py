@@ -53,10 +53,10 @@ class Vendor(BaseModel):
 
 class Client(BaseModel):
     name = models.CharField(max_length=100, null=True, blank=False)
-    contact_Name = models.CharField(max_length=100, null=True, blank=False)
+    contact_Name = models.CharField(max_length=100, null=True, blank=True)
     TIN = models.CharField(max_length=100, null=True, blank=True)
     email = models.CharField(max_length=100, null=True, blank=True)
-    phone = models.CharField(max_length=100, null=True, blank=True)
+    phone = models.CharField(max_length=100, null=True, blank=False)
     billing_address = models.CharField(max_length=100, null=True, blank=True)
     billing_zip = models.CharField(max_length=100, null=True, blank=True)
     billing_city = models.CharField(max_length=100, null=True, blank=True)
@@ -74,3 +74,4 @@ class Client(BaseModel):
 
     def __str__(self):
         return self.name
+
