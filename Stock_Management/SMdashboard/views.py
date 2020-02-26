@@ -885,6 +885,7 @@ class EmployeeEdit(OwnerRequiredMinxin, ListView):
             job_description = form.cleaned_data.get('job_description')
 
             employee_data.Employee.objects.filter(pk=kwargs.get('object_id')).update(
+
                 join_date=join_date, name=name, address=address, city=city, state=state, pin_code=pin_code,
                 country=country, mobile_no=mobile_no, email_id=email_id, qualification=qualification, type=type,
                 job_profile=job_profile, job_description=job_description,

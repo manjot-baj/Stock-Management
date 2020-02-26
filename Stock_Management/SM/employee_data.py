@@ -5,7 +5,7 @@ from .models import BaseModel
 
 class Employee(BaseModel):
     id = models.AutoField(primary_key=True)
-    photo = models.ImageField(null=True, blank=False)
+    photo = models.ImageField(default='/uploads/avatar-icon-male-person-symbol-circle-user-vector-20924449.jpg')
     join_date = models.DateField(null=True, blank=False)
     name = models.CharField(max_length=100, null=True, blank=False)
     address = models.TextField(max_length=200, null=True, blank=False)
