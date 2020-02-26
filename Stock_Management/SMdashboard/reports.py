@@ -2,8 +2,9 @@ from django.db.models import CharField, ExpressionWrapper, F, Func, Prefetch, Q
 from django.db.models import Value as V
 from django.db.models.functions import Cast, Concat, Coalesce
 from django.shortcuts import redirect
-from SM.company_data import Client, Vendor
+from SM.company_data import Client, Vendor, CompanyDetail
 from SM import employee_data, enquiry, invoice, service, dayBook
+from wkhtmltopdf.views import PDFTemplateResponse, PDFTemplateView
 
 
 class ClientReport:
@@ -134,6 +135,7 @@ class EnquiryReport:
 
     def get_data(self, request, enquiry_id=None):
         data = {}
+
         record = enquiry.Enquiry.objects.filter(pk=enquiry_id).annotate(
             enquiry_first_name=F('first_name'),
             enquiry_last_name=F('last_name'),
@@ -166,9 +168,8 @@ class EnquiryReport:
                 'enquiry_price': each.enquiry_price,
                 'enquiry_mobile_no': each.enquiry_mobile_no,
                 'enquiry_email_id': each.enquiry_email_id,
-
             })
-            # print(data)
+            print(data)
         return data
 
     def get_data_Reply(self, request, enquiry_id=None):
@@ -228,10 +229,61 @@ class ProductReport:
         return data
 
 
+class ServiceReportInvoice:
+
+    def get_data(self, request, service_id=None):
+        data = {}
+        company_info = CompanyDetail.objects.all().values('name').annotate(
+            company_address=Concat(
+                F('address'), V(', '), F('city'), V(',\n'),
+                F('state'), V(', '),
+                F('pin_code'), V(', '), F('country'),
+                V(',\n'), F('phone'), V(',\n'), F('email_id'),
+                V(',\n'), F('website'),
+                output_field=CharField())
+        )
+        service_records = service.ServiceRecord.objects.filter(service_number_id=service_id).annotate(
+            replyService_service_number=F('service_number__service_number'),
+        )
+        record = service.Service.objects.filter(pk=service_id).annotate(
+            number=F('service_number'),
+            service_date=F('date'),
+            service_client=F('client__name'),
+            service_description=F('description'),
+            service_name=F('service_type__name'),
+        ).prefetch_related(Prefetch('servicerecord_set', queryset=service_records,
+                                    to_attr='service_records'))
+        print(record)
+
+        for each in record:
+            data.update({
+                'pk': each.pk,
+                'number': each.number,
+                'service_date': each.service_date,
+                'service_client': each.service_client,
+                'service_description': each.service_description,
+                'service_name': each.service_name,
+                'service_photo': each.photo.url,
+                'service_records': [{'date': line.date,
+                                     'status': line.status,
+                                     'comment': line.comment, 'photo': line.photo.url} for line in
+                                    each.service_records]
+            })
+        for each in company_info:
+            # print(each.get('company_address'))
+            data.update({
+                'company_name': each.get('name'),
+                'company_address': each.get('company_address'),
+            })
+        print(data)
+        return data
+
+
 class ServiceReport:
 
     def get_data(self, request, service_id=None):
         data = {}
+
         record = service.Service.objects.filter(pk=service_id).annotate(
             number=F('service_number'),
             service_date=F('date'),

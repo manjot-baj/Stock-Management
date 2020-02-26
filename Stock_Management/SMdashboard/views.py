@@ -1,9 +1,9 @@
-from django.db.models.functions import Coalesce
+from django.db.models.functions import Coalesce, Concat
 from braces.views import GroupRequiredMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
-from SM.company_data import Client, Vendor
+from SM.company_data import Client, Vendor, CompanyDetail
 import xlrd
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, View
@@ -31,8 +31,19 @@ class Dashboard(View):
     dashboard_template = 'SMdashboard/dashboard.html'
 
     def dashboard_info(self, request):
+        company_info = CompanyDetail.objects.all().values('pk', 'name').annotate(
+
+            company_address=Concat(
+                F('address'), Value(', '), F('city'), Value(', '),
+                F('state'), Value(', '),
+                F('pin_code'), Value(', '), F('country'),
+                Value(', '), F('phone'), Value(', '),  F('email_id'),
+                Value(', '), F('website'),
+                output_field=CharField())
+        )
+        company = list(company_info)
         client_info = Client.objects.all().count()
-        context = {"client": client_info}
+        context = {"client": client_info, "company": company[0]}
         vendor_info = Vendor.objects.all().count()
         context.update({"vendor": vendor_info})
         employee_info = employee_data.Employee.objects.all().count()
@@ -399,7 +410,6 @@ class VendorView(OwnerRequiredMinxin, ListView):
         ).order_by("-pk")
         return list(data)
 
-
     def get(self, request, *args, **kwargs):
         if 'vendor_form' in kwargs:
             return render(request, self.form_template, {'form': self.form})
@@ -485,6 +495,7 @@ class VendorView(OwnerRequiredMinxin, ListView):
                                                  details=private_details[i], GSTIN=gstin[i])
             return redirect(to='vendor_data')
         return redirect(to='new_vendor')
+
 
 class VendorAdd(OwnerRequiredMinxin, ListView):
     from .forms import VendorAddForm
@@ -901,6 +912,7 @@ class Service(View):
     detailed_view = 'SMdashboard/view-service.html'
     serviceForm_template = 'SMdashboard/service_form.html'
     serviceForm_table = 'SMdashboard/table-service.html'
+    service_invoice = 'SMdashboard/Service_Invoice.html'
 
     def get_data(self):
         data = self.model.objects.all().values(
@@ -917,6 +929,11 @@ class Service(View):
     def get(self, request, *args, **kwargs):
         if 'service_form' in kwargs:
             return render(request, self.serviceForm_template, {'service': self.form()})
+        elif 'service_id' in kwargs:
+            from .reports import ServiceReportInvoice
+            invoice_data = ServiceReportInvoice().get_data(request, service_id=kwargs.get('service_id'))
+            print(invoice_data)
+            return render(request, self.service_invoice, {"invoice_data": invoice_data})
         elif 'object_id' in kwargs:
             from .reports import ServiceReport
             data = ServiceReport().get_data(request, service_id=kwargs.get('object_id'))
