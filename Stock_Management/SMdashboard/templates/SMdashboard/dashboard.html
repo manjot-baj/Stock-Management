@@ -11,6 +11,58 @@
 
 </div>
 <div class="row">
+    {% if request.user|is_owner %}
+    <div class="col-md-6 col-lg-3">
+        <a href="{% url 'daybook' %}">
+        <div class="widget-small info coloured-icon"><i class="icon fa fa-rupee fa-3x"></i>
+            <div class="info">
+                <h4>Total Credit Amount</h4>
+                <p><b>{{credited}}</b></p>
+            </div>
+        </div>
+        </a>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <a href="{% url 'daybook' %}">
+        <div class="widget-small info coloured-icon"><i class="icon fa fa-rupee fa-3x"></i>
+            <div class="info">
+                <h4>Total Debit Amount</h4>
+                <p><b>{{debited}}</b></p>
+            </div>
+        </div>
+        </a>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <a href="{% url 'daybook' %}">
+        <div class="widget-small info coloured-icon"><i class="icon fa fa-rupee fa-3x"></i>
+            <div class="info">
+                <h4>Cash in Hand</h4>
+                <p><b>{{total}}</b></p>
+            </div>
+        </div>
+        </a>
+    </div>
+    {% endif %}
+    <div class="col-md-6 col-lg-3">
+        <a href="{% url 'enquiry' %}">
+        <div class="widget-small primary coloured-icon"><i class="icon fa fa-question-circle fa-3x"></i>
+            <div class="info">
+                <h4>Total Enquiries</h4>
+                <p><b>{{enquiry}}</b></p>
+            </div>
+        </div>
+        </a>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <a href="{% url 'service' %}">
+        <div class="widget-small primary coloured-icon"><i class="icon fa fa-briefcase fa-3x"></i>
+            <div class="info">
+                <h4>Total Services</h4>
+                <p><b>{{service}}</b></p>
+            </div>
+        </div>
+        </a>
+    </div>
     <div class="col-md-6 col-lg-3">
         <a href="{% url 'client_data' %}">
         <div class="widget-small primary coloured-icon"><i class="icon fa fa-user fa-3x"></i>
@@ -59,48 +111,7 @@
         </div>
         </a>
     </div>
-    {% if request.user|is_owner %}
-    <div class="col-md-6 col-lg-3">
-        <a href="{% url 'daybook' %}">
-        <div class="widget-small info coloured-icon"><i class="icon fa fa-rupee fa-3x"></i>
-            <div class="info">
-                <h4>Total Credit Amount</h4>
-                <p><b>{{credited}}</b></p>
-            </div>
-        </div>
-        </a>
-    </div>
-    <div class="col-md-6 col-lg-3">
-        <a href="{% url 'daybook' %}">
-        <div class="widget-small info coloured-icon"><i class="icon fa fa-rupee fa-3x"></i>
-            <div class="info">
-                <h4>Total Debit Amount</h4>
-                <p><b>{{debited}}</b></p>
-            </div>
-        </div>
-        </a>
-    </div>
-    {% endif %}
-    <div class="col-md-6 col-lg-3">
-        <a href="{% url 'enquiry' %}">
-        <div class="widget-small primary coloured-icon"><i class="icon fa fa-question-circle fa-3x"></i>
-            <div class="info">
-                <h4>Total Enquiries</h4>
-                <p><b>{{enquiry}}</b></p>
-            </div>
-        </div>
-        </a>
-    </div>
-    <div class="col-md-6 col-lg-3">
-        <a href="{% url 'service' %}">
-        <div class="widget-small primary coloured-icon"><i class="icon fa fa-briefcase fa-3x"></i>
-            <div class="info">
-                <h4>Total Services</h4>
-                <p><b>{{service}}</b></p>
-            </div>
-        </div>
-        </a>
-    </div>
+
 </div>
 <!--<div class="row">-->
 <!--    <div class="col-md-6">-->
