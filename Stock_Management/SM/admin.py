@@ -7,7 +7,9 @@ from .invoice import *
 from .amc import *
 from .employee_data import *
 from .service import *
-
+from django.urls import path, reverse
+from django.utils.html import format_html
+from SMdashboard import reports
 admin.site.site_header = 'Storeck'
 admin.site.site_title = 'Storeck'
 admin.site.index_title = 'Storeck Administration'
@@ -15,7 +17,7 @@ admin.site.index_title = 'Storeck Administration'
 
 @admin.register(CompanyDetail)
 class CompanyDetailAdmin(admin.ModelAdmin):
-    list_display = ['name', 'country', 'name', 'address', 'city', 'state', 'pin_code', 'phone',
+    list_display = ['name', 'country', 'address', 'city', 'state', 'pin_code', 'phone',
                     'email_id', 'website', 'GSTIN', 'taxation_type', 'tax_inclusive', 'TIN', 'VAT', 'service_tax_no',
                     'CST_tin_no', 'PAN', 'additional_details', 'currency']
     list_filter = ['name']
