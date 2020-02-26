@@ -374,13 +374,27 @@ class VendorView(OwnerRequiredMinxin, ListView):
     model = Vendor
 
     def get_data(self):
-        data = self.model.objects.all().values('pk', 'name', 'contact_Name', 'TIN', 'email', 'phone',
-                                               'billing_address', 'billing_zip', 'billing_city',
-                                               'billing_state', 'billing_country',
-                                               'shipping_address', 'shipping_zip', 'shipping_city',
-                                               'shipping_state', 'shipping_country', 'details',
-                                               'GSTIN').order_by("-pk")
+        data = self.model.objects.all().values('pk', 'name').annotate(
+            vendor_contact_Name=Coalesce('contact_Name', Value("-")),
+            vendor_TIN=Coalesce('TIN', Value("-")),
+            vendor_email=Coalesce('email', Value("-")),
+            vendor_phone=Coalesce('phone', Value("-")),
+            vendor_billing_address=Coalesce('billing_address', Value("-")),
+            vendor_billing_zip=Coalesce('billing_zip', Value("-")),
+            vendor_billing_city=Coalesce('billing_city', Value("-")),
+            vendor_billing_state=Coalesce('billing_state', Value("-")),
+            vendor_billing_country=Coalesce('billing_country', Value("-")),
+            vendor_shipping_address=Coalesce('shipping_address', Value("-")),
+            vendor_shipping_zip=Coalesce('shipping_zip', Value("-")),
+            vendor_shipping_city=Coalesce('shipping_city', Value("-")),
+            vendor_shipping_state=Coalesce('shipping_state', Value("-")),
+            vendor_shipping_country=Coalesce('shipping_country', Value("-")),
+            vendor_details=Coalesce('details', Value("-")),
+            vendor_GSTIN=Coalesce('GSTIN', Value("-")),
+
+        ).order_by("-pk")
         return list(data)
+
 
     def get(self, request, *args, **kwargs):
         if 'vendor_form' in kwargs:
@@ -467,6 +481,54 @@ class VendorView(OwnerRequiredMinxin, ListView):
                                                  details=private_details[i], GSTIN=gstin[i])
             return redirect(to='vendor_data')
         return redirect(to='new_vendor')
+
+class VendorAdd(OwnerRequiredMinxin, ListView):
+    from .forms import VendorAddForm
+
+    # dashboard_template = 'SMdashboard/dashboard.html'
+    # data_template = 'SMdashboard/client-table.html'
+    form_template = 'SMdashboard/vendorform-fill.html'
+    # detailed_view = 'SMdashboard/view-client.html'
+    form = VendorAddForm
+    model = Vendor
+
+    def get(self, request, *args, **kwargs):
+        if 'vendor_form_fill' in kwargs:
+            return render(request, self.form_template, {'form': self.form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form(request.POST)
+        print(form.is_valid())
+        if form.is_valid():
+            name = form.cleaned_data.get('name')
+            contact_Name = form.cleaned_data.get('contact_Name')
+            TIN = form.cleaned_data.get('TIN')
+            email = form.cleaned_data.get('email')
+            phone = form.cleaned_data.get('phone')
+            billing_address = form.cleaned_data.get('billing_address')
+            billing_zip = form.cleaned_data.get('billing_zip')
+            billing_city = form.cleaned_data.get('billing_city')
+            billing_state = form.cleaned_data.get('billing_state')
+            billing_country = form.cleaned_data.get('billing_country')
+            shipping_address = form.cleaned_data.get('shipping_address')
+            shipping_zip = form.cleaned_data.get('shipping_zip')
+            shipping_city = form.cleaned_data.get('shipping_city')
+            shipping_state = form.cleaned_data.get('shipping_state')
+            shipping_country = form.cleaned_data.get('shipping_country')
+            details = form.cleaned_data.get('details')
+            GSTIN = form.cleaned_data.get('GSTIN')
+
+            Vendor.objects.create(
+                name=name, contact_Name=contact_Name, TIN=TIN, email=email, phone=phone,
+                billing_address=billing_address,
+                billing_zip=billing_zip, billing_city=billing_city, billing_state=billing_state,
+                billing_country=billing_country,
+                shipping_address=shipping_address, shipping_zip=shipping_zip, shipping_city=shipping_city,
+                shipping_state=shipping_state, shipping_country=shipping_country, details=details, GSTIN=GSTIN,
+
+            )
+            return redirect(to='vendor_data')
+        return redirect(to='new_vendor_add')
 
 
 class Enquiry(DashboardLoginRequiredMixin, ListView):

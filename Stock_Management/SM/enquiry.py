@@ -20,7 +20,7 @@ class EnquiryType(BaseModel):
 
 class Enquiry(BaseModel):
     first_name = models.CharField(max_length=100, null=True, blank=False, )
-    last_name = models.CharField(max_length=100, null=True, blank=False, )
+    last_name = models.CharField(max_length=100, null=True, blank=True, )
     customer_type = models.ForeignKey(CostumerType, on_delete=models.CASCADE, null=True, blank=False)
     address = models.TextField(max_length=200, null=True, blank=False, )
     enquiry_date = models.DateTimeField(default=timezone.now, null=True, blank=True)

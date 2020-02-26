@@ -89,6 +89,37 @@ class VendorForm(forms.Form):
         else:
             return input_excel
 
+class VendorAddForm(forms.ModelForm):
+    class Meta:
+        model = company_data.Vendor
+
+        fields = [
+            'name', 'contact_Name', 'TIN', 'email', 'phone', 'billing_address', 'billing_zip', 'billing_city',
+            'billing_state', 'billing_country', 'shipping_address', 'shipping_zip', 'shipping_city', 'shipping_state',
+            'shipping_country', 'details', 'GSTIN'
+        ]
+
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'contact_Name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'TIN': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'email': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'billing_address': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'billing_zip': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'billing_city': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'billing_state': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'billing_country': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'shipping_address': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'shipping_zip': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'shipping_city': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'shipping_state': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'shipping_country': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'details': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'GSTIN': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+        }
+
+
 
 class EnquiryForm(forms.ModelForm):
     class Meta:

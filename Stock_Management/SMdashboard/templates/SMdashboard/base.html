@@ -125,9 +125,9 @@
             <i class="treeview-indicator fa fa-angle-right"></i></a>
             <ul class="treeview-menu">
                 <li><a class="treeview-item" href="{% url 'new_client_add' %}"><i class="icon fa fa-circle-o"></i>
-                    Add Client By Form</a></li>
+                    Add Client Manually</a></li>
                 <li><a class="treeview-item" href="{% url 'new_client' %}"><i class="icon fa fa-circle-o"></i>
-                    Add Client</a></li>
+                    Add Client Bulk</a></li>
                 <li><a class="treeview-item" href="{% url 'client_data' %}"><i class="icon fa fa-circle-o"></i>Clients</a></li>
             </ul>
         </li>
@@ -136,8 +136,10 @@
             <i class="app-menu__icon fa fa-users" aria-hidden="true"></i><span class="app-menu__label">Vendor</span>
             <i class="treeview-indicator fa fa-angle-right"></i></a>
             <ul class="treeview-menu">
+                <li><a class="treeview-item" href="{% url 'new_vendor_add' %}"><i class="icon fa fa-circle-o"></i>
+                    Add Vendor Manually</a></li>
                 <li><a class="treeview-item" href="{% url 'new_vendor' %}"><i class="icon fa fa-circle-o"></i>
-                    Add Vendor</a></li>
+                    Add Vendor Bulk</a></li>
                 <li><a class="treeview-item" href="{% url 'vendor_data' %}"><i class="icon fa fa-circle-o"></i>Vendors</a></li>
             </ul>
         </li>

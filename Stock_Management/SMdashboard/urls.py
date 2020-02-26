@@ -13,6 +13,7 @@ urlpatterns = [
                   path('viewclient/<int:object_id>', views.ClientView.as_view(), name="viewclient"),
                   path('vendor_data/', views.VendorView.as_view(), name="vendor_data"),
                   path('new_vendor/', views.VendorView.as_view(), {'vendor_form': ''}, name="new_vendor"),
+                  path('new_vendor_add/', views.VendorAdd.as_view(), {'vendor_form_fill': ''}, name="new_vendor_add"),
                   path('viewvendor/<int:object_id>', views.VendorView.as_view(), name="viewvendor"),
                   path('enquiry_form/', views.Enquiry.as_view(), {'enquiry_form': ''}, name="enquiry_form"),
                   path('enquiry/', views.Enquiry.as_view(), name="enquiry"),
