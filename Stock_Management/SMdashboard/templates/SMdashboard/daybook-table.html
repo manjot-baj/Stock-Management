@@ -53,12 +53,36 @@
 {{ block.super }}
 <!-- Page specific javascripts-->
 <!-- Data table plugin-->
+<link rel="stylesheet" type="text/css"
+      href="{% static 'SMdashboard/datatables/select/1.3.1/css/select.bootstrap4.min.css' %}"/>
+<link rel="stylesheet" type="text/css"
+      href="{% static 'SMdashboard/datatables/buttons/1.6.0/css/buttons.bootstrap4.min.css' %}"/>
+
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+
+<script src="{% static 'SMdashboard/datatables/1.10.20/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'SMdashboard/datatables/1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'SMdashboard/datatables/buttons/1.6.0/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'SMdashboard/datatables/buttons/1.6.0/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'SMdashboard/cloudflare/ajax/libs/jszip/3.1.3/jszip.min.js' %}"></script>
+<script src="{% static 'SMdashboard/cloudflare/ajax/libs/pdfmake/0.1.53/pdfmake.min.js' %}"></script>
+<script src="{% static 'SMdashboard/cloudflare/ajax/libs/pdfmake/0.1.53/vfs_fonts.js' %}"></script>
+<script src="{% static 'SMdashboard/datatables/buttons/1.6.0/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'SMdashboard/datatables/buttons/1.6.0/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'SMdashboard/datatables/select/1.3.1/js/dataTables.select.min.js' %}"></script>
+<script src="{% static 'SMdashboard/datatables/plug-ins/1.10.20/api/sum().js' %}"></script>
+<script type="text/javascript" src="{% static 'SMdashboard/js/plugins/sweetalert.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'SMdashboard/js/plugins/bootstrap-datepicker.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'SMdashboard/js/plugins/jquery.dataTables.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'SMdashboard/js/plugins/dataTables.bootstrap.min.js' %}"></script>
+
+
+<link rel="stylesheet" href="{% static 'SMdashboard/cloudflare/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css' %}">
+<link rel="stylesheet" href="{% static 'SMdashboard/datatables/1.10.20/css/dataTables.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'SMdashboard/datatables/buttons/1.6.0/css/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'SMdashboard/datatables/select/1.3.1/css/select.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'SMdashboard/css/main.css' %}">
+
 <script type="text/javascript">
 var table = $('#sampleTable').DataTable({
   columns: [
@@ -67,6 +91,45 @@ var table = $('#sampleTable').DataTable({
   { data: "customer_type"},
   {data:"dayBook_credit_amount"},
   {data:"dayBook_debit_amount"},
+  ],
+ dom: "<'row'"+
+                "<'col-sm-4 col-md-4'l>"+
+                "<'col-sm-4 col-md-4 text-center'B>"+
+                "<'col-sm-4 col-md-4'f>"+
+             ">"+
+             "<'row dt-table'"+
+                "<'col-sm-12 col-md-12'tr>"+
+             ">"+
+             "<'row'"+
+                "<'col-sm-12 col-md-5'i>"+
+                "<'col-sm-12 col-md-7'p>"+
+             ">",
+  buttons: [
+		    {
+                extend: 'collection',
+                text: '<i class="fa fa-print" aria-hidden="true"></i>Print',
+                buttons: [
+                             {
+                                extend: 'pdf',
+                                footer: true,
+                                text: '<i class="fa fa-file-pdf-o" aria-hidden="true"></i>pdf'
+                            },
+                            {
+                                extend: 'excel',
+                                footer: true,
+                                text: '<i class="fa fa-file-excel-o" aria-hidden="true"></i>excel'
+
+                            },
+                  ]
+            },
+            {
+				text: '<i class="fa fa-plus" aria-hidden="true"></i>Add',
+				titleAttr: 'Add',
+				action: function () {
+				console.log(window.location.host)
+				$(location).attr('href','http://'+window.location.host+'{% url 'daybook_form'%}')
+				}
+			},
   ],
 
    columnDefs: [

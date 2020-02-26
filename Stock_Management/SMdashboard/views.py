@@ -14,12 +14,13 @@ from SM import enquiry, employee_data, service, dayBook, invoice
 from django.utils import timezone
 import http.client
 import json
+import datetime
 
 conn = http.client.HTTPSConnection("api.msg91.com")
+OWNER_GROUP = "Owner"
 
 
 class OwnerRequiredMinxin(GroupRequiredMixin):
-    OWNER_GROUP = "Owner"
     group_required = OWNER_GROUP
     login_url = 'login'
 
@@ -38,7 +39,9 @@ class Dashboard(View):
         context.update({"employee": employee_info})
         product_info = invoice.Product.objects.all().count()
         context.update({"product": product_info})
-        dayBook_data = dayBook.DayBook.objects.all().values('pk').annotate(
+        today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+        today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+        dayBook_data = dayBook.DayBook.objects.filter(date__range=(today_min, today_max)).values('pk').annotate(
             dayBook_date=ExpressionWrapper(Func(F('date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
                                            output_field=CharField()),
             dayBook_credit_amount=ExpressionWrapper(
@@ -54,7 +57,8 @@ class Dashboard(View):
             debit_total.append(dayBook_data_list[i].get("dayBook_debit_amount"))
         credited = sum(credit_total)
         debited = sum(debit_total)
-        context.update({'credited': credited, 'debited': debited})
+        total = credited - debited
+        context.update({'credited': credited, 'debited': debited, 'total': total})
         enquiry_info = enquiry.Enquiry.objects.all().count()
         context.update({"enquiry": enquiry_info})
         service_info = service.Service.objects.all().count()
@@ -541,9 +545,27 @@ class Enquiry(DashboardLoginRequiredMixin, ListView):
 
     model = enquiry.Enquiry
 
-    def get_data(self):
+    def get_data(self, request, *args, **kwargs):
+        if request.user.groups.filter(name=OWNER_GROUP).exists():
+            data = self.model.objects.all().values(
+                'first_name', 'last_name', 'mobile_no',
+                'address', 'pk',
 
-        data = self.model.objects.all().values(
+            ).annotate(
+                customer=F('customer_type__name'),
+                handled=F('create_user__first_name'),
+                enquiry=F('enquiry_type__name'),
+
+                enquiry_product_name=Coalesce('product_name', Value("-")),
+                enquiry_description=Coalesce('description', Value("-")),
+                enquiry_price=Coalesce('price', Value("-")),
+                enquiry_email_id=Coalesce('email_id', Value("-")),
+                date=ExpressionWrapper(Func(F('enquiry_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                       output_field=CharField()),
+            ).order_by("-date")
+            return list(data)
+
+        data = self.model.objects.filter(create_user_id=request.user).values(
             'first_name', 'last_name', 'mobile_no',
             'address', 'pk',
 
@@ -572,7 +594,7 @@ class Enquiry(DashboardLoginRequiredMixin, ListView):
             template = self.detailed_template_view
             return render(request, template, {"data": data, "data_list": data1})  # data
 
-        data = self.get_data()
+        data = self.get_data(request)
         print(data)
         return render(request, self.enquiryForm_table, {'data': data})
 
@@ -634,7 +656,7 @@ class EnquiryEdit(DashboardLoginRequiredMixin, ListView):
             enquiry.Enquiry.objects.filter(pk=kwargs.get('object_id')).update(
                 first_name=first_name, last_name=last_name, customer_type=customer_type, address=address,
                 enquiry_type=enquiry_type, product_name=product_name, description=description,
-                price=price, mobile_no=mobile_no, email_id=email_id,create_user=request.user, write_user=request.user
+                price=price, mobile_no=mobile_no, email_id=email_id, create_user=request.user, write_user=request.user
             )
             return redirect(to='enquiry')
         return redirect(to='enquiry_edit_Form_template')
