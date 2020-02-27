@@ -4,7 +4,7 @@ from django.db.models.functions import Cast, Concat, Coalesce
 from django.shortcuts import redirect
 from SM.company_data import Client, Vendor, CompanyDetail
 from SM import employee_data, enquiry, invoice, service, dayBook
-from wkhtmltopdf.views import PDFTemplateResponse, PDFTemplateView
+
 
 
 class ClientReport:
