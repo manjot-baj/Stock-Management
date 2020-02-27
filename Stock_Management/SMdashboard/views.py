@@ -914,7 +914,7 @@ class Service(View):
     detailed_view = 'SMdashboard/view-service.html'
     serviceForm_template = 'SMdashboard/service_form.html'
     serviceForm_table = 'SMdashboard/table-service.html'
-    service_invoice = 'SMdashboard/Service_Invoice.html'
+    service_invoice = 'SMdashboard/ServiceInvoicePrint.html'
 
     def get_data(self):
         data = self.model.objects.all().values(
