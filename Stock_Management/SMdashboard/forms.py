@@ -246,7 +246,7 @@ class ServiceForm(forms.ModelForm):
 
         widgets = {
             'service_number': forms.HiddenInput(attrs={'class': 'form-control-sm'}),
-            'date': forms.widgets.DateInput(attrs={'type': 'date', 'class': 'form-control form-control-sm'}),
+            'date': forms.HiddenInput(attrs={'class': 'form-control-sm'}),
             'client': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'service_type': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'description': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control form-control-sm'}),
@@ -262,7 +262,7 @@ class ServiceEditForm(forms.ModelForm):
 
         widgets = {
             'service_number': forms.HiddenInput(attrs={'class': 'form-control-sm'}),
-            'date': forms.widgets.DateInput(attrs={'type': 'date', 'class': 'form-control form-control-sm'}),
+            'date': forms.HiddenInput(attrs={'class': 'form-control-sm'}),
             'client': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'service_type': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'description': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control form-control-sm'}),

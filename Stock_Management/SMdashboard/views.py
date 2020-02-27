@@ -37,7 +37,7 @@ class Dashboard(View):
                 F('address'), Value(', '), F('city'), Value(', '),
                 F('state'), Value(', '),
                 F('pin_code'), Value(', '), F('country'),
-                Value(', '), F('phone'), Value(', '),  F('email_id'),
+                Value(', '), F('phone'), Value(', '), F('email_id'),
                 Value(', '), F('website'),
                 output_field=CharField())
         )
@@ -961,8 +961,9 @@ class Service(View):
                 description=description, photo=photo
             )
             my_client_data = list(service.Service.objects.filter(client=client).values('pk').annotate(
-                phone=F('client__phone')
+                phone=F('client__phone'),
             ))
+            print(my_client_data)
             client_no = my_client_data[0].get('phone')
             payload = {
                 "sender": "KIINFO",
@@ -970,8 +971,9 @@ class Service(View):
                 "country": "91",
                 "sms": [
                     {
-                        "message": f"{client} Your Service number for {service_type} is {service_number} "
-                                   f"generated on {date}",
+                        "message": f"Dear {client},\n Your Service number for {service_type} is {service_number} "
+                                   f"generated on {date} \n Thanks and Regards,\n Kalpesh Infotech\n"
+                                   f"[www.kalpeshinfotech.com]",
                         "to": [
                             client_no,
                             "9922620357",
@@ -1053,18 +1055,16 @@ class ServiceReply(View):
             service_type = my_client_data[0].get('service_type')
             client_no = my_client_data[0].get('phone')
             client = my_client_data[0].get('client')
-            # print(service_number)
-            # print(service_type)
-            # print(client_no)
-            # print(client)
             payload = {
                 "sender": "KIINFO",
                 "route": "4",
                 "country": "91",
                 "sms": [
                     {
-                        "message": f"{client} Your Service Status for {service_type} having Service no {service_number}"
-                                   f" is changed to {status}",
+                        "message": f"Dear {client},\n Your Service Status for {service_type} having Service no "
+                                   f"{service_number}"
+                                   f" is changed to {status} on \n {datetime.datetime.now()}\n Thanks and Regards,\n"
+                                   f"Kalpesh Infotech\n[www.kalpeshinfotech.com]",
                         "to": [
                             client_no,
                             "9922620357",
