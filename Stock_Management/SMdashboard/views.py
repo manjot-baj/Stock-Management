@@ -43,7 +43,7 @@ class Dashboard(View):
         )
         company = list(company_info)
         client_info = Client.objects.all().count()
-        context = {"client": client_info, "company": company[0]}
+        context = {"client": client_info}
         vendor_info = Vendor.objects.all().count()
         context.update({"vendor": vendor_info})
         employee_info = employee_data.Employee.objects.all().count()
@@ -74,6 +74,8 @@ class Dashboard(View):
         context.update({"enquiry": enquiry_info})
         service_info = service.Service.objects.all().count()
         context.update({"service": service_info})
+        if not len(company) == 0:
+            context.update({"company": company[0]})
         print(context)
         # print(timezone.now().time())
         return context

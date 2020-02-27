@@ -4,10 +4,17 @@
 {% load sm_tags %}
 {{ block.super }}
 <div class="app-title">
+    {% if company.name %}
     <div>
         <h1><i class="fa fa-dashboard"></i> {{company.name}}</h1>
         <p>{{company.company_address}}</p>
     </div>
+    {% else %}
+    <div>
+        <h1><i class="fa fa-dashboard"></i> Dashboard</h1>
+        <p>Storeck Dashboard</p>
+    </div>
+    {% endif %}
 
 </div>
 <div class="row">
