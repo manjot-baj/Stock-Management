@@ -958,7 +958,7 @@ class Service(View):
             photo = form.cleaned_data.get('photo')
             service.Service.objects.create(
                 service_number=service_number, date=date, client=client, service_type=service_type,
-                description=description, photo=photo
+                description=description, photo=photo, create_user=request.user, write_user=request.user
             )
             my_client_data = list(service.Service.objects.filter(client=client).values('pk').annotate(
                 phone=F('client__phone'),
@@ -1019,7 +1019,7 @@ class ServiceEdit(View):
 
             service.Service.objects.filter(pk=kwargs.get('object_id')).update(
                 service_number=service_number, date=date, client=client, service_type=service_type,
-                description=description
+                description=description, create_user=request.user, write_user=request.user
             )
         return redirect(to="service")
 
@@ -1042,7 +1042,8 @@ class ServiceReply(View):
             status = replyForm.cleaned_data.get('status')
             comment = replyForm.cleaned_data.get('comment')
             service.ServiceRecord.objects.create(service_number_id=kwargs.get('object_id'),
-                                                 photo=photo, status=status, comment=comment)
+                                                 photo=photo, status=status, comment=comment,
+                                                 create_user=request.user, write_user=request.user)
             my_client_data = list(service.ServiceRecord.objects.filter(
                 service_number_id=kwargs.get('object_id')).values('pk').annotate(
                 client=F('service_number__client__name'),

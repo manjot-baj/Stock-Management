@@ -243,6 +243,7 @@ class ServiceReportInvoice:
         )
         service_records = service.ServiceRecord.objects.filter(service_number_id=service_id).annotate(
             replyService_service_number=F('service_number__service_number'),
+            service_by=F('create_user__first_name')
         )
         record = service.Service.objects.filter(pk=service_id).annotate(
             number=F('service_number'),
@@ -250,6 +251,7 @@ class ServiceReportInvoice:
             service_client=F('client__name'),
             service_description=F('description'),
             service_name=F('service_type__name'),
+            service_by=F('create_user__first_name')
         ).prefetch_related(Prefetch('servicerecord_set', queryset=service_records,
                                     to_attr='service_records'))
         print(record)
@@ -263,16 +265,18 @@ class ServiceReportInvoice:
                 'service_description': each.service_description,
                 'service_name': each.service_name,
                 'service_photo': each.photo.url,
+                'service_by': each.service_by,
                 'service_records': [{'date': line.date,
                                      'status': line.status,
-                                     'comment': line.comment, 'photo': line.photo.url} for line in
+                                     'comment': line.comment, 'photo': line.photo.url,
+                                     'service_by': line.service_by} for line in
                                     each.service_records]
             })
         for each in company_info:
             # print(each.get('company_address'))
             data.update({
                 'company_name': each.get('name'),
-                'company_address': each.get('company_address'),
+                'company_address': each.get('company_address').replace("\n", "<br />\n"),
             })
         print(data)
         return data
@@ -289,6 +293,7 @@ class ServiceReport:
             service_client=F('client__name'),
             service_description=F('description'),
             service_name=F('service_type__name'),
+            service_by=F('create_user__first_name')
         )
         print(record)
 
@@ -301,6 +306,7 @@ class ServiceReport:
                 'service_description': each.service_description,
                 'service_name': each.service_name,
                 'service_photo': each.photo.url,
+                'service_by': each.service_by
             })
         print(data)
         return data
@@ -311,6 +317,7 @@ class ServiceReport:
             replyService_status=F('status'),
             replyService_comment=F('comment'),
             reply_date=F('date'),
+            service_by=F('create_user__first_name')
         )
         print(record)
         return list(record)
@@ -332,7 +339,8 @@ class DayBookReport:
             daybook_credit_amount=F('credit_amount'),
             daybook_debit_amount=F('debit_amount'),
             daybook_date=ExpressionWrapper(Func(F('date'), V("DD/MM/YYYY"), function='TO_CHAR'),
-                                           output_field=CharField())
+                                           output_field=CharField()),
+
         )
 
         for each in record:
