@@ -24,7 +24,7 @@ class Service(BaseModel):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=False)
     service_type = models.ForeignKey(ServiceType, on_delete=models.CASCADE, null=True, blank=False)
     description = models.TextField(max_length=200, null=True, blank=True)
-    photo = models.ImageField(upload_to='uploads/', null=True, blank=True)
+    photo = models.ImageField(upload_to='uploads/', null=True, blank=False)
 
     def __str__(self):
         return self.service_number

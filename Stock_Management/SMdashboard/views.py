@@ -976,7 +976,7 @@ class Service(View):
                                    f"[www.kalpeshinfotech.com]",
                         "to": [
                             client_no,
-                            "9922620357",
+                            # "9922620357",
                         ]
                     }
                 ]
@@ -1068,7 +1068,7 @@ class ServiceReply(View):
                                    f"Kalpesh Infotech\n[www.kalpeshinfotech.com]",
                         "to": [
                             client_no,
-                            "9922620357",
+                            # "9922620357",
                         ]
                     }
                 ]
