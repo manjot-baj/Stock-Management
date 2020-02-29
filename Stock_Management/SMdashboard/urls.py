@@ -49,5 +49,7 @@ urlpatterns = [
                   path('product_data/', views.ProductView.as_view(), name="product_data"),
                   path('viewProduct/<int:object_id>', views.ProductView.as_view(), name="view_product"),
                   path('new_product/', views.ProductView.as_view(), {'product_form': ''}, name="new_product"),
+                  path('amc_data/', views.AMC_View.as_view(), name="amc_data"),
+                  path('amc_view/<int:object_id>', views.AMC_View.as_view(), name="amc_view"),
                   path('amc/<int:object_id>', views.AMC_View.as_view(), {'amc_form': ''}, name="amc"),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

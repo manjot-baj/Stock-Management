@@ -1,7 +1,7 @@
 import os
 from django import forms
 from SM import enquiry, employee_data, service, dayBook, company_data, amc
-
+import datetime
 
 class ClientForm(forms.Form):
     input_excel = forms.FileField(required=True, label=u"Upload the Excel file to import to the system.")
@@ -342,9 +342,11 @@ class AMC_Form(forms.ModelForm):
     class Meta:
         model = amc.AMC
         fields = [
-            'end_date', 'quantity'
+            'number', 'description', 'start_date', 'end_date'
         ]
         widgets = {
+            'number': forms.HiddenInput(attrs={'class': 'form-control-sm'}),
+            'description': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control form-control-sm'}),
+            'start_date': forms.HiddenInput(attrs={'class': 'form-control-sm'}),
             'end_date': forms.widgets.DateInput(attrs={'type': 'date', 'class': 'form-control form-control-sm'}),
-            'quantity': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             }

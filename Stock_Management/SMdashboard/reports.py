@@ -3,7 +3,7 @@ from django.db.models import Value as V
 from django.db.models.functions import Cast, Concat, Coalesce
 from django.shortcuts import redirect
 from SM.company_data import Client, Vendor, CompanyDetail
-from SM import employee_data, enquiry, invoice, service, dayBook
+from SM import employee_data, enquiry, invoice, service, dayBook, amc
 
 
 class ClientReport:
@@ -359,4 +359,34 @@ class DayBookReport:
                 'daybook_date': each.daybook_date,
             })
             print(data)
+        return data
+
+
+class AmcReport:
+
+    def get_data(self, request, amc_id=None):
+        data = {}
+        record = amc.AMC.objects.filter(pk=amc_id).annotate(
+            amc_number=F('number'),
+            amc_client=F('client_name__name'),
+            amc_created_by=F('create_user__first_name'),
+            amc_start_date=ExpressionWrapper(Func(F('start_date'), V("DD/MM/YYYY"), function='TO_CHAR'),
+                                             output_field=CharField()),
+            amc_end_date=ExpressionWrapper(Func(F('end_date'), V("DD/MM/YYYY"), function='TO_CHAR'),
+                                           output_field=CharField()),
+            amc_description=F('description')
+        )
+        print(record)
+
+        for each in record:
+            data.update({
+                'pk': each.pk,
+                'amc_number': each.amc_number,
+                'amc_client': each.amc_client,
+                'amc_created_by': each.amc_created_by,
+                'amc_description': each.amc_description,
+                'amc_start_date': each.amc_start_date,
+                'amc_end_date': each.amc_end_date,
+            })
+        print(data)
         return data
