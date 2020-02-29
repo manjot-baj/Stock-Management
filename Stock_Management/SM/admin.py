@@ -98,10 +98,9 @@ class ServiceAdmin(admin.ModelAdmin):
 
 @admin.register(AMC)
 class AMCAdmin(admin.ModelAdmin):
-    list_display = ['start_date', 'number', 'client_name', 'product_types', 'end_date']
-    list_select_related = ['client_name', 'product_types']
-    list_filter = ['start_date', 'number', 'client_name', 'product_types', 'end_date']
-    search_fields = ['start_date', 'number', 'client_name', 'product_types']
+    list_display = ['start_date', 'number', 'client_name', 'end_date']
+    list_filter = ['start_date', 'number', 'client_name', 'end_date']
+    search_fields = ['start_date', 'number', 'client_name']
 
 
 @admin.register(Product)
@@ -112,47 +111,6 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ['name', 'product_type']
 
 
-# @admin.register(Invoice)
-# class InvoiceAdmin(admin.ModelAdmin):
-#     list_display = ['client_name', 'invoice_no', 'v_a_t_no', 'p_o_no', 'issue_date', 'due_date', 'amount_before_tax',
-#                     'discount', 'tax', 'total', 'status', 'amount_paid', 'balance', 'dr_or_cr', 'date_of_payment',
-#                     'invoice_type']
-#     list_select_related = ['client_name', 'p_o_no']
-#     list_filter = ['client_name', 'invoice_no', 'issue_date', 'due_date', 'status', 'invoice_type']
-#     search_fields = ['client_name', 'invoice_no', 'issue_date', 'due_date', 'status', 'invoice_type']
-#
-#
-# @admin.register(Quotation)
-# class QuotationAdmin(admin.ModelAdmin):
-#     list_display = ['client_name', 'estimate_no', 'p_o_no', 'issue_date', 'valid_until', 'amount',
-#                     'tax', 'discount', 'total', 'invoiced', 'quotation_type']
-#     list_select_related = ['client_name', 'p_o_no']
-#     list_filter = ['client_name', 'issue_date', 'valid_until', 'invoiced']
-#     search_fields = ['client_name', 'issue_date', 'valid_until', 'invoiced']
-#
-#
-# @admin.register(POData)
-# class PODataAdmin(admin.ModelAdmin):
-#     list_display = ['purchase_order_no', 'vendor_name', 'GSTIN', 'issue_date', 'valid_until', 'amount',
-#                     'tax', 'CGST', 'SGST', 'IGST', 'CESS', 'total', 'billed']
-#     list_select_related = ['vendor_name']
-#     list_filter = ['purchase_order_no', 'vendor_name', 'issue_date', 'valid_until', 'billed']
-#     search_fields = ['purchase_order_no', 'vendor_name']
-#
-#
-# @admin.register(Bill)
-# class BillAdmin(admin.ModelAdmin):
-#     list_display = ['bill_no', 'vendor_name', 'GSTIN', 'invoice_no', 'po_no', 'issue_date', 'due_date',
-#                     'shipping_charges', 'amount_before_tax', 'discount', 'amount_before_tax_after_discount',
-#                     'tax', 'CGST', 'SGST', 'IGST', 'CESS', 'total',
-#                     'status', 'amount_paid', 'balance',
-#                     'Dr_Cr', 'date_of_payment']
-#     list_select_related = ['vendor_name', 'invoice_no', 'po_no']
-#     list_filter = ['vendor_name', 'issue_date', 'due_date', 'status']
-#     search_fields = ['bill_no', 'vendor_name', 'invoice_no', 'po_no']
-
-
 admin.site.register(CostumerType)
 admin.site.register(EnquiryType)
-admin.site.register(Product_type)
 admin.site.register(ServiceType)

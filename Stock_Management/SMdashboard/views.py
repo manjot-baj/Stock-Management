@@ -74,9 +74,16 @@ class Dashboard(View):
         context.update({"enquiry": enquiry_info})
         service_info = service.Service.objects.all().count()
         context.update({"service": service_info})
+        # employee_photo = list(employee_data.Employee.objects.filter(user_id=request.user.id).annotate(
+        #     employee=F('name'),
+        # ))
+        # for each in employee_photo:
+        #     context.update({'employee_photo': each.photo.url})
         if not len(company) == 0:
             context.update({"company": company[0]})
         print(context)
+        amc_info = amc.AMC.objects.all().count()
+        context.update({"amc_info": amc_info})
         # print(timezone.now().time())
         return context
 
@@ -907,7 +914,7 @@ class EmployeeEdit(OwnerRequiredMinxin, ListView):
         return redirect(to="employee_form")
 
 
-class Service(View):
+class Service(DashboardLoginRequiredMixin,ListView):
     from .forms import ServiceForm
     form = ServiceForm
     model = service.Service
@@ -994,7 +1001,7 @@ class Service(View):
         return redirect(to="service")
 
 
-class ServiceEdit(View):
+class ServiceEdit(DashboardLoginRequiredMixin,ListView):
     from .forms import ServiceEditForm
     editform = ServiceEditForm
     model = service.Service
@@ -1024,7 +1031,7 @@ class ServiceEdit(View):
         return redirect(to="service")
 
 
-class ServiceReply(View):
+class ServiceReply(DashboardLoginRequiredMixin,ListView):
     from .forms import ServiceReplyForm
     form = ServiceReplyForm
     service_reply_Form_template = 'SMdashboard/service_reply_form.html'
@@ -1087,14 +1094,42 @@ class ServiceReply(View):
         return redirect(to='service_form')
 
 
-class AMC_View(View):
+class AMC_View(OwnerRequiredMinxin, ListView):
     from .forms import AMC_Form
+    model = amc.AMC
     form = AMC_Form
+    data_template = 'SMdashboard/amc_datatable.html'
+    detailed_view_template = 'SMdashboard/view_amc.html'
     AMC_Form_template = 'SMdashboard/amc_form.html'
+
+    def get_data(self, request):
+        data = self.model.objects.all().values('pk', 'number').annotate(
+            amc_client=F('client_name__name'),
+            amc_created_by=F('create_user__first_name'),
+            amc_start_date=ExpressionWrapper(Func(F('start_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                             output_field=CharField()),
+            amc_end_date=ExpressionWrapper(Func(F('end_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                           output_field=CharField()),
+        )
+        return list(data)
 
     def get(self, request, *args, **kwargs):
         if 'amc_form' in kwargs:
-            return render(request, self.AMC_Form_template, {'amc': self.form()})
+            a = Client.objects.filter(id=kwargs.get('object_id')).values('name')
+            print(a)
+            context = {}
+            context.update({'amc': self.form()})
+            for i in a:
+                context.update({"client_name": i.get('name')})
+            return render(request, self.AMC_Form_template, context)
+        if 'object_id' in kwargs:
+            from .reports import AmcReport
+            data = AmcReport().get_data(request, amc_id=kwargs.get('object_id'))
+            print(data)
+            return render(request, self.detailed_view_template, {'data': data})
+        data = self.get_data(request)
+        print(data)
+        return render(request, self.data_template, {'data': data})
 
     def post(self, request, *args, **kwargs):
         amcForm = self.form(request.POST)
@@ -1102,11 +1137,12 @@ class AMC_View(View):
         print(amcForm)
 
         if amcForm.is_valid():
+            number = amcForm.cleaned_data.get('number')
+            description = amcForm.cleaned_data.get('description')
+            start_date = amcForm.cleaned_data.get('start_date')
             end_date = amcForm.cleaned_data.get('end_date')
-            quantity = amcForm.cleaned_data.get('quantity')
-
-            amc.AMC.objects.create(
-                end_date=end_date, quantity=quantity, client_name_id=kwargs.get('object_id')
-            )
-            return redirect(to="client_data")
+            self.model.objects.create(number=number, client_name_id=kwargs.get('object_id'),
+                                      description=description, start_date=start_date, end_date=end_date,
+                                      create_user=request.user, write_user=request.user)
+            return redirect(to="amc_data")
         return redirect(to="dashboard")
