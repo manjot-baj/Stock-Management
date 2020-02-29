@@ -18,11 +18,12 @@ class Product_type(BaseModel):
 
 class AMC(BaseModel):
     number = models.CharField(default=random_string, max_length=50, null=True)
-    client_name = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)
-    product_types = models.ForeignKey(Product_type, on_delete=models.CASCADE, null=True, blank=False)
-    description = models.TextField(null=True, blank=False)
+    client_name = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=False)
+    product_types = models.ForeignKey(Product_type, on_delete=models.CASCADE, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
     start_date = models.DateTimeField(default=timezone.now, null=True, blank=True)
-    end_date = models.DateTimeField(null=True, blank=True)
+    end_date = models.DateTimeField(null=True, blank=False)
+    quantity = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return self.number

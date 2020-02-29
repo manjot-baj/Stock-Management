@@ -1,6 +1,6 @@
 import os
 from django import forms
-from SM import enquiry, employee_data, service, dayBook, company_data
+from SM import enquiry, employee_data, service, dayBook, company_data, amc
 
 
 class ClientForm(forms.Form):
@@ -21,14 +21,15 @@ class ClientForm(forms.Form):
         else:
             return input_excel
 
+
 class ClientAddForm(forms.ModelForm):
     class Meta:
         model = company_data.Client
 
         fields = ['name', 'contact_Name', 'TIN', 'email', 'phone', 'billing_address', 'billing_zip', 'billing_city',
-                   'billing_state', 'billing_country', 'shipping_address', 'shipping_zip', 'shipping_city',
-                   'shipping_state', 'shipping_country', 'details', 'GSTIN', 'PAN', 'balance'
-        ]
+                  'billing_state', 'billing_country', 'shipping_address', 'shipping_zip', 'shipping_city',
+                  'shipping_state', 'shipping_country', 'details', 'GSTIN', 'PAN', 'balance'
+                  ]
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'contact_Name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
@@ -51,6 +52,7 @@ class ClientAddForm(forms.ModelForm):
             'balance': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
 
         }
+
 
 class ProductForm(forms.Form):
     input_excel = forms.FileField(required=True, label=u"Upload the Excel file to import to the system.")
@@ -89,6 +91,7 @@ class VendorForm(forms.Form):
         else:
             return input_excel
 
+
 class VendorAddForm(forms.ModelForm):
     class Meta:
         model = company_data.Vendor
@@ -118,7 +121,6 @@ class VendorAddForm(forms.ModelForm):
             'details': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'GSTIN': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
         }
-
 
 
 class EnquiryForm(forms.ModelForm):
@@ -280,3 +282,15 @@ class ServiceReplyForm(forms.ModelForm):
             'status': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'comment': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control form-control-sm'}),
         }
+
+
+class AMC_Form(forms.ModelForm):
+    class Meta:
+        model = amc.AMC
+        fields = [
+            'end_date', 'quantity'
+        ]
+        widgets = {
+            'end_date': forms.widgets.DateInput(attrs={'type': 'date', 'class': 'form-control form-control-sm'}),
+            'quantity': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            }
