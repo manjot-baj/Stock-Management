@@ -286,6 +286,55 @@ class ClientAdd(DashboardLoginRequiredMixin, ListView):
             return redirect(to='client_data')
         return redirect(to='new_client_add')
 
+class ClientEdit(DashboardLoginRequiredMixin, ListView):
+    from .forms import ClientEditForm
+    editForm = ClientEditForm
+    model = Client
+    client_edit_Form_template = 'SMdashboard/client_edit_form.html'
+
+    def get(self, request, *args, **kwargs):
+        if 'client_edit_form' in kwargs:
+            record = self.model.objects.get(id=kwargs.get('object_id'))
+            form = self.ClientEditForm(instance=record)
+            return render(request, self.client_edit_Form_template, {'clientEdit': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.ClientEditForm(request.POST)
+        print(form.is_valid())
+        print(form)
+        if form.is_valid():
+            name = form.cleaned_data.get('name')
+            contact_Name = form.cleaned_data.get('contact_Name')
+            TIN = form.cleaned_data.get('TIN')
+            email = form.cleaned_data.get('email')
+            phone = form.cleaned_data.get('phone')
+            billing_address = form.cleaned_data.get('billing_address')
+            billing_zip = form.cleaned_data.get('billing_zip')
+            billing_city = form.cleaned_data.get('billing_city')
+            billing_state = form.cleaned_data.get('billing_state')
+            billing_country = form.cleaned_data.get('billing_country')
+            shipping_address = form.cleaned_data.get('shipping_address')
+            shipping_zip = form.cleaned_data.get('shipping_zip')
+            shipping_city = form.cleaned_data.get('shipping_city')
+            shipping_state = form.cleaned_data.get('shipping_state')
+            shipping_country = form.cleaned_data.get('shipping_country')
+            details = form.cleaned_data.get('details')
+            GSTIN = form.cleaned_data.get('GSTIN')
+            PAN = form.cleaned_data.get('PAN')
+            balance = form.cleaned_data.get('balance')
+
+            Client.objects.filter(pk=kwargs.get('object_id')).update(
+                name=name, contact_Name=contact_Name, TIN=TIN, email=email, phone=phone,
+                billing_address=billing_address,
+                billing_zip=billing_zip, billing_city=billing_city, billing_state=billing_state,
+                billing_country=billing_country,
+                shipping_address=shipping_address, shipping_zip=shipping_zip, shipping_city=shipping_city,
+                shipping_state=shipping_state, shipping_country=shipping_country, details=details, GSTIN=GSTIN,
+                PAN=PAN, balance=balance
+            )
+            return redirect(to='client_data')
+        return redirect(to='new_client_add')
+
 
 class ProductView(OwnerRequiredMinxin, ListView):
     from .forms import ProductForm
@@ -798,6 +847,41 @@ class DayBookView(OwnerRequiredMinxin, ListView):
             return redirect(to='daybook')
         return redirect(to='daybook_form')
 
+class DayBookEdit(OwnerRequiredMinxin, ListView):
+    from .forms import DayBookEditForm
+    form = DayBookEditForm
+    model = dayBook.DayBook
+    daybook_edit_Form_template = 'SMdashboard/daybook_edit_form.html'
+
+    def get(self, request, *args, **kwargs):
+        if 'daybook_edit_form' in kwargs:
+            record = self.model.objects.get(id=kwargs.get('object_id'))
+            editForm = self.form(instance=record)
+            return render(request, self.daybook_edit_Form_template, {'editDaybook': editForm})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form(request.POST)
+        print(form.is_valid())
+        print(form)
+        if form.is_valid():
+            number = form.cleaned_data.get('number')
+            date = form.cleaned_data.get('date')
+            customer_type = form.cleaned_data.get('customer_type')
+            name = form.cleaned_data.get('name')
+            customer_name = form.cleaned_data.get('customer_name')
+            employee_name = form.cleaned_data.get('employee_name')
+            vendor_name = form.cleaned_data.get('vendor_name')
+            description = form.cleaned_data.get('description')
+            status = form.cleaned_data.get('status')
+            credit_amount = form.cleaned_data.get('credit_amount')
+            debit_amount = form.cleaned_data.get('debit_amount')
+            self.model.objects.filter(pk=kwargs.get('object_id')).update(
+                number=number, date=date, customer_type=customer_type, name=name,
+                customer_name=customer_name, employee_name=employee_name, vendor_name=vendor_name,
+                description=description, status=status, credit_amount=credit_amount, debit_amount=debit_amount)
+            return redirect(to='daybook')
+        return redirect(to='daybook_form')
+
 
 class Employee(OwnerRequiredMinxin, ListView):
     from .forms import EmployeeForm
@@ -976,21 +1060,21 @@ class Service(View):
                                    f"[www.kalpeshinfotech.com]",
                         "to": [
                             client_no,
-                            "9922620357",
+                            # "9922620357",
                         ]
                     }
                 ]
             }
             my_payload = json.dumps(payload)
             print(my_payload)
-            headers = {
-                'authkey': "319771ADVdNvaEDkN5e525394P1",
-                'content-type': "application/json"
-            }
-            conn.request("POST", "/api/v2/sendsms", my_payload, headers)
-            res = conn.getresponse()
-            data = res.read()
-            print(data.decode("utf-8"))
+            # headers = {
+            #     'authkey': "319771ADVdNvaEDkN5e525394P1",
+            #     'content-type': "application/json"
+            # }
+            # conn.request("POST", "/api/v2/sendsms", my_payload, headers)
+            # res = conn.getresponse()
+            # data = res.read()
+            # print(data.decode("utf-8"))
         return redirect(to="service")
 
 
@@ -1068,21 +1152,21 @@ class ServiceReply(View):
                                    f"Kalpesh Infotech\n[www.kalpeshinfotech.com]",
                         "to": [
                             client_no,
-                            "9922620357",
+                            # "9922620357",
                         ]
                     }
                 ]
             }
             my_payload = json.dumps(payload)
             print(my_payload)
-            headers = {
-                'authkey': "319771ADVdNvaEDkN5e525394P1",
-                'content-type': "application/json"
-            }
-            conn.request("POST", "/api/v2/sendsms", my_payload, headers)
-            res = conn.getresponse()
-            data = res.read()
-            print(data.decode("utf-8"))
+            # headers = {
+            #     'authkey': "319771ADVdNvaEDkN5e525394P1",
+            #     'content-type': "application/json"
+            # }
+            # conn.request("POST", "/api/v2/sendsms", my_payload, headers)
+            # res = conn.getresponse()
+            # data = res.read()
+            # print(data.decode("utf-8"))
             return redirect(to="service")
         return redirect(to='service_form')
 

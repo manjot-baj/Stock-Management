@@ -53,6 +53,40 @@ class ClientAddForm(forms.ModelForm):
 
         }
 
+class ClientEditForm(forms.ModelForm):
+    class Meta:
+        model = company_data.Client
+
+        fields = ['name', 'contact_Name', 'TIN', 'email', 'phone', 'billing_address', 'billing_zip', 'billing_city',
+                  'billing_state', 'billing_country', 'shipping_address', 'shipping_zip', 'shipping_city',
+                  'shipping_state', 'shipping_country', 'details', 'GSTIN', 'PAN', 'balance'
+                  ]
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'contact_Name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'TIN': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'email': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'billing_address': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'billing_zip': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'billing_city': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'billing_state': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'billing_country': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'shipping_address': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'shipping_zip': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'shipping_city': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'shipping_state': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'shipping_country': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'details': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'GSTIN': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'PAN': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'balance': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+
+        }
+
+
+
+
 
 class ProductForm(forms.Form):
     input_excel = forms.FileField(required=True, label=u"Upload the Excel file to import to the system.")
@@ -189,6 +223,26 @@ class DayBookForm(forms.ModelForm):
             'credit_amount': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'debit_amount': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
         }
+
+class DayBookEditForm(forms.ModelForm):
+    class Meta:
+        model = dayBook.DayBook
+        fields = ['number', 'date', 'customer_type', 'name', 'customer_name', 'employee_name', 'vendor_name',
+                  'description', 'status', 'credit_amount', 'debit_amount']
+        widgets = {
+            'number': forms.HiddenInput(attrs={'class': 'form-control-sm'}),
+            'date': forms.HiddenInput(attrs={'class': 'form-control-sm'}),
+            'customer_type': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'customer_name': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'employee_name': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'vendor_name': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'description': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control form-control-sm'}),
+            'status': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'credit_amount': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'debit_amount': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+        }
+
 
 
 class EmployeeForm(forms.ModelForm):
