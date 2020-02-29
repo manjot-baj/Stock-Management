@@ -10,7 +10,7 @@ from django.views.generic import ListView, View
 from django.db.models import (Case, CharField, Count, DateTimeField,
                               ExpressionWrapper, F, FloatField, Func, Max, Min,
                               Prefetch, Q, Sum, Value, When, Subquery)
-from SM import enquiry, employee_data, service, dayBook, invoice
+from SM import enquiry, employee_data, service, dayBook, invoice, amc
 from django.utils import timezone
 import http.client
 import json
@@ -1085,3 +1085,28 @@ class ServiceReply(View):
             print(data.decode("utf-8"))
             return redirect(to="service")
         return redirect(to='service_form')
+
+
+class AMC_View(View):
+    from .forms import AMC_Form
+    form = AMC_Form
+    AMC_Form_template = 'SMdashboard/amc_form.html'
+
+    def get(self, request, *args, **kwargs):
+        if 'amc_form' in kwargs:
+            return render(request, self.AMC_Form_template, {'amc': self.form()})
+
+    def post(self, request, *args, **kwargs):
+        amcForm = self.form(request.POST)
+        print(amcForm.is_valid())
+        print(amcForm)
+
+        if amcForm.is_valid():
+            end_date = amcForm.cleaned_data.get('end_date')
+            quantity = amcForm.cleaned_data.get('quantity')
+
+            amc.AMC.objects.create(
+                end_date=end_date, quantity=quantity, client_name_id=kwargs.get('object_id')
+            )
+            return redirect(to="client_data")
+        return redirect(to="dashboard")
