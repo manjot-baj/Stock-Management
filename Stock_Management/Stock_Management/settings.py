@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'djcelery'
 ]
 
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -65,7 +64,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-            'libraries':{
+            'libraries': {
                 'custom_templatetag': 'SMdashboard.templatetags.sm_tags',
 
             }
@@ -125,19 +124,20 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-
 MEDIA_URL = '/uploads/'
+
+import djcelery
+
+djcelery.setup_loader()
+
+CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
-
-
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/uploads/')
-
 
 CELERY_BROKER_URL = 'http://localhost:15672/'
 
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
-
