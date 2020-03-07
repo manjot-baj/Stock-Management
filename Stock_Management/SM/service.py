@@ -41,7 +41,7 @@ class ServiceRecord(BaseModel):
         ("Completed", "completed")
     )
 
-    status = models.CharField(max_length=100, choices=status_type, default='Start')
+    status = models.CharField(max_length=100, choices=status_type, default='Open')
     comment = models.TextField(max_length=200, null=True, blank=True)
 
     def __str__(self):
