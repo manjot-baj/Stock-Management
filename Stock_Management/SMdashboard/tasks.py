@@ -1,5 +1,6 @@
 from celery import Celery
 from celery.schedules import crontab
+from celery.task import periodic_task
 
 app = Celery()
 
@@ -19,12 +20,12 @@ def setup_periodic_tasks(sender, **kwargs):
     )
 
 
-
+#
 # @periodic_task(run_every=(crontab(minute='*/1')), name="my_first_task")
 # # @periodic_task(run_every=(timedelta(seconds=40)), name="my_first_task")
 # def my_first_task():
 #     print("This is my first task")
-#
+
 
 @app.task
 def test(arg):
@@ -39,4 +40,6 @@ app.conf.beat_schedule = {
     },
 }
 app.conf.timezone = 'Asia/Kolkata'
+
+
 
