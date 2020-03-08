@@ -1,3 +1,10 @@
+import logging
+from .amc_task import amcSms
+from celery.utils.log import get_task_logger
+
+celery_logger = get_task_logger(__name__)
+logger = logging.getLogger(__name__)
+
 from celery import current_task
 from celery.schedules import crontab
 from celery.task import periodic_task
