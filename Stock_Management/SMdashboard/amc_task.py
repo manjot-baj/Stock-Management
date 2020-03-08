@@ -10,6 +10,7 @@ conn = http.client.HTTPSConnection("api.msg91.com")
 
 
 def amcSms():
+    today_amc = []
     data = list(amc.AMC.objects.all().values('pk', 'first_service_date', 'second_service_date',
                                              'third_service_date', 'fourth_service_date').annotate(
         amc_client=F('client_name__name'),
@@ -23,6 +24,7 @@ def amcSms():
                 or each.get('fourth_service_date') == datetime.today().date():
             client_no = each.get('amc_client_phone')
             client = each.get('amc_client')
+            today_amc.append([client, client_no])
             payload = {
                 "sender": "KIINFO",
                 "route": "4",
@@ -30,10 +32,10 @@ def amcSms():
                 "sms": [
                     {
                         "message": f"Dear {client},\n Your AMC Service date is Today.\n"
-                                f"Our Technician will come today for Servicing.\n For more details call on "
-                                f"8080101993 / 9765957141\n Thanks and Regards,\n"
-                                f" Kalpesh Infotech\n"
-                                f"[www.kalpeshinfotech.com]",
+                                   f"Our Technician will come today for Servicing.\n For more details call on "
+                                   f"8080101993 / 9765957141\n Thanks and Regards,\n"
+                                   f" Kalpesh Infotech\n"
+                                   f"[www.kalpeshinfotech.com]",
                         "to": [
                             client_no,
                         ]
@@ -49,5 +51,7 @@ def amcSms():
             conn.request("POST", "/api/v2/sendsms", my_payload, headers)
             res = conn.getresponse()
             data = res.read()
-            return data.decode("utf-8")
-        return "No Amc Today"
+            print(data.decode("utf-8"))
+    if len(today_amc) == 0:
+        return "today No AMC Service"
+    return today_amc
