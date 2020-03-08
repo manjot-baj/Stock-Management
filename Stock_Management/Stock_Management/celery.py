@@ -16,9 +16,13 @@ app = Celery('Stock_Management')
 app.config_from_object('django.conf:settings')
 
 # Load task modules from all registered Django app configs.
-app.autodiscover_tasks(settings.INSTALLED_APPS)
+# app.autodiscover_tasks(settings.INSTALLED_APPS)
 
+# Load task modules from all registered Django app configs.
+app.conf.broker_transport_options = {'visibility_timeout': 43200, 'fanout_prefix': True, 'fanout_patterns': True}
+app.autodiscover_tasks()
 
-@app.task(bind=True)
-def debug_task(self):
-    print('Request: {0!r}'.format(self.request))
+#
+# @app.task(bind=True)
+# def debug_task(self):
+#     print('Request: {0!r}'.format(self.request))

@@ -52,6 +52,20 @@ def amcSms():
             res = conn.getresponse()
             data = res.read()
             print(data.decode("utf-8"))
+            amc.AMCRecord(date=datetime.today().date(), client=client, phone=client_no, message=f"Dear {client},\n "
+                                                                                                f"Your AMC Service "
+                                                                                                f"date is Today.\n "
+                                                                                                f"Our Technician will "
+                                                                                                f"come today for "
+                                                                                                f"Servicing.\n For "
+                                                                                                f"more details call on "
+                                                                                                f"8080101993 / "
+                                                                                                f"9765957141\n Thanks "
+                                                                                                f"and Regards,\n "
+                                                                                                f" Kalpesh Infotech\n"
+                                                                                                f"[www"
+                                                                                                f".kalpeshinfotech.com]"
+                          ).save()
     if len(today_amc) == 0:
         return "today No AMC Service"
     return today_amc
