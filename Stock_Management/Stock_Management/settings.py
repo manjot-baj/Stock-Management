@@ -137,7 +137,14 @@ STATICFILES_DIRS = [
 ]
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/uploads/')
 
-CELERY_BROKER_URL = 'http://localhost:15672/'
+CELERY_BROKER_URL = 'amqp://localhost:15672/'
 
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
+CELERY_BEAT_SCHEDULE = {
+    'add-every-30-seconds': {
+        'task': 'tasks.add',
+        'schedule': 30.0,
+        'args': (16, 16)
+    },
+}

@@ -4,6 +4,8 @@ from .models import BaseModel
 from .company_data import Client
 import random
 
+from datetime import timedelta
+
 
 def random_string():
     return str(random.randint(10000, 99999))
@@ -13,8 +15,23 @@ class AMC(BaseModel):
     number = models.CharField(default=random_string, max_length=50, null=True, blank=False)
     client_name = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=False)
     description = models.TextField(null=True, blank=True)
-    start_date = models.DateTimeField(default=timezone.now, null=True, blank=False)
-    end_date = models.DateTimeField(null=True, blank=False)
+    start_date = models.DateField(null=True, blank=False)
+    end_date = models.DateField(null=True, blank=False)
+    first_service_date = models.DateField(null=True, blank=True)
+    second_service_date = models.DateField(null=True, blank=True)
+    third_service_date = models.DateField(null=True, blank=True)
+    fourth_service_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return self.number
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if self.pk is None:
+            self.first_service_date = self.start_date + timedelta(days=90)
+            self.second_service_date = self.start_date + timedelta(days=180)
+            self.third_service_date = self.start_date + timedelta(days=270)
+            self.fourth_service_date = self.start_date + timedelta(days=360)
+            res = super(AMC, self).save(force_insert=False, force_update=False, using=None, update_fields=None)
+        else:
+            res = super(AMC, self).save(force_insert=False, force_update=False, using=None, update_fields=None)
+        return res
