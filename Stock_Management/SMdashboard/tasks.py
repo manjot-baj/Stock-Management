@@ -1,5 +1,6 @@
 from celery import Celery
 from celery.schedules import crontab
+from .amc_task import amcSms
 
 app = Celery()
 
@@ -19,7 +20,6 @@ def setup_periodic_tasks(sender, **kwargs):
     )
 
 
-
 # @periodic_task(run_every=(crontab(minute='*/1')), name="my_first_task")
 # # @periodic_task(run_every=(timedelta(seconds=40)), name="my_first_task")
 # def my_first_task():
@@ -29,3 +29,9 @@ def setup_periodic_tasks(sender, **kwargs):
 @app.task
 def test(args):
     print(args)
+
+
+@app.task
+def call():
+    a = amcSms()
+    return a
