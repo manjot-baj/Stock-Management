@@ -293,6 +293,7 @@ class ClientAdd(DashboardLoginRequiredMixin, ListView):
             return redirect(to='client_data')
         return redirect(to='new_client_add')
 
+
 class ClientEdit(DashboardLoginRequiredMixin, ListView):
     from .forms import ClientEditForm
     editForm = ClientEditForm
@@ -854,6 +855,7 @@ class DayBookView(OwnerRequiredMinxin, ListView):
             return redirect(to='daybook')
         return redirect(to='daybook_form')
 
+
 class DayBookEdit(OwnerRequiredMinxin, ListView):
     from .forms import DayBookEditForm
     form = DayBookEditForm
@@ -998,7 +1000,7 @@ class EmployeeEdit(OwnerRequiredMinxin, ListView):
         return redirect(to="employee_form")
 
 
-class Service(DashboardLoginRequiredMixin,ListView):
+class Service(DashboardLoginRequiredMixin, ListView):
     from .forms import ServiceForm
     form = ServiceForm
     model = service.Service
@@ -1085,7 +1087,7 @@ class Service(DashboardLoginRequiredMixin,ListView):
         return redirect(to="service")
 
 
-class ServiceEdit(DashboardLoginRequiredMixin,ListView):
+class ServiceEdit(DashboardLoginRequiredMixin, ListView):
     from .forms import ServiceEditForm
     editform = ServiceEditForm
     model = service.Service
@@ -1115,7 +1117,7 @@ class ServiceEdit(DashboardLoginRequiredMixin,ListView):
         return redirect(to="service")
 
 
-class ServiceReply(DashboardLoginRequiredMixin,ListView):
+class ServiceReply(DashboardLoginRequiredMixin, ListView):
     from .forms import ServiceReplyForm
     form = ServiceReplyForm
     service_reply_Form_template = 'SMdashboard/service_reply_form.html'
@@ -1189,7 +1191,6 @@ class AMC_View(OwnerRequiredMinxin, ListView):
     def get_data(self, request):
         data = self.model.objects.all().values('pk', 'number').annotate(
             amc_client=F('client_name__name'),
-            amc_created_by=F('create_user__first_name'),
             amc_start_date=ExpressionWrapper(Func(F('start_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
                                              output_field=CharField()),
             amc_end_date=ExpressionWrapper(Func(F('end_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
@@ -1226,7 +1227,12 @@ class AMC_View(OwnerRequiredMinxin, ListView):
             start_date = amcForm.cleaned_data.get('start_date')
             end_date = amcForm.cleaned_data.get('end_date')
             self.model.objects.create(number=number, client_name_id=kwargs.get('object_id'),
-                                      description=description, start_date=start_date, end_date=end_date,
-                                      create_user=request.user, write_user=request.user)
+                                      description=description, start_date=start_date, end_date=end_date)
             return redirect(to="amc_data")
         return redirect(to="dashboard")
+
+# from datetime import datetime
+# from datetime import timedelta
+#
+# today = datetime.today().date()
+# yesterday = today + timedelta(days=90 + 90 + 90 + 90)

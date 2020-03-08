@@ -43,3 +43,7 @@ app.conf.timezone = 'Asia/Kolkata'
 
 
 
+
+def test(args):
+    print(args)
+

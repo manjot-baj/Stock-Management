@@ -369,9 +369,19 @@ class AmcReport:
         record = amc.AMC.objects.filter(pk=amc_id).annotate(
             amc_number=F('number'),
             amc_client=F('client_name__name'),
-            amc_created_by=F('create_user__first_name'),
             amc_start_date=ExpressionWrapper(Func(F('start_date'), V("DD/MM/YYYY"), function='TO_CHAR'),
                                              output_field=CharField()),
+            amc_first_service_date=ExpressionWrapper(Func(F('first_service_date'), V("DD/MM/YYYY"), function='TO_CHAR'),
+                                                     output_field=CharField()),
+            amc_second_service_date=ExpressionWrapper(
+                Func(F('second_service_date'), V("DD/MM/YYYY"), function='TO_CHAR'),
+                output_field=CharField()),
+            amc_third_service_date=ExpressionWrapper(
+                Func(F('third_service_date'), V("DD/MM/YYYY"), function='TO_CHAR'),
+                output_field=CharField()),
+            amc_fourth_service_date=ExpressionWrapper(
+                Func(F('fourth_service_date'), V("DD/MM/YYYY"), function='TO_CHAR'),
+                output_field=CharField()),
             amc_end_date=ExpressionWrapper(Func(F('end_date'), V("DD/MM/YYYY"), function='TO_CHAR'),
                                            output_field=CharField()),
             amc_description=F('description')
@@ -383,9 +393,12 @@ class AmcReport:
                 'pk': each.pk,
                 'amc_number': each.amc_number,
                 'amc_client': each.amc_client,
-                'amc_created_by': each.amc_created_by,
                 'amc_description': each.amc_description,
                 'amc_start_date': each.amc_start_date,
+                'amc_first_service_date': each.amc_first_service_date,
+                'amc_second_service_date': each.amc_second_service_date,
+                'amc_third_service_date': each.amc_third_service_date,
+                'amc_fourth_service_date': each.amc_fourth_service_date,
                 'amc_end_date': each.amc_end_date,
             })
         print(data)
