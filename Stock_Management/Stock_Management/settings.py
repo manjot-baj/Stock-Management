@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'SM',
     'SMdashboard',
-    'djcelery'
+    'django_celery_beat'
 ]
 
 MIDDLEWARE = [
@@ -126,10 +126,6 @@ STATIC_URL = '/static/'
 
 MEDIA_URL = '/uploads/'
 
-import djcelery
-
-djcelery.setup_loader()
-
 CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
 
 STATICFILES_DIRS = [
@@ -141,12 +137,36 @@ CELERY_BROKER_URL = 'amqp://localhost:15672/'
 
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
+CELERY_BEAT_SCHEDULE = {}
 
-CELERY_BEAT_SCHEDULE = {
-    'add-every-30-seconds': {
-        'task': 'tasks.add',
-        'schedule': 30.0,
-        'args': (16, 16)
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'simple': {
+            'format': '%(levelname)s %(message)s',
+            'datefmt': '%y %b %d, %H:%M:%S',
+        },
     },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'celery': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': 'celery.log',
+            'formatter': 'simple',
+            'maxBytes': 1024 * 1024 * 100,  # 100 mb
+        },
+    },
+    'loggers': {
+        'celery': {
+            'handlers': ['celery', 'console'],
+            'level': 'DEBUG',
+        },
+    }
 }
 

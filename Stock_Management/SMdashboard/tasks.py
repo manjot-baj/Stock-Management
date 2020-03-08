@@ -1,56 +1,35 @@
-from celery import Celery
+from celery import current_task
 from celery.schedules import crontab
-
 from celery.task import periodic_task
-from .amc_task import amcSms
+from django.core.cache import cache
 
-app = Celery()
-
-
-@app.on_after_configure.connect
-def setup_periodic_tasks(sender, **kwargs):
-    # Calls test('hello') every 10 seconds.
-    sender.add_periodic_task(10.0, test.s('hello'), name='add every 10')
-
-    # Calls test('world') every 30 seconds
-    sender.add_periodic_task(30.0, test.s('world'), expires=10)
-
-    # Executes every Monday morning at 7:30 a.m.
-    sender.add_periodic_task(
-        crontab(hour=7, minute=30, day_of_week=1),
-        test.s('Happy Mondays!'),
-    )
+Celery_Queue = 'celery_dev_queue'
 
 
+@periodic_task(
+    run_every=(crontab(minute='*')),
+    name="sample",
+    ignore_result=True,
+    queue=Celery_Queue,
+    options={'queue': Celery_Queue},
+)
+def sample():
+    celery_logger.info("Starting Task pass expiry intimation")
+    lock_expire = 300
+    lock_key = 'sample'
+    acquire_lock = lambda: cache.add(lock_key, '1', lock_expire)
+    release_lock = lambda: cache.delete(lock_key)
+    if acquire_lock():
+        try:
+            a = amcSms()
+            print(a)
+            celery_logger.info("AAAAAAAAA")
 
-# @periodic_task(run_every=(crontab(minute='*/1')), name="my_first_task")
-# # @periodic_task(run_every=(timedelta(seconds=40)), name="my_first_task")
-# def my_first_task():
-#     print("This is my first task")
-
-
-@app.task
-def test(arg):
-    print(arg)
-
-
-app.conf.beat_schedule = {
-    'add-every-30-seconds': {
-        'task': 'tasks.add',
-        'schedule': 30.0,
-        'args': (16, 16)
-    },
-}
-app.conf.timezone = 'Asia/Kolkata'
-
-
-
-
-def test(args):
-    print(args)
-
-
-@app.task
-def call():
-    a = amcSms()
-    return a
+            celery_logger.info()
+        except Exception as e:
+            celery_logger.error("Exception while acquiring lock for pass expiry intimation {}".format(str(e)))
+        finally:
+            release_lock()
+    else:
+        celery_logger.info("Other task of pass expiry intimation is running, skipping")
+    celery_logger.info("End Task pass expiry intimation")

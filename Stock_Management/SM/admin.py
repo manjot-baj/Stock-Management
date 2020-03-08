@@ -114,3 +114,4 @@ class ProductAdmin(admin.ModelAdmin):
 admin.site.register(CostumerType)
 admin.site.register(EnquiryType)
 admin.site.register(ServiceType)
+admin.site.register(AMCRecord)

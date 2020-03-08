@@ -35,3 +35,13 @@ class AMC(BaseModel):
         else:
             res = super(AMC, self).save(force_insert=False, force_update=False, using=None, update_fields=None)
         return res
+
+
+class AMCRecord(BaseModel):
+    date = models.DateField(null=True, blank=False)
+    client = models.CharField(max_length=100, null=True, blank=False)
+    phone = models.CharField(max_length=12, null=True, blank=False)
+    message = models.TextField(null=True, blank=False)
+
+    def __str__(self):
+        return self.client
