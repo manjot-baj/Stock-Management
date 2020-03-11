@@ -76,7 +76,11 @@ class Dashboard(View):
         enquiry_info = enquiry.Enquiry.objects.all().count()
         context.update({"enquiry": enquiry_info})
         service_info = service.Service.objects.all().count()
-        context.update({"service": service_info})
+        on_progress = service.Service.objects.filter(status='On progress').count()
+        completed = service.Service.objects.filter(status='Completed').count()
+        pending = service.Service.objects.filter(status='Pending').count()
+        context.update({"service": service_info, 'pending': pending, 'on_progress': on_progress,
+                        'completed': completed})
         # employee_photo = list(employee_data.Employee.objects.filter(user_id=request.user.id).annotate(
         #     employee=F('name'),
         # ))
@@ -620,6 +624,7 @@ class Enquiry(DashboardLoginRequiredMixin, ListView):
 
     def get_data(self, request, *args, **kwargs):
         if request.user.groups.filter(name=OWNER_GROUP).exists():
+
             data = self.model.objects.all().values(
                 'first_name', 'last_name', 'mobile_no',
                 'address', 'pk',
@@ -1012,9 +1017,21 @@ class Service(DashboardLoginRequiredMixin, ListView):
     serviceForm_table = 'SMdashboard/table-service.html'
     service_invoice = 'SMdashboard/ServiceInvoicePrint.html'
 
-    def get_data(self):
+    def get_data(self, request, *args, **kwargs):
+        if 'filter_date' in kwargs:
+            data = self.model.objects.filter(date__gte=request.POST.get('fromDate'),
+                                             date__lte=request.POST.get('toDate')).values(
+                'status', 'service_number', 'description', 'photo', 'pk'
+            ).annotate(
+                service_client=F('client__name'),
+                service_client_phone=F('client__phone'),
+                service=F('service_type__name'),
+                service_date=ExpressionWrapper(Func(F('date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                               output_field=CharField()),
+            )
+            return list(data)
         data = self.model.objects.all().values(
-            'status','service_number', 'description', 'photo', 'pk'
+            'status', 'service_number', 'description', 'photo', 'pk'
         ).annotate(
             service_client=F('client__name'),
             service_client_phone=F('client__phone'),
@@ -1038,11 +1055,14 @@ class Service(DashboardLoginRequiredMixin, ListView):
             data1 = ServiceReport().get_data_Reply(request, service_id=kwargs.get('object_id'))
             template = self.detailed_view
             return render(request, template, {"data": data, "data_list": data1})
-        data = self.get_data()
+        data = self.get_data(request)
         print(data)
         return render(request, self.serviceForm_table, {'data': data})
 
     def post(self, request, *args, **kwargs):
+        if 'filterDate' in kwargs:
+            data = self.get_data(request, filter_date='')
+            return JsonResponse(data, safe=False)
         form = self.ServiceForm(request.POST, request.FILES)
         print(form.is_valid())
         if form.is_valid():
