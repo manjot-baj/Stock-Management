@@ -48,10 +48,10 @@ def amcSms():
                 'authkey': "319771ADVdNvaEDkN5e525394P1",
                 'content-type': "application/json"
             }
-            conn.request("POST", "/api/v2/sendsms", my_payload, headers)
-            res = conn.getresponse()
-            data = res.read()
-            print(data.decode("utf-8"))
+            # conn.request("POST", "/api/v2/sendsms", my_payload, headers)
+            # res = conn.getresponse()
+            # data = res.read()
+            # print(data.decode("utf-8"))
             amc.AMCRecord(date=datetime.today().date(), client=client, phone=client_no, message=f"Dear {client},\n "
                                                                                                 f"Your AMC Service "
                                                                                                 f"date is Today.\n "
