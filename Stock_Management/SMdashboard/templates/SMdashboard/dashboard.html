@@ -71,6 +71,36 @@
         </a>
     </div>
     <div class="col-md-6 col-lg-3">
+        <a href="service">
+        <div class="widget-small danger coloured-icon"><i class="icon fa fa-hourglass-start fa-3x"></i>
+            <div class="info">
+                <h4>Pending Service</h4>
+                <p><b>{{pending}}</b></p>
+            </div>
+        </div>
+        </a>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <a href="service">
+        <div class="widget-small warning coloured-icon"><i class="icon fa fa-hourglass-half fa-3x"></i>
+            <div class="info">
+                <h4>On Progress Service</h4>
+                <p><b>{{on_progress}}</b></p>
+            </div>
+        </div>
+        </a>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <a href="service">
+        <div class="widget-small info coloured-icon"><i class="icon fa fa-hourglass-end fa-3x"></i>
+            <div class="info">
+                <h4>Completed Service</h4>
+                <p><b>{{completed}}</b></p>
+            </div>
+        </div>
+        </a>
+    </div>
+    <div class="col-md-6 col-lg-3">
         <a href="{% url 'client_data' %}">
         <div class="widget-small primary coloured-icon"><i class="icon fa fa-user fa-3x"></i>
             <div class="info">
