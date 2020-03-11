@@ -620,6 +620,24 @@ class Enquiry(DashboardLoginRequiredMixin, ListView):
 
     def get_data(self, request, *args, **kwargs):
         if request.user.groups.filter(name=OWNER_GROUP).exists():
+            if 'filter_date' in kwargs:
+                data = self.model.objects.filter(enquiry_date__gte=request.POST.get('fromDate'),
+                                                enquiry_date__lte=request.POST.get('toDate')).values(
+                                        'first_name', 'last_name', 'mobile_no',
+                                        'address', 'pk',
+                                        ).annotate(
+                                            customer=F('customer_type__name'),
+                                            handled=F('create_user__first_name'),
+                                            enquiry=F('enquiry_type__name'),
+
+                                            enquiry_product_name=Coalesce('product_name', Value("-")),
+                                            enquiry_description=Coalesce('description', Value("-")),
+                                            enquiry_price=Coalesce('price', Value("-")),
+                                            enquiry_email_id=Coalesce('email_id', Value("-")),
+                                            date=ExpressionWrapper(Func(F('enquiry_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                            output_field=CharField()),
+                                     ).order_by("-date")
+                return list(data)
             data = self.model.objects.all().values(
                 'first_name', 'last_name', 'mobile_no',
                 'address', 'pk',
@@ -637,7 +655,25 @@ class Enquiry(DashboardLoginRequiredMixin, ListView):
                                        output_field=CharField()),
             ).order_by("-date")
             return list(data)
+        elif 'filter_date' in kwargs:
+            data = self.model.objects.filter(create_user_id=request.user,
+                                             enquiry_date__gte=request.POST.get('fromDate'),
+                                                enquiry_date__lte=request.POST.get('toDate')).values(
+                                    'first_name', 'last_name', 'mobile_no',
+                                    'address', 'pk',
+                                    ).annotate(
+                            customer=F('customer_type__name'),
+                            handled=F('create_user__first_name'),
+                            enquiry=F('enquiry_type__name'),
 
+                            enquiry_product_name=Coalesce('product_name', Value("-")),
+                            enquiry_description=Coalesce('description', Value("-")),
+                            enquiry_price=Coalesce('price', Value("-")),
+                            enquiry_email_id=Coalesce('email_id', Value("-")),
+                            date=ExpressionWrapper(Func(F('enquiry_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                   output_field=CharField()),
+                    ).order_by("-date")
+            return list(data)
         data = self.model.objects.filter(create_user_id=request.user).values(
             'first_name', 'last_name', 'mobile_no',
             'address', 'pk',
@@ -672,6 +708,9 @@ class Enquiry(DashboardLoginRequiredMixin, ListView):
         return render(request, self.enquiryForm_table, {'data': data})
 
     def post(self, request, *args, **kwargs):
+        if 'filterDate' in kwargs:
+            data = self.get_data(request, filter_date='')
+            return JsonResponse(data, safe=False)
         form = self.EnquiryForm(request.POST)
         print(form.is_valid())
         print(form)
@@ -907,7 +946,18 @@ class Employee(OwnerRequiredMinxin, ListView):
     employeeForm_template = 'SMdashboard/employee_form.html'
     employeeForm_table = 'SMdashboard/table-employee.html'
 
-    def get_data(self):
+    def get_data(self, request, **kwargs):
+        if 'filter_date' in kwargs:
+            data = self.model.objects.filter(join_date__gte=request.POST.get('fromDate'),
+                                             join_date__lte=request.POST.get('toDate')).values(
+                    'photo', 'name', 'address', 'city', 'state', 'pin_code', 'country', 'mobile_no', 'email_id',
+                    'qualification', 'type', 'job_profile', 'job_description', 'pk',
+                    ).annotate(
+                        date=ExpressionWrapper(Func(F('join_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                        output_field=CharField()),
+                )
+            return list(data)
+
         data = self.model.objects.all().values(
             'photo', 'name', 'address', 'city', 'state', 'pin_code', 'country', 'mobile_no', 'email_id',
             'qualification', 'type', 'job_profile', 'job_description', 'pk',
@@ -928,11 +978,14 @@ class Employee(OwnerRequiredMinxin, ListView):
 
             return render(request, template, data)
 
-        data = self.get_data()
+        data = self.get_data(request)
         print(data)
         return render(request, self.employeeForm_table, {'data': data})
 
     def post(self, request, *args, **kwargs):
+        if 'filterDate' in kwargs:
+            data = self.get_data(request, filter_date='')
+            return JsonResponse(data, safe=False)
         form = self.EmployeeForm(request.POST, request.FILES, )
         print(form.is_valid)
         print(form)
