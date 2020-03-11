@@ -1014,7 +1014,7 @@ class Service(DashboardLoginRequiredMixin, ListView):
 
     def get_data(self):
         data = self.model.objects.all().values(
-            'service_number', 'description', 'photo', 'pk'
+            'status','service_number', 'description', 'photo', 'pk'
         ).annotate(
             service_client=F('client__name'),
             service_client_phone=F('client__phone'),
@@ -1140,6 +1140,7 @@ class ServiceReply(DashboardLoginRequiredMixin, ListView):
             service.ServiceRecord.objects.create(service_number_id=kwargs.get('object_id'),
                                                  photo=photo, status=status, comment=comment,
                                                  create_user=request.user, write_user=request.user)
+            service.Service.objects.filter(id=kwargs.get('object_id')).update(status=status)
             my_client_data = list(service.ServiceRecord.objects.filter(
                 service_number_id=kwargs.get('object_id')).values('pk').annotate(
                 client=F('service_number__client__name'),
