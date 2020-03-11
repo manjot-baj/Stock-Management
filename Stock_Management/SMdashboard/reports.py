@@ -293,7 +293,8 @@ class ServiceReport:
             service_client=F('client__name'),
             service_description=F('description'),
             service_name=F('service_type__name'),
-            service_by=F('create_user__first_name')
+            service_by=F('create_user__first_name'),
+            service_status=F('status'),
         )
         print(record)
 
@@ -306,7 +307,8 @@ class ServiceReport:
                 'service_description': each.service_description,
                 'service_name': each.service_name,
                 'service_photo': each.photo.url,
-                'service_by': each.service_by
+                'service_by': each.service_by,
+                'service_status': each.service_status
             })
         print(data)
         return data

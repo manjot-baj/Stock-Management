@@ -94,6 +94,11 @@
         text-align: left;
     }
 
+    .responsive {
+  width: 200px;
+  height: auto;
+}
+
 </style>
 <div class="app-title">
 </div>
@@ -110,7 +115,7 @@
                                         <tr>
                                             <td class="title">
                                                 <img src="{% static 'SMdashboard/images/cropped-LOGO-1.png' %}"
-                                                     style="width:100%; max-width:100px;">
+                                                     height="100" width="150">
                                             </td>
 
                                             <td>
@@ -159,7 +164,7 @@
                                 </td>
 
                                 <td>
-                                    <img src="{{invoice_data.service_photo}}" height="150px" width="200px"><br/>
+                                    <img src="{{invoice_data.service_photo}}" class="responsive"><br/>
                                 </td>
                             </tr>
                         </table>
@@ -199,7 +204,7 @@
                                     {{action.service_by}}
                                 </td>
                                 <td>
-                                    <img src="{{action.photo}}" height="150px" width="200px"><br/>
+                                    <img src="{{action.photo}}" class="responsive"><br/>
                                 </td>
                             </tr>
                             {% endfor %}
