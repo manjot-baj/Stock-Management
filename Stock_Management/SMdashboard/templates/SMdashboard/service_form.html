@@ -31,12 +31,14 @@
                         <label class="control-label col-md-2">{{service.client.label}} : </label>
                         <div class="col-md-3">
                             {{service.client}}
-                        </div>
+                        </div>&nbsp;&nbsp;&nbsp;
+                        <div class="col-md-3">
                         <a href="{% url 'new_client_add' %}">
                             <button id="add_more" type="button" ><i class="fa fa-plus"
                                                                                      aria-hidden="true"></i>
                             </button>
                         </a>
+                        </div>
                     </div>
                     <div class="form-group row">
                         <label class="control-label col-md-2">{{service.service_type.label}} : </label>

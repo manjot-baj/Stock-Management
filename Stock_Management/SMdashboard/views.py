@@ -31,9 +31,7 @@ class Dashboard(View):
     dashboard_template = 'SMdashboard/dashboard.html'
 
     def dashboard_info(self, request):
-        # from .amc_task import amcSms
-        # a = amcSms()
-        # print(a)
+
         company_info = CompanyDetail.objects.all().values('pk', 'name').annotate(
 
             company_address=Concat(
@@ -88,9 +86,17 @@ class Dashboard(View):
         #     context.update({'employee_photo': each.photo.url})
         if not len(company) == 0:
             context.update({"company": company[0]})
-        print(context)
+
         amc_info = amc.AMC.objects.all().count()
         context.update({"amc_info": amc_info})
+        amcToday = list(amc.AMCRecord.objects.filter(date=datetime.datetime.today().date()).values("date",
+                                                                                              "client", "phone"))
+        # print(amcToday)
+        from .amc_task import amcAlert
+        amc_alert = amcAlert()
+        # print(amc_alert)
+        context.update({'amc_alert': amc_alert, 'amcToday': amcToday})
+        print(context)
         # print(timezone.now().time())
         return context
 
