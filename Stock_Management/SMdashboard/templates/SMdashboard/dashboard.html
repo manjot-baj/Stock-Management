@@ -158,7 +158,7 @@
             <h3 class="tile-title">AMC Alert for Tommorrow</h3>
             <div>
                 {% if amc_alert == "Tommorrow No AMC Service" %}
-                Tommorrow No AMC Service
+                <strong>Tommorrow No AMC Service</strong>
                 {% else %}
                 <strong>The Following Clients have AMC Service Tommorrow</strong><br/><br/>
                 <table class="table table-hover table-striped">
@@ -187,9 +187,7 @@
         <div class="tile">
             <h3 class="tile-title"> Today AMC Service</h3>
             <div>
-                {% if amc_alert == "Today No AMC Service" %}
-                Today No AMC Service
-                {% else %}
+                {% if amcToday %}
                 <strong>The Following Clients have AMC Service Today</strong><br/><br/>
                 <table class="table table-hover table-striped">
                     <thead>
@@ -209,6 +207,8 @@
                     {% endfor %}
                     </tbody>
                 </table>
+                {% else %}
+                <strong>Today No AMC Service</strong>
                 {% endif %}
             </div>
         </div>

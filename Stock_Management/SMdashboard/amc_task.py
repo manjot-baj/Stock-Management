@@ -78,8 +78,6 @@ def amcAlert():
         amc_client=F('client_name__name'),
         amc_client_phone=F('client_name__phone'),
     ))
-    for i in data:
-        print(i.get('first_service_date') - timedelta(days=1))
 
     for each in data:
         if each.get('first_service_date') - timedelta(days=1) == datetime.today().date() \

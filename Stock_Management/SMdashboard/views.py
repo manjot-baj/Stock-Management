@@ -90,12 +90,14 @@ class Dashboard(View):
         amc_info = amc.AMC.objects.all().count()
         context.update({"amc_info": amc_info})
         amcToday = list(amc.AMCRecord.objects.filter(date=datetime.datetime.today().date()).values("date",
-                                                                                              "client", "phone"))
+                                                                                          "client", "phone"))
         # print(amcToday)
+        if not len(amcToday) == 0:
+            context.update({'amcToday': amcToday})
         from .amc_task import amcAlert
         amc_alert = amcAlert()
         # print(amc_alert)
-        context.update({'amc_alert': amc_alert, 'amcToday': amcToday})
+        context.update({'amc_alert': amc_alert})
         print(context)
         # print(timezone.now().time())
         return context
