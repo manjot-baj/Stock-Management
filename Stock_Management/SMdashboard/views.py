@@ -31,7 +31,9 @@ class Dashboard(View):
     dashboard_template = 'SMdashboard/dashboard.html'
 
     def dashboard_info(self, request):
-
+        # from .amc_task import amcSms
+        # a = amcSms()
+        # print(a)
         company_info = CompanyDetail.objects.all().values('pk', 'name').annotate(
 
             company_address=Concat(
@@ -86,19 +88,9 @@ class Dashboard(View):
         #     context.update({'employee_photo': each.photo.url})
         if not len(company) == 0:
             context.update({"company": company[0]})
-
+        print(context)
         amc_info = amc.AMC.objects.all().count()
         context.update({"amc_info": amc_info})
-        amcToday = list(amc.AMCRecord.objects.filter(date=datetime.datetime.today().date()).values("date",
-                                                                                          "client", "phone"))
-        # print(amcToday)
-        if not len(amcToday) == 0:
-            context.update({'amcToday': amcToday})
-        from .amc_task import amcAlert
-        amc_alert = amcAlert()
-        # print(amc_alert)
-        context.update({'amc_alert': amc_alert})
-        print(context)
         # print(timezone.now().time())
         return context
 
@@ -1104,9 +1096,11 @@ class Service(DashboardLoginRequiredMixin, ListView):
 
     def get(self, request, *args, **kwargs):
         if 'service_form' in kwargs:
-            clients = Client.objects.all()
-
-            return render(request, self.serviceForm_template, {'service': self.form(), 'clients': clients})
+            c = Client.objects.all()
+            print(c)
+            for i c:
+                print()
+            return render(request, self.serviceForm_template, {'service': self.form()})
         elif 'service_id' in kwargs:
             from .reports import ServiceReportInvoice
             invoice_data = ServiceReportInvoice().get_data(request, service_id=kwargs.get('service_id'))
