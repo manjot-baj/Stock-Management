@@ -30,7 +30,13 @@
                     <div class="form-group row">
                         <label class="control-label col-md-2">{{service.client.label}} : </label>
                         <div class="col-md-3">
-                            {{service.client}}
+<!--                            {{service.client}}-->
+                            <select name="client" id="client">
+                                <option value="0">Select Client</option>
+                                {% for item in clients %}
+                                    <option value="{{item.id}}">{{item.name}}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                         <a href="{% url 'new_client_add' %}">
                             <button id="add_more" type="button" ><i class="fa fa-plus"
@@ -88,13 +94,10 @@
 <script>
     $(document).ready(function()
     {
-        var x = document.getElementById("id_client").value;
-        [
 
-        ];
-        $("#clientName").select2(
+        $("#client").select2(
         {
-            data:x
+
         }
         );
 

@@ -1096,7 +1096,9 @@ class Service(DashboardLoginRequiredMixin, ListView):
 
     def get(self, request, *args, **kwargs):
         if 'service_form' in kwargs:
-            return render(request, self.serviceForm_template, {'service': self.form()})
+            clients = Client.objects.all()
+
+            return render(request, self.serviceForm_template, {'service': self.form(), 'clients': clients})
         elif 'service_id' in kwargs:
             from .reports import ServiceReportInvoice
             invoice_data = ServiceReportInvoice().get_data(request, service_id=kwargs.get('service_id'))
