@@ -121,7 +121,8 @@
                 <div class="tile-footer">
                     <div class="row">
                         <div class="col-md-5 col-md-offset-3">
-                            <a class='btn btn-primary' role='button' href=" {% url 'enquiry_edit_form' data.pk %} ">Edit</a>
+                            <a class='btn btn-primary' role='button'
+                               href=" {% url 'enquiry_edit_form' data.pk %} ">Edit</a>
                         </div>&nbsp;&nbsp;&nbsp;
 
                         <div class="col-md-5 col-md-offset-3">
@@ -139,7 +140,7 @@
 
         </div>
         <div class="col-md-5">
-            {%  for each in data_list %}
+            {% for each in data_list %}
             <div class="tile">
                 <h3 class="tile-title">Action Entry No : {{forloop.counter}}</h3>
                 <div class="tile-body">

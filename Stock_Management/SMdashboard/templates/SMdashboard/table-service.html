@@ -3,10 +3,10 @@
 {% block content %}
 {{ block.super }}
 <div class="app-title">
-      <div>
+    <div>
         <h1><i class="fa fa-th-list"></i> Service </h1>
         <p>Service</p>
-      </div>
+    </div>
     <div class="input-group input-daterange  col-md-3 ">
         <input type="text" autocomplete="off" class="form-control" id="fromDate" value="" placeholder="From Date">
         <div class="input-group-append"><span class="input-group-text">-</span></div>
@@ -15,29 +15,29 @@
             <button id="id_btn_filter_date" class="btn btn-primary fa fa-filter" onclick="filterByDate()"></button>
         </div>
     </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
+</div>
+<div class="row">
+    <div class="col-md-12">
         <div class="tile">
-          <div class="tile-body">
-            <div class="table-responsive">
-              <table class="table table-hover table-striped" id="sampleTable">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Service No.</th>
-                    <th>Client Name</th>
-                    <th>Service Type</th>
-                      <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody></tbody>
-              </table>
+            <div class="tile-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped" id="sampleTable">
+                        <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Service No.</th>
+                            <th>Client Name</th>
+                            <th>Service Type</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
+</div>
 {% endblock %}
 {% block script %}
 {{ block.super }}
@@ -168,6 +168,7 @@ var table = $('#sampleTable').DataTable({
         })
      }
 
+
 </script>
 
 <script type="text/javascript">
@@ -179,7 +180,8 @@ var table = $('#sampleTable').DataTable({
       	ga('create', 'UA-72504830-1', 'auto');
       	ga('send', 'pageview');
       }
-    </script>
+
+</script>
 {% endblock %}
 
 

@@ -1,6 +1,8 @@
 from django.db import models
 # from django.utils import timezone
 from .models import BaseModel
+
+
 # from .company_data import Client, Vendor
 # from .PO import POData
 
@@ -22,7 +24,6 @@ class Product(BaseModel):
 
     def __str__(self):
         return self.name
-
 
 # class Invoice(BaseModel):
 #     client_name = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)

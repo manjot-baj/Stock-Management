@@ -3,42 +3,42 @@
 {% block content %}
 {{ block.super }}
 <div class="app-title">
-      <div>
+    <div>
         <h1><i class="fa fa-th-list"></i>Products</h1>
         <p>Products</p>
-      </div>
     </div>
-    <div class="row">
-      <div class="col-md-12">
+</div>
+<div class="row">
+    <div class="col-md-12">
         <div class="tile">
-          <div class="tile-body">
-            <div class="table-responsive">
-              <table class="table table-hover table-striped" id="sampleTable">
-                <thead>
-                  <tr>
-                    <th>Product Name</th>
-                    <th>Unit Price</th>
-                    <th>UoM</th>
-                     <th>Quantity</th>
-                      <th>Description</th>
-                      <th>Type</th>
-                      <th>Purchase Rate</th>
-                      <th>Purchase Rate Currency</th>
-                      <th>HNS/SAC</th>
-                      <th>SKU</th>
-                      <th>Tax(%)</th>
-                      <th>CESS(%)</th>
-                      <th>CESS</th>
+            <div class="tile-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped" id="sampleTable">
+                        <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Unit Price</th>
+                            <th>UoM</th>
+                            <th>Quantity</th>
+                            <th>Description</th>
+                            <th>Type</th>
+                            <th>Purchase Rate</th>
+                            <th>Purchase Rate Currency</th>
+                            <th>HNS/SAC</th>
+                            <th>SKU</th>
+                            <th>Tax(%)</th>
+                            <th>CESS(%)</th>
+                            <th>CESS</th>
 
-                  </tr>
-                </thead>
-                <tbody></tbody>
-              </table>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
+</div>
 {% endblock %}
 {% block script %}
 {{ block.super }}
@@ -79,5 +79,6 @@ var table = $('#sampleTable').DataTable({
 
   data: {% autoescape off %}{{data}}{% endautoescape %}
   });
+
 </script>
 {% endblock %}

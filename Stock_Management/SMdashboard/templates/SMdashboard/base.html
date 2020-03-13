@@ -102,7 +102,8 @@
         <li class="dropdown"><a class="app-nav__item" href="#" data-toggle="dropdown" aria-label="Open Profile Menu"><i
                 class="fa fa-user fa-lg"></i></a>
             <ul class="dropdown-menu settings-menu dropdown-menu-right">
-                <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fa fa-sign-out fa-lg"></i> Logout</a></li>
+                <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fa fa-sign-out fa-lg"></i> Logout</a>
+                </li>
             </ul>
         </li>
     </ul>
@@ -110,10 +111,13 @@
 <!-- Sidebar menu-->
 <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
 <aside class="app-sidebar">
-    <div class="app-sidebar__user"><img class="app-sidebar__user-avatar" src="{% static 'SMdashboard/images/avatar-icon-male-person-symbol-circle-user-vector-20924449.jpg' %}" height="40", width="40" alt="User Image">
+    <div class="app-sidebar__user"><img class="app-sidebar__user-avatar"
+                                        src="{% static 'SMdashboard/images/avatar-icon-male-person-symbol-circle-user-vector-20924449.jpg' %}"
+                                        height="40" , width="40" alt="User Image">
         <div>
-            <p class="app-sidebar__user-name">{% firstof user.get_full_name  user.get_username %}</p>
-          <p class="app-sidebar__user-designation">{% if request.user|is_owner %}Owner{% else %}Employee{% endif %}</p>
+            <p class="app-sidebar__user-name">{% firstof user.get_full_name user.get_username %}</p>
+            <p class="app-sidebar__user-designation">{% if request.user|is_owner %}Owner{% else %}Employee{% endif
+                %}</p>
         </div>
     </div>
     <ul class="app-menu">
@@ -128,7 +132,8 @@
                     Add Client Manually</a></li>
                 <li><a class="treeview-item" href="{% url 'new_client' %}"><i class="icon fa fa-circle-o"></i>
                     Add Client Bulk</a></li>
-                <li><a class="treeview-item" href="{% url 'client_data' %}"><i class="icon fa fa-circle-o"></i>Clients</a></li>
+                <li><a class="treeview-item" href="{% url 'client_data' %}"><i
+                        class="icon fa fa-circle-o"></i>Clients</a></li>
             </ul>
         </li>
         {% if request.user|is_owner %}
@@ -140,34 +145,40 @@
                     Add Vendor Manually</a></li>
                 <li><a class="treeview-item" href="{% url 'new_vendor' %}"><i class="icon fa fa-circle-o"></i>
                     Add Vendor Bulk</a></li>
-                <li><a class="treeview-item" href="{% url 'vendor_data' %}"><i class="icon fa fa-circle-o"></i>Vendors</a></li>
+                <li><a class="treeview-item" href="{% url 'vendor_data' %}"><i
+                        class="icon fa fa-circle-o"></i>Vendors</a></li>
             </ul>
         </li>
         <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview">
             <i class="app-menu__icon fa fa-file" aria-hidden="true"></i><span class="app-menu__label">AMC</span>
             <i class="treeview-indicator fa fa-angle-right"></i></a>
             <ul class="treeview-menu">
-                <li><a class="treeview-item" href="{% url 'amc_data' %}"><i class="icon fa fa-circle-o"></i>AMC's</a></li>
+                <li><a class="treeview-item" href="{% url 'amc_data' %}"><i class="icon fa fa-circle-o"></i>AMC's</a>
+                </li>
             </ul>
         </li>
 
         <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview">
-            <i class="app-menu__icon fa fa-address-card-o" aria-hidden="true"></i><span class="app-menu__label">Employee</span>
+            <i class="app-menu__icon fa fa-address-card-o" aria-hidden="true"></i><span
+                class="app-menu__label">Employee</span>
             <i class="treeview-indicator fa fa-angle-right"></i></a>
             <ul class="treeview-menu">
                 <li><a class="treeview-item" href="{% url 'employee_form' %}"><i class="icon fa fa-circle-o"></i>
                     Add Employee</a></li>
-                <li><a class="treeview-item" href="{% url 'employee' %}"><i class="icon fa fa-circle-o"></i>Employees</a></li>
+                <li><a class="treeview-item" href="{% url 'employee' %}"><i
+                        class="icon fa fa-circle-o"></i>Employees</a></li>
             </ul>
         </li>
 
         <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview">
-            <i class="app-menu__icon fa fa-shopping-bag" aria-hidden="true"></i><span class="app-menu__label">Product</span>
+            <i class="app-menu__icon fa fa-shopping-bag" aria-hidden="true"></i><span
+                class="app-menu__label">Product</span>
             <i class="treeview-indicator fa fa-angle-right"></i></a>
             <ul class="treeview-menu">
                 <li><a class="treeview-item" href="{% url 'new_product' %}"><i class="icon fa fa-circle-o"></i>
                     Add Product</a></li>
-                <li><a class="treeview-item" href="{% url 'product_data' %}"><i class="icon fa fa-circle-o"></i>Products</a></li>
+                <li><a class="treeview-item" href="{% url 'product_data' %}"><i class="icon fa fa-circle-o"></i>Products</a>
+                </li>
             </ul>
         </li>
 
@@ -177,27 +188,32 @@
             <ul class="treeview-menu">
                 <li><a class="treeview-item" href="{% url 'daybook_form' %}"><i class="icon fa fa-circle-o"></i>
                     Add Day Book Entry</a></li>
-                <li><a class="treeview-item" href="{% url 'daybook' %}"><i class="icon fa fa-circle-o"></i>Day Book Entry's</a></li>
+                <li><a class="treeview-item" href="{% url 'daybook' %}"><i class="icon fa fa-circle-o"></i>Day Book
+                    Entry's</a></li>
             </ul>
         </li>
         {% endif %}
         <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview">
-            <i class="app-menu__icon fa fa-question-circle" aria-hidden="true"></i><span class="app-menu__label">Enquiry</span>
+            <i class="app-menu__icon fa fa-question-circle" aria-hidden="true"></i><span
+                class="app-menu__label">Enquiry</span>
             <i class="treeview-indicator fa fa-angle-right"></i></a>
             <ul class="treeview-menu">
                 <li><a class="treeview-item" href="{% url 'enquiry_form' %}"><i class="icon fa fa-circle-o"></i>
                     Add Enquiry</a></li>
-                <li><a class="treeview-item" href="{% url 'enquiry' %}"><i class="icon fa fa-circle-o"></i>Enquiries</a></li>
+                <li><a class="treeview-item" href="{% url 'enquiry' %}"><i class="icon fa fa-circle-o"></i>Enquiries</a>
+                </li>
             </ul>
         </li>
 
         <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview">
-            <i class="app-menu__icon fa fa-briefcase" aria-hidden="true"></i><span class="app-menu__label">Service</span>
+            <i class="app-menu__icon fa fa-briefcase" aria-hidden="true"></i><span
+                class="app-menu__label">Service</span>
             <i class="treeview-indicator fa fa-angle-right"></i></a>
             <ul class="treeview-menu">
                 <li><a class="treeview-item" href="{% url 'service_form' %}"><i class="icon fa fa-circle-o"></i>
                     Add Service</a></li>
-                <li><a class="treeview-item" href="{% url 'service' %}"><i class="icon fa fa-circle-o"></i>Services</a></li>
+                <li><a class="treeview-item" href="{% url 'service' %}"><i class="icon fa fa-circle-o"></i>Services</a>
+                </li>
             </ul>
         </li>
     </ul>
@@ -264,6 +280,7 @@
       var pieChart = new Chart(ctxp).Pie(pdata);
 
 
+
 </script>
 <!-- Google analytics script-->
 <script type="text/javascript">
@@ -275,6 +292,7 @@
       	ga('create', 'UA-72504830-1', 'auto');
       	ga('send', 'pageview');
       }
+
 
 
 </script>

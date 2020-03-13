@@ -10,6 +10,7 @@ from .service import *
 from django.urls import path, reverse
 from django.utils.html import format_html
 from SMdashboard import reports
+
 admin.site.site_header = 'Storeck'
 admin.site.site_title = 'Storeck'
 admin.site.index_title = 'Storeck Administration'
@@ -59,7 +60,7 @@ class EnquiryAdmin(admin.ModelAdmin):
                     'write_user']
     list_select_related = ['customer_type', 'enquiry_type']
     list_filter = ['customer_type', 'enquiry_date', 'create_user',
-                    'write_user']
+                   'write_user']
     search_fields = ['first_name', 'enquiry_date', 'mobile_no']
 
 

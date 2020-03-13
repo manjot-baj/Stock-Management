@@ -3,10 +3,10 @@
 {% block content %}
 {{ block.super }}
 <div class="app-title">
-      <div>
+    <div>
         <h1><i class="fa fa-th-list"></i>Day Book Entry's</h1>
         <p>Entry's</p>
-      </div>
+    </div>
     <div class="input-group input-daterange  col-md-3 ">
         <input type="text" autocomplete="off" class="form-control" id="fromDate" value="" placeholder="From Date">
         <div class="input-group-append"><span class="input-group-text">-</span></div>
@@ -15,38 +15,38 @@
             <button id="id_btn_filter_date" class="btn btn-primary fa fa-filter" onclick="filterByDate()"></button>
         </div>
     </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
+</div>
+<div class="row">
+    <div class="col-md-12">
         <div class="tile">
-          <div class="tile-body">
-            <div class="table-responsive">
-              <table class="table table-hover table-striped" id="sampleTable">
-                <thead>
-                  <tr>
-                    <th>Entry No</th>
-                    <th>Date</th>
-                    <th>Type</th>
-                      <th>Credit</th>
-                      <th>Debit</th>
-                  </tr>
-                </thead>
-                <tbody></tbody>
-              </table>
-            </div>
-            <div class="tile-footer">
-                        <div class="row text-right">
-                            <div class="col-md-8 col-md-offset-3 " id="total">
-                                  Total Credited = <label for="id_credited">{{credited}}</label>&nbsp;&nbsp;|&nbsp;&nbsp;
-                                  Total Debited = <label for="id_debited">{{debited}}</label>  |
-                                  Total Amount = <label for="id_total">{{total}}</label>
-                            </div>
+            <div class="tile-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped" id="sampleTable">
+                        <thead>
+                        <tr>
+                            <th>Entry No</th>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Credit</th>
+                            <th>Debit</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="tile-footer">
+                    <div class="row text-right">
+                        <div class="col-md-8 col-md-offset-3 " id="total">
+                            Total Credited = <label for="id_credited">{{credited}}</label>&nbsp;&nbsp;|&nbsp;&nbsp;
+                            Total Debited = <label for="id_debited">{{debited}}</label> |
+                            Total Amount = <label for="id_total">{{total}}</label>
                         </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
+</div>
 
 {% endblock %}
 {% block script %}
@@ -175,5 +175,6 @@ var table = $('#sampleTable').DataTable({
             }
         })
      }
+
 </script>
 {% endblock %}

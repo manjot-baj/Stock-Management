@@ -3,45 +3,45 @@
 {% block content %}
 {{ block.super }}
 <div class="app-title">
-      <div>
+    <div>
         <h1><i class="fa fa-th-list"></i>Vendors</h1>
         <p>Vendors</p>
-      </div>
     </div>
-    <div class="row">
-      <div class="col-md-12">
+</div>
+<div class="row">
+    <div class="col-md-12">
         <div class="tile">
-          <div class="tile-body">
-            <div class="table-responsive">
-              <table class="table table-hover table-striped" id="sampleTable">
-                <thead>
-                  <tr>
-                    <th>Vendor Name</th>
-                    <th>Contact Name</th>
-                    <th>Vendor TIN</th>
-                     <th>Email</th>
-                      <th>Phone</th>
-                      <th>Billing Address</th>
-                      <th>Billing Zip</th>
-                      <th>Billing City</th>
-                      <th>Billing State</th>
-                      <th>Billing Country</th>
-                      <th>Shipping Address</th>
-                      <th>Shipping Zip</th>
-                      <th>Shipping City</th>
-                      <th>Shipping State</th>
-                      <th>Shipping Country</th>
-                      <th>Private Details</th>
-                      <th> GSTIN</th>
-                  </tr>
-                </thead>
-                <tbody></tbody>
-              </table>
+            <div class="tile-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped" id="sampleTable">
+                        <thead>
+                        <tr>
+                            <th>Vendor Name</th>
+                            <th>Contact Name</th>
+                            <th>Vendor TIN</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Billing Address</th>
+                            <th>Billing Zip</th>
+                            <th>Billing City</th>
+                            <th>Billing State</th>
+                            <th>Billing Country</th>
+                            <th>Shipping Address</th>
+                            <th>Shipping Zip</th>
+                            <th>Shipping City</th>
+                            <th>Shipping State</th>
+                            <th>Shipping Country</th>
+                            <th>Private Details</th>
+                            <th> GSTIN</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
+</div>
 {% endblock %}
 {% block script %}
 {{ block.super }}
@@ -84,5 +84,6 @@ var table = $('#sampleTable').DataTable({
 		],
   data: {% autoescape off %}{{data}}{% endautoescape %}
   });
+
 </script>
 {% endblock %}

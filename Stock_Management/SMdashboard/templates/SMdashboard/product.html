@@ -14,162 +14,162 @@
             <div class="tile-body">
 
 
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">Name: </label>
-                        <div class="col-md-8">
-                            {{product_name}}
-                        </div>
+                <div class="form-group row">
+                    <label class="control-label col-md-2">Name: </label>
+                    <div class="col-md-8">
+                        {{product_name}}
                     </div>
-                    {% if product_unit_price == "" %}
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">Unit Price: </label>
-                        <div class="col-md-8">
-                            <h4> - </h4>
-                        </div>
+                </div>
+                {% if product_unit_price == "" %}
+                <div class="form-group row">
+                    <label class="control-label col-md-2">Unit Price: </label>
+                    <div class="col-md-8">
+                        <h4> - </h4>
                     </div>
-                    {% else %}
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">Unit Price: </label>
-                        <div class="col-md-8">
-                            {{product_unit_price}}
-                        </div>
+                </div>
+                {% else %}
+                <div class="form-group row">
+                    <label class="control-label col-md-2">Unit Price: </label>
+                    <div class="col-md-8">
+                        {{product_unit_price}}
                     </div>
-                    {% endif %}
+                </div>
+                {% endif %}
 
 
-                    {% if product_u_o_m == "" %}
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">U O M: </label>
-                        <div class="col-md-8">
-                            <h4> - </h4>
-                        </div>
+                {% if product_u_o_m == "" %}
+                <div class="form-group row">
+                    <label class="control-label col-md-2">U O M: </label>
+                    <div class="col-md-8">
+                        <h4> - </h4>
                     </div>
-                    {% else %}
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">U O M: </label>
-                        <div class="col-md-8">
-                            {{product_u_o_m}}
-                        </div>
+                </div>
+                {% else %}
+                <div class="form-group row">
+                    <label class="control-label col-md-2">U O M: </label>
+                    <div class="col-md-8">
+                        {{product_u_o_m}}
                     </div>
-                    {% endif %}
+                </div>
+                {% endif %}
 
 
-                    {% if product_quantity == "" %}
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">Quantity: </label>
-                        <div class="col-md-8">
-                           <h4> - </h4>
-                        </div>
+                {% if product_quantity == "" %}
+                <div class="form-group row">
+                    <label class="control-label col-md-2">Quantity: </label>
+                    <div class="col-md-8">
+                        <h4> - </h4>
                     </div>
-                    {% else %}
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">Quantity: </label>
-                        <div class="col-md-8">
-                            {{product_quantity}}
-                        </div>
+                </div>
+                {% else %}
+                <div class="form-group row">
+                    <label class="control-label col-md-2">Quantity: </label>
+                    <div class="col-md-8">
+                        {{product_quantity}}
                     </div>
-                    {% endif %}
+                </div>
+                {% endif %}
 
-                    {% if product_description == "" %}
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">Description: </label>
-                        <div class="col-md-8">
-                            <h4> - </h4>
-                        </div>
+                {% if product_description == "" %}
+                <div class="form-group row">
+                    <label class="control-label col-md-2">Description: </label>
+                    <div class="col-md-8">
+                        <h4> - </h4>
                     </div>
-                    {% else %}
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">Description: </label>
-                        <div class="col-md-8">
-                            {{product_description}}
-                        </div>
+                </div>
+                {% else %}
+                <div class="form-group row">
+                    <label class="control-label col-md-2">Description: </label>
+                    <div class="col-md-8">
+                        {{product_description}}
                     </div>
-                    {% endif %}
-
-
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">Type: </label>
-                        <div class="col-md-8">
-                            {{product_product_type}}
-                        </div>
-                    </div>
+                </div>
+                {% endif %}
 
 
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">Purchase Rate: </label>
-                        <div class="col-md-8">
-                            {{product_purchase_rate}}
-                        </div>
+                <div class="form-group row">
+                    <label class="control-label col-md-2">Type: </label>
+                    <div class="col-md-8">
+                        {{product_product_type}}
                     </div>
+                </div>
 
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">Purchase Rate Currency: </label>
-                        <div class="col-md-8">
-                            {{product_purchase_rate_currency}}
-                        </div>
-                    </div>
 
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">HSN or SAC: </label>
-                        <div class="col-md-8">
-                            {{product_h_s_n_or_s_a_c}}
-                        </div>
+                <div class="form-group row">
+                    <label class="control-label col-md-2">Purchase Rate: </label>
+                    <div class="col-md-8">
+                        {{product_purchase_rate}}
                     </div>
+                </div>
 
-                    {% if product_s_k_u == "" %}
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">SKU: </label>
-                        <div class="col-md-8">
-                            <h4> - </h4>
-                        </div>
+                <div class="form-group row">
+                    <label class="control-label col-md-2">Purchase Rate Currency: </label>
+                    <div class="col-md-8">
+                        {{product_purchase_rate_currency}}
                     </div>
-                    {% else %}
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">SKU: </label>
-                        <div class="col-md-8">
-                            {{product_s_k_u}}
-                        </div>
-                    </div>
-                    {% endif %}
+                </div>
 
-                     <div class="form-group row">
-                        <label class="control-label col-md-2">Tax: </label>
-                        <div class="col-md-8">
-                            {{product_tax}}
-                        </div>
+                <div class="form-group row">
+                    <label class="control-label col-md-2">HSN or SAC: </label>
+                    <div class="col-md-8">
+                        {{product_h_s_n_or_s_a_c}}
                     </div>
+                </div>
 
-                    {% if product_c_e_s_s_percent == "" %}
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">CESS(%): </label>
-                        <div class="col-md-8">
-                            <h4> - </h4>
-                        </div>
+                {% if product_s_k_u == "" %}
+                <div class="form-group row">
+                    <label class="control-label col-md-2">SKU: </label>
+                    <div class="col-md-8">
+                        <h4> - </h4>
                     </div>
-                    {% else %}
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">CESS(%): </label>
-                        <div class="col-md-8">
-                            {{product_c_e_s_s_percent}}
-                        </div>
+                </div>
+                {% else %}
+                <div class="form-group row">
+                    <label class="control-label col-md-2">SKU: </label>
+                    <div class="col-md-8">
+                        {{product_s_k_u}}
                     </div>
-                    {% endif %}
+                </div>
+                {% endif %}
 
-                    {% if product_c_e_s_s == "" %}
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">CESS: </label>
-                        <div class="col-md-8">
-                            <h4> - </h4>
-                        </div>
+                <div class="form-group row">
+                    <label class="control-label col-md-2">Tax: </label>
+                    <div class="col-md-8">
+                        {{product_tax}}
                     </div>
-                    {% else %}
-                    <div class="form-group row">
-                        <label class="control-label col-md-2">CESS: </label>
-                        <div class="col-md-8">
-                            {{product_c_e_s_s}}
-                        </div>
+                </div>
+
+                {% if product_c_e_s_s_percent == "" %}
+                <div class="form-group row">
+                    <label class="control-label col-md-2">CESS(%): </label>
+                    <div class="col-md-8">
+                        <h4> - </h4>
                     </div>
-                    {% endif %}
+                </div>
+                {% else %}
+                <div class="form-group row">
+                    <label class="control-label col-md-2">CESS(%): </label>
+                    <div class="col-md-8">
+                        {{product_c_e_s_s_percent}}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if product_c_e_s_s == "" %}
+                <div class="form-group row">
+                    <label class="control-label col-md-2">CESS: </label>
+                    <div class="col-md-8">
+                        <h4> - </h4>
+                    </div>
+                </div>
+                {% else %}
+                <div class="form-group row">
+                    <label class="control-label col-md-2">CESS: </label>
+                    <div class="col-md-8">
+                        {{product_c_e_s_s}}
+                    </div>
+                </div>
+                {% endif %}
 
             </div>
 

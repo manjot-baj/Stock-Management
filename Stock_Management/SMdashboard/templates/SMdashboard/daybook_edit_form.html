@@ -17,42 +17,48 @@
                 <section class="invoice">
                     <div class="row mb-4">
                         <div class="col-6">
-                            <h2 class="page-header">DayBook No : {{editDaybook.number.value}} {{editDaybook.number}}</h2>
+                            <h2 class="page-header">DayBook No : {{editDaybook.number.value}}
+                                {{editDaybook.number}}</h2>
                         </div>
                         <div class="col-6">
                             <h5 class="text-right"> Date:
                                 {{editDaybook.date.value|date:'d-M-Y'}}
-                            {{editDaybook.date}}</h5>
+                                {{editDaybook.date}}</h5>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="control-label col-md-2"><strong>{{editDaybook.customer_type.label}} : </strong></label>
+                        <label class="control-label col-md-2"><strong>{{editDaybook.customer_type.label}}
+                            : </strong></label>
                         <div class="col-md-3" id="mySelect" onchange="myFunction()">
                             {{editDaybook.customer_type}}
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="control-label col-md-2" id="customer_name"><strong>{{editDaybook.customer_name.label}} : </strong></label>
+                        <label class="control-label col-md-2" id="customer_name"><strong>{{editDaybook.customer_name.label}}
+                            : </strong></label>
                         <div class="col-md-3">
                             {{editDaybook.customer_name}}
                         </div>
                     </div>
                     <div class="form-group row employee-field">
-                        <label class="control-label col-md-2" id="employee_name"><strong>{{editDaybook.employee_name.label}} : </strong></label>
+                        <label class="control-label col-md-2" id="employee_name"><strong>{{editDaybook.employee_name.label}}
+                            : </strong></label>
                         <div class="col-md-3">
                             {{editDaybook.employee_name}}
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label class="control-label col-md-2" id="vendor_name"><strong>{{editDaybook.vendor_name.label}} : </strong></label>
+                        <label class="control-label col-md-2" id="vendor_name"><strong>{{editDaybook.vendor_name.label}}
+                            : </strong></label>
                         <div class="col-md-3">
                             {{editDaybook.vendor_name}}
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label class="control-label col-md-2" id="other_name"><strong>{{editDaybook.name.label}} : </strong></label>
+                        <label class="control-label col-md-2" id="other_name"><strong>{{editDaybook.name.label}}
+                            : </strong></label>
                         <div class="col-md-3">
                             {{editDaybook.name}}
                         </div>
@@ -60,7 +66,8 @@
 
 
                     <div class="form-group row">
-                        <label class="control-label col-md-2"><strong>{{editDaybook.description.label}} : </strong></label>
+                        <label class="control-label col-md-2"><strong>{{editDaybook.description.label}}
+                            : </strong></label>
                         <div class="col-md-3">
                             {{editDaybook.description}}
                         </div>
@@ -68,24 +75,25 @@
 
                     <div class="form-group row">
                         <label class="control-label col-md-2"><strong>{{editDaybook.status.label}} : </strong></label>
-                        <div class="col-md-3"id="my_status_Select" onchange="my_status_Function()">
+                        <div class="col-md-3" id="my_status_Select" onchange="my_status_Function()">
                             {{editDaybook.status}}
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label class="control-label col-md-2" id="credit_amount"><strong>{{editDaybook.credit_amount.label}} : </strong></label>
+                        <label class="control-label col-md-2" id="credit_amount"><strong>{{editDaybook.credit_amount.label}}
+                            : </strong></label>
                         <div class="col-md-3">
                             {{editDaybook.credit_amount}}
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="control-label col-md-2"id="debit_amount"><strong>{{editDaybook.debit_amount.label}} : </strong></label>
+                        <label class="control-label col-md-2" id="debit_amount"><strong>{{editDaybook.debit_amount.label}}
+                            : </strong></label>
                         <div class="col-md-3">
                             {{editDaybook.debit_amount}}
                         </div>
                     </div>
-
 
 
                     <div class="tile-footer">
@@ -105,9 +113,9 @@
     </div>
 </div>
 <script
-            src="https://code.jquery.com/jquery-3.3.1.min.js"
-            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-            crossorigin="anonymous">
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous">
 </script>
 <script>
     function myFunction() {
@@ -170,5 +178,6 @@ function my_status_Function() {
         document.getElementById("debit_amount").style.visibility = "visible";
     }
 }
+
 </script>
 {% endblock %}

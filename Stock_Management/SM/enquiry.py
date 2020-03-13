@@ -39,7 +39,7 @@ class Enquiry(BaseModel):
 
 
 class EnquiryRecord(BaseModel):
-    enquiryDetails = models.ForeignKey(Enquiry, on_delete=models.CASCADE, null=True, blank=False,)
+    enquiryDetails = models.ForeignKey(Enquiry, on_delete=models.CASCADE, null=True, blank=False, )
     date = models.DateTimeField(default=timezone.now, null=True, blank=False)
     statusType = (
         ("Pending", "Pending"),
