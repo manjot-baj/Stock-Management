@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db.models.functions import Coalesce, Concat
 from braces.views import GroupRequiredMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -96,7 +97,8 @@ class Dashboard(View):
         context.update({"amc_info": amc_info})
         amcToday = list(amc.AMCRecord.objects.filter(date=datetime.datetime.today().date(),
                                                      company_id=request.session.get('company_id')).values("date",
-                                                                                                   "client", "phone"))
+                                                                                                          "client",
+                                                                                                          "phone"))
         # print(amcToday)
         if not len(amcToday) == 0:
             context.update({'amcToday': amcToday})
@@ -124,11 +126,13 @@ class Dashboard(View):
             username = request.POST['username']
             password = request.POST['password']
             user = authenticate(request, username=username, password=password)
-            if user:
+            if not user.is_superuser:
                 a = login(request, user)
                 company = list(CompanyDetail.objects.filter(employee__user=request.user.id).values('pk'))
                 request.session['company_id'] = company[0]['pk']
-                employee_photo = list(employee_data.Employee.objects.filter(user_id=request.user.id).annotate(
+                employee_photo = list(employee_data.Employee.objects.filter(user_id=request.user.id,
+                                                                            company_id=request.session.get('company_id')
+                                                                            ).annotate(
                     employee=F('name'),
                 ))
                 for each in employee_photo:
@@ -645,11 +649,12 @@ class Enquiry(DashboardLoginRequiredMixin, ListView):
 
     model = enquiry.Enquiry
 
-    def get_data(self, request, *args, **kwargs):
+    def get_data(self, request, company_id=None, *args, **kwargs):
         if request.user.groups.filter(name=OWNER_GROUP).exists():
             if 'filter_date' in kwargs:
                 data = self.model.objects.filter(enquiry_date__gte=request.POST.get('fromDate'),
-                                                 enquiry_date__lte=request.POST.get('toDate')).values(
+                                                 enquiry_date__lte=request.POST.get('toDate'),
+                                                 company_id=company_id).values(
                     'first_name', 'last_name', 'mobile_no',
                     'address', 'pk',
                 ).annotate(
@@ -666,7 +671,7 @@ class Enquiry(DashboardLoginRequiredMixin, ListView):
                 ).order_by("-date")
                 return list(data)
 
-            data = self.model.objects.all().values(
+            data = self.model.objects.filter(company_id=company_id).values(
                 'first_name', 'last_name', 'mobile_no',
                 'address', 'pk',
 
@@ -686,7 +691,8 @@ class Enquiry(DashboardLoginRequiredMixin, ListView):
         elif 'filter_date' in kwargs:
             data = self.model.objects.filter(create_user_id=request.user,
                                              enquiry_date__gte=request.POST.get('fromDate'),
-                                             enquiry_date__lte=request.POST.get('toDate')).values(
+                                             enquiry_date__lte=request.POST.get('toDate'),
+                                             company_id=company_id).values(
                 'first_name', 'last_name', 'mobile_no',
                 'address', 'pk',
             ).annotate(
@@ -702,7 +708,7 @@ class Enquiry(DashboardLoginRequiredMixin, ListView):
                                        output_field=CharField()),
             ).order_by("-date")
             return list(data)
-        data = self.model.objects.filter(create_user_id=request.user).values(
+        data = self.model.objects.filter(create_user_id=request.user, company_id=company_id).values(
             'first_name', 'last_name', 'mobile_no',
             'address', 'pk',
 
@@ -725,19 +731,20 @@ class Enquiry(DashboardLoginRequiredMixin, ListView):
             return render(request, self.enquiryForm_template, {'enquiry': self.form()})
         elif 'object_id' in kwargs:
             from .reports import EnquiryReport
-            data = EnquiryReport().get_data(request, enquiry_id=kwargs.get('object_id'))
+            data = EnquiryReport().get_data(request, enquiry_id=kwargs.get('object_id'),
+                                            company_id=request.session.get('company_id'))
             data1 = EnquiryReport().get_data_Reply(request, enquiry_id=kwargs.get('object_id'))
             # print(data1)
             template = self.detailed_template_view
             return render(request, template, {"data": data, "data_list": data1})  # data
 
-        data = self.get_data(request)
+        data = self.get_data(request, company_id=request.session.get('company_id'))
         print(data)
         return render(request, self.enquiryForm_table, {'data': data})
 
     def post(self, request, *args, **kwargs):
         if 'filterDate' in kwargs:
-            data = self.get_data(request, filter_date='')
+            data = self.get_data(request, company_id=request.session.get('company_id'), filter_date='')
             return JsonResponse(data, safe=False)
         form = self.EnquiryForm(request.POST)
         print(form.is_valid())
@@ -756,7 +763,8 @@ class Enquiry(DashboardLoginRequiredMixin, ListView):
             enquiry.Enquiry.objects.create(
                 first_name=first_name, last_name=last_name, customer_type=customer_type, address=address,
                 enquiry_type=enquiry_type, product_name=product_name, description=description, price=price,
-                mobile_no=mobile_no, email_id=email_id, create_user=request.user, write_user=request.user
+                mobile_no=mobile_no, email_id=email_id, create_user=request.user, write_user=request.user,
+                company_id=request.session.get('company_id')
             )
             return redirect(to='enquiry')
         return redirect(to='enquiry_form')
@@ -833,13 +841,14 @@ class DayBookView(OwnerRequiredMinxin, ListView):
     detailed_template_view = 'SMdashboard/daybook.html'
     model = dayBook.DayBook
 
-    def get_data(self, request, **kwargs):
+    def get_data(self, request, company_id=None, *args, **kwargs):
         if 'filter_date' in kwargs:
             data = self.model.objects.filter(date__gte=request.POST.get('fromDate'),
-                                             date__lte=request.POST.get('toDate')).values('pk', 'number',
-                                                                                          'customer_type',
-                                                                                          'description',
-                                                                                          'status').annotate(
+                                             date__lte=request.POST.get('toDate'),
+                                             company_id=company_id).values('pk', 'number',
+                                                                           'customer_type',
+                                                                           'description',
+                                                                           'status').annotate(
                 dayBook_name=Coalesce('name', Value("-")),
                 customer=Coalesce('customer_name__name', Value("-")),
                 employee=Coalesce('employee_name__name', Value("-")),
@@ -852,8 +861,8 @@ class DayBookView(OwnerRequiredMinxin, ListView):
                     F('debit_amount'), output_field=FloatField()),
             )
             return list(data)
-        data = self.model.objects.all().values('pk', 'number', 'customer_type',
-                                               'description', 'status').annotate(
+        data = self.model.objects.filter(company_id=company_id).values('pk', 'number', 'customer_type',
+                                                                       'description', 'status').annotate(
             dayBook_name=Coalesce('name', Value("-")),
             customer=Coalesce('customer_name__name', Value("-")),
             employee=Coalesce('employee_name__name', Value("-")),
@@ -872,10 +881,11 @@ class DayBookView(OwnerRequiredMinxin, ListView):
             return render(request, self.form_template, {'daybook': self.form()})
         elif 'object_id' in kwargs:
             from .reports import DayBookReport
-            data = DayBookReport().get_data(request, daybook_id=kwargs.get('object_id'))
+            data = DayBookReport().get_data(request, daybook_id=kwargs.get('object_id'),
+                                            company_id=request.session.get('company_id'))
             template = self.detailed_template_view
             return render(request, template, data)
-        data = self.get_data(request)
+        data = self.get_data(request, company_id=request.session.get('company_id'))
         print(data)
         credit_total = []
         debit_total = []
@@ -891,7 +901,7 @@ class DayBookView(OwnerRequiredMinxin, ListView):
 
     def post(self, request, *args, **kwargs):
         if 'filterDate' in kwargs:
-            data = {'data': self.get_data(request, filter_date='')}
+            data = {'data': self.get_data(request, company_id=request.session.get('company_id'), filter_date='')}
             credit_total = []
             debit_total = []
             for i in range(len(data.get('data'))):
@@ -921,7 +931,8 @@ class DayBookView(OwnerRequiredMinxin, ListView):
             self.model.objects.create(
                 number=number, date=date, customer_type=customer_type, name=name,
                 customer_name=customer_name, employee_name=employee_name, vendor_name=vendor_name,
-                description=description, status=status, credit_amount=credit_amount, debit_amount=debit_amount)
+                description=description, status=status, credit_amount=credit_amount, debit_amount=debit_amount,
+                company_id=request.session.get('company_id'))
             return redirect(to='daybook')
         return redirect(to='daybook_form')
 
@@ -1093,10 +1104,11 @@ class Service(DashboardLoginRequiredMixin, ListView):
     serviceForm_table = 'SMdashboard/table-service.html'
     service_invoice = 'SMdashboard/ServiceInvoicePrint.html'
 
-    def get_data(self, request, *args, **kwargs):
+    def get_data(self, request, company_id=None, *args, **kwargs):
         if 'filter_date' in kwargs:
             data = self.model.objects.filter(date__gte=request.POST.get('fromDate'),
-                                             date__lte=request.POST.get('toDate')).values(
+                                             date__lte=request.POST.get('toDate'),
+                                             company_id=company_id).values(
                 'status', 'service_number', 'description', 'photo', 'pk'
             ).annotate(
                 service_client=F('client__name'),
@@ -1106,7 +1118,7 @@ class Service(DashboardLoginRequiredMixin, ListView):
                                                output_field=CharField()),
             )
             return list(data)
-        data = self.model.objects.all().values(
+        data = self.model.objects.filter(company_id=company_id).values(
             'status', 'service_number', 'description', 'photo', 'pk'
         ).annotate(
             service_client=F('client__name'),
@@ -1119,27 +1131,29 @@ class Service(DashboardLoginRequiredMixin, ListView):
 
     def get(self, request, *args, **kwargs):
         if 'service_form' in kwargs:
-            clients = Client.objects.all()
-
+            clients = Client.objects.filter(company_id=request.session.get('company_id'))
+            print(clients)
             return render(request, self.serviceForm_template, {'service': self.form(), 'clients': clients})
         elif 'service_id' in kwargs:
             from .reports import ServiceReportInvoice
-            invoice_data = ServiceReportInvoice().get_data(request, service_id=kwargs.get('service_id'))
+            invoice_data = ServiceReportInvoice().get_data(request, service_id=kwargs.get('service_id'),
+                                                           company_id=request.session.get('company_id'))
             print(invoice_data)
             return render(request, self.service_invoice, {"invoice_data": invoice_data})
         elif 'object_id' in kwargs:
             from .reports import ServiceReport
-            data = ServiceReport().get_data(request, service_id=kwargs.get('object_id'))
+            data = ServiceReport().get_data(request, service_id=kwargs.get('object_id'),
+                                            company_id=request.session.get('company_id'))
             data1 = ServiceReport().get_data_Reply(request, service_id=kwargs.get('object_id'))
             template = self.detailed_view
             return render(request, template, {"data": data, "data_list": data1})
-        data = self.get_data(request)
+        data = self.get_data(request, company_id=request.session.get('company_id'))
         print(data)
         return render(request, self.serviceForm_table, {'data': data})
 
     def post(self, request, *args, **kwargs):
         if 'filterDate' in kwargs:
-            data = self.get_data(request, filter_date='')
+            data = self.get_data(request, company_id=request.session.get('company_id'), filter_date='')
             return JsonResponse(data, safe=False)
         form = self.ServiceForm(request.POST, request.FILES)
         print(form.is_valid())
@@ -1152,9 +1166,12 @@ class Service(DashboardLoginRequiredMixin, ListView):
             photo = form.cleaned_data.get('photo')
             service.Service.objects.create(
                 service_number=service_number, date=date, client=client, service_type=service_type,
-                description=description, photo=photo, create_user=request.user, write_user=request.user
+                description=description, photo=photo, create_user=request.user, write_user=request.user,
+                company_id=request.session.get('company_id')
             )
-            my_client_data = list(service.Service.objects.filter(client=client).values('pk').annotate(
+            my_client_data = list(service.Service.objects.filter(client=client,
+                                                                 company_id=request.session.get('company_id')
+                                                                 ).values('pk').annotate(
                 phone=F('client__phone'),
             ))
             print(my_client_data)
@@ -1290,8 +1307,8 @@ class AMC_View(OwnerRequiredMinxin, ListView):
     detailed_view_template = 'SMdashboard/view_amc.html'
     AMC_Form_template = 'SMdashboard/amc_form.html'
 
-    def get_data(self, request):
-        data = self.model.objects.all().values('pk', 'number').annotate(
+    def get_data(self, request, company_id=None):
+        data = self.model.objects.filter(company_id=company_id).values('pk', 'number').annotate(
             amc_client=F('client_name__name'),
             amc_start_date=ExpressionWrapper(Func(F('start_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
                                              output_field=CharField()),
@@ -1302,7 +1319,8 @@ class AMC_View(OwnerRequiredMinxin, ListView):
 
     def get(self, request, *args, **kwargs):
         if 'amc_form' in kwargs:
-            a = Client.objects.filter(id=kwargs.get('object_id')).values('name')
+            a = Client.objects.filter(id=kwargs.get('object_id'),
+                                      company_id=request.session.get("company_id")).values('name')
             print(a)
             context = {}
             context.update({'amc': self.form()})
@@ -1311,10 +1329,11 @@ class AMC_View(OwnerRequiredMinxin, ListView):
             return render(request, self.AMC_Form_template, context)
         if 'object_id' in kwargs:
             from .reports import AmcReport
-            data = AmcReport().get_data(request, amc_id=kwargs.get('object_id'))
+            data = AmcReport().get_data(request, amc_id=kwargs.get('object_id'),
+                                        company_id=request.session.get("company_id"))
             print(data)
             return render(request, self.detailed_view_template, {'data': data})
-        data = self.get_data(request)
+        data = self.get_data(request, company_id=request.session.get("company_id"))
         print(data)
         return render(request, self.data_template, {'data': data})
 
@@ -1329,7 +1348,8 @@ class AMC_View(OwnerRequiredMinxin, ListView):
             start_date = amcForm.cleaned_data.get('start_date')
             end_date = amcForm.cleaned_data.get('end_date')
             self.model.objects.create(number=number, client_name_id=kwargs.get('object_id'),
-                                      description=description, start_date=start_date, end_date=end_date)
+                                      description=description, start_date=start_date,
+                                      company_id=request.session.get("company_id"))
             return redirect(to="amc_data")
         return redirect(to="dashboard")
 

@@ -341,11 +341,10 @@ class AMC_Form(forms.ModelForm):
     class Meta:
         model = amc.AMC
         fields = [
-            'number', 'description', 'start_date', 'end_date'
+            'number', 'description', 'start_date'
         ]
         widgets = {
             'number': forms.HiddenInput(attrs={'class': 'form-control-sm'}),
             'description': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control form-control-sm'}),
             'start_date': forms.widgets.DateInput(attrs={'type': 'date', 'class': 'form-control form-control-sm'}),
-            'end_date': forms.widgets.DateInput(attrs={'type': 'date', 'class': 'form-control form-control-sm'}),
         }

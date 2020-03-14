@@ -33,6 +33,7 @@ class AMC(BaseModel):
             self.second_service_date = self.start_date + timedelta(days=180)
             self.third_service_date = self.start_date + timedelta(days=270)
             self.fourth_service_date = self.start_date + timedelta(days=360)
+            self.end_date = self.start_date + timedelta(days=365)
             res = super(AMC, self).save(force_insert=False, force_update=False, using=None, update_fields=None)
         else:
             res = super(AMC, self).save(force_insert=False, force_update=False, using=None, update_fields=None)

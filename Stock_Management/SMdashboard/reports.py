@@ -132,10 +132,10 @@ class VendorReport:
 
 class EnquiryReport:
 
-    def get_data(self, request, enquiry_id=None):
+    def get_data(self, request, enquiry_id=None, company_id=None):
         data = {}
 
-        record = enquiry.Enquiry.objects.filter(pk=enquiry_id).annotate(
+        record = enquiry.Enquiry.objects.filter(pk=enquiry_id, company_id=company_id).annotate(
             enquiry_first_name=F('first_name'),
             enquiry_last_name=F('last_name'),
             enquiry_customer_type=F('customer_type__name'),
@@ -230,9 +230,9 @@ class ProductReport:
 
 class ServiceReportInvoice:
 
-    def get_data(self, request, service_id=None):
+    def get_data(self, request, service_id=None, company_id=None):
         data = {}
-        company_info = CompanyDetail.objects.all().values('name').annotate(
+        company_info = CompanyDetail.objects.filter(id=company_id).values('name').annotate(
             company_address=Concat(
                 F('address'), V(', '), F('city'), V(',\n'),
                 F('state'), V(', '),
@@ -245,7 +245,7 @@ class ServiceReportInvoice:
             replyService_service_number=F('service_number__service_number'),
             service_by=F('create_user__first_name')
         )
-        record = service.Service.objects.filter(pk=service_id).annotate(
+        record = service.Service.objects.filter(pk=service_id, company_id=company_id).annotate(
             number=F('service_number'),
             service_date=F('date'),
             service_client=F('client__name'),
@@ -284,10 +284,10 @@ class ServiceReportInvoice:
 
 class ServiceReport:
 
-    def get_data(self, request, service_id=None):
+    def get_data(self, request, service_id=None, company_id=None):
         data = {}
 
-        record = service.Service.objects.filter(pk=service_id).annotate(
+        record = service.Service.objects.filter(pk=service_id, company_id=company_id).annotate(
             number=F('service_number'),
             service_date=F('date'),
             service_client=F('client__name'),
@@ -327,9 +327,9 @@ class ServiceReport:
 
 class DayBookReport:
 
-    def get_data(self, request, daybook_id=None):
+    def get_data(self, request, daybook_id=None, company_id=None):
         data = {}
-        record = dayBook.DayBook.objects.filter(pk=daybook_id).annotate(
+        record = dayBook.DayBook.objects.filter(pk=daybook_id, company_id=company_id).annotate(
             daybook_number=F('number'),
             daybook_customer_type=F('customer_type'),
             dayBook_name=Coalesce('name', V("-")),
@@ -366,9 +366,9 @@ class DayBookReport:
 
 class AmcReport:
 
-    def get_data(self, request, amc_id=None):
+    def get_data(self, request, amc_id=None, company_id=None):
         data = {}
-        record = amc.AMC.objects.filter(pk=amc_id).annotate(
+        record = amc.AMC.objects.filter(pk=amc_id, company_id=company_id).annotate(
             amc_number=F('number'),
             amc_client=F('client_name__name'),
             amc_start_date=ExpressionWrapper(Func(F('start_date'), V("DD/MM/YYYY"), function='TO_CHAR'),
