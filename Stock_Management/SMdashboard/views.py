@@ -388,11 +388,13 @@ class ProductView(OwnerRequiredMinxin, ListView):
     model = invoice.Product
 
     def get_data(self, request, company_id=None):
-        data = self.model.objects.filter(company_id=company_id).values('pk', 'name', 'unit_price', 'u_o_m', 'quantity', 'description',
-                                               'product_type',
-                                               'purchase_rate', 'purchase_rate_currency', 'h_s_n_or_s_a_c', 's_k_u',
-                                               'tax', 'c_e_s_s_percent', 'c_e_s_s'
-                                               ).order_by("-pk")
+        data = self.model.objects.filter(company_id=company_id).values('pk', 'name', 'unit_price', 'u_o_m', 'quantity',
+                                                                       'description',
+                                                                       'product_type',
+                                                                       'purchase_rate', 'purchase_rate_currency',
+                                                                       'h_s_n_or_s_a_c', 's_k_u',
+                                                                       'tax', 'c_e_s_s_percent', 'c_e_s_s'
+                                                                       ).order_by("-pk")
         return list(data)
 
     def get(self, request, *args, **kwargs):
@@ -400,7 +402,8 @@ class ProductView(OwnerRequiredMinxin, ListView):
             return render(request, self.form_template, {'form': self.form})
         elif 'object_id' in kwargs:
             from .reports import ProductReport
-            data = ProductReport().get_data(request, product_id=kwargs.get('object_id'), company_id=request.session.get('company_id'))
+            data = ProductReport().get_data(request, product_id=kwargs.get('object_id'),
+                                            company_id=request.session.get('company_id'))
             template = self.detailed_template_view
             return render(request, template, data)
 
@@ -509,7 +512,8 @@ class VendorView(OwnerRequiredMinxin, ListView):
             return render(request, self.form_template, {'form': self.form})
         elif 'object_id' in kwargs:
             from .reports import VendorReport
-            data = VendorReport().get_data(request, vendor_id=kwargs.get('object_id'), company_id=request.session.get('company_id'))
+            data = VendorReport().get_data(request, vendor_id=kwargs.get('object_id'),
+                                           company_id=request.session.get('company_id'))
             return render(request, self.detailed_view, data)
         data = self.get_data(request, company_id=request.session.get('company_id'))
         print(data)
@@ -1051,7 +1055,7 @@ class Employee(OwnerRequiredMinxin, ListView):
             employee_data.Employee.objects.create(
                 photo=photo, join_date=join_date, name=name, address=address, city=city, state=state, pin_code=pin_code,
                 country=country, mobile_no=mobile_no, email_id=email_id, qualification=qualification, type=type,
-                job_profile=job_profile, job_description=job_description,company_id=request.session.get('company_id')
+                job_profile=job_profile, job_description=job_description, company_id=request.session.get('company_id')
             )
             return redirect(to="employee")
         return redirect(to="employee_form")
