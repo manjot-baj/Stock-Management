@@ -49,9 +49,9 @@ class ClientReport:
 
 class EmployeeReport:
 
-    def get_data(self, request, employee_id=None):
+    def get_data(self, request, employee_id=None, company_id=None):
         data = {}
-        record = employee_data.Employee.objects.filter(pk=employee_id).annotate(
+        record = employee_data.Employee.objects.filter(pk=employee_id, company_id=company_id).annotate(
             employee_name=F('name'),
             employee_address=F('address'),
             employee_city=F('city'),
@@ -93,9 +93,9 @@ class EmployeeReport:
 
 class VendorReport:
 
-    def get_data(self, request, vendor_id=None):
+    def get_data(self, request, vendor_id=None, company_id=None):
         data = {}
-        record = Vendor.objects.filter(pk=vendor_id).annotate(
+        record = Vendor.objects.filter(pk=vendor_id, company_id=company_id).annotate(
             vendor_name=F('name'), vendor_contact_Name=F('contact_Name'), vendor_TIN=F('TIN'),
             vendor_email=F('email'), vendor_phone=F('phone'), vendor_billing_address=F('billing_address'),
             vendor_billing_zip=F('billing_zip'), vendor_billing_city=F('billing_city'),
@@ -185,9 +185,9 @@ class EnquiryReport:
 
 class ProductReport:
 
-    def get_data(self, request, product_id=None):
+    def get_data(self, request, product_id=None, company_id=None):
         data = {}
-        record = invoice.Product.objects.filter(pk=product_id).annotate(
+        record = invoice.Product.objects.filter(pk=product_id, company_id=company_id).annotate(
             product_name=F('name'),
             product_unit_price=F('unit_price'),
             product_u_o_m=F('u_o_m'),
