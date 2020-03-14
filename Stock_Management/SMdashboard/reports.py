@@ -8,9 +8,9 @@ from SM import employee_data, enquiry, invoice, service, dayBook, amc
 
 class ClientReport:
 
-    def get_data(self, request, client_id=None):
+    def get_data(self, request, client_id=None, company_id=None):
         data = {}
-        record = Client.objects.filter(pk=client_id).annotate(
+        record = Client.objects.filter(pk=client_id, company_id=company_id).annotate(
             client_name=F('name'), client_contact_Name=F('contact_Name'), client_TIN=F('TIN'),
             client_email=F('email'), client_phone=F('phone'), client_billing_address=F('billing_address'),
             client_billing_zip=F('billing_zip'), client_billing_city=F('billing_city'),

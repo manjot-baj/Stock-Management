@@ -31,8 +31,8 @@ class Dashboard(View):
     dashboard_template = 'SMdashboard/dashboard.html'
 
     def dashboard_info(self, request):
-
-        company_info = CompanyDetail.objects.all().values('pk', 'name').annotate(
+        print(request.session.get('company_id'))
+        company_info = CompanyDetail.objects.filter(pk=request.session.get('company_id')).values('pk', 'name').annotate(
 
             company_address=Concat(
                 F('address'), Value(', '), F('city'), Value(', '),
@@ -43,17 +43,19 @@ class Dashboard(View):
                 output_field=CharField())
         )
         company = list(company_info)
-        client_info = Client.objects.all().count()
+        client_info = Client.objects.filter(company_id=request.session.get('company_id')).count()
         context = {"client": client_info}
-        vendor_info = Vendor.objects.all().count()
+        vendor_info = Vendor.objects.filter(company_id=request.session.get('company_id')).count()
         context.update({"vendor": vendor_info})
-        employee_info = employee_data.Employee.objects.all().count()
+        employee_info = employee_data.Employee.objects.filter(company_id=request.session.get('company_id')).count()
         context.update({"employee": employee_info})
-        product_info = invoice.Product.objects.all().count()
+        product_info = invoice.Product.objects.filter(company_id=request.session.get('company_id')).count()
         context.update({"product": product_info})
         today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
         today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
-        dayBook_data = dayBook.DayBook.objects.filter(date__range=(today_min, today_max)).values('pk').annotate(
+        dayBook_data = dayBook.DayBook.objects.filter(date__range=(today_min, today_max),
+                                                      company_id=request.session.get('company_id')).values(
+            'pk').annotate(
             dayBook_date=ExpressionWrapper(Func(F('date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
                                            output_field=CharField()),
             dayBook_credit_amount=ExpressionWrapper(
@@ -71,12 +73,15 @@ class Dashboard(View):
         debited = sum(debit_total)
         total = credited - debited
         context.update({'credited': credited, 'debited': debited, 'total': total})
-        enquiry_info = enquiry.Enquiry.objects.all().count()
+        enquiry_info = enquiry.Enquiry.objects.filter(company_id=request.session.get('company_id')).count()
         context.update({"enquiry": enquiry_info})
-        service_info = service.Service.objects.all().count()
-        on_progress = service.Service.objects.filter(status='On progress').count()
-        completed = service.Service.objects.filter(status='Completed').count()
-        pending = service.Service.objects.filter(status='Pending').count()
+        service_info = service.Service.objects.filter(company_id=request.session.get('company_id')).count()
+        on_progress = service.Service.objects.filter(status='On progress',
+                                                     company_id=request.session.get('company_id')).count()
+        completed = service.Service.objects.filter(status='Completed',
+                                                   company_id=request.session.get('company_id')).count()
+        pending = service.Service.objects.filter(status='Pending',
+                                                 company_id=request.session.get('company_id')).count()
         context.update({"service": service_info, 'pending': pending, 'on_progress': on_progress,
                         'completed': completed})
         # employee_photo = list(employee_data.Employee.objects.filter(user_id=request.user.id).annotate(
@@ -87,15 +92,17 @@ class Dashboard(View):
         if not len(company) == 0:
             context.update({"company": company[0]})
 
-        amc_info = amc.AMC.objects.all().count()
+        amc_info = amc.AMC.objects.filter(company_id=request.session.get('company_id')).count()
         context.update({"amc_info": amc_info})
-        amcToday = list(amc.AMCRecord.objects.filter(date=datetime.datetime.today().date()).values("date",
-                                                                                          "client", "phone"))
+        amcToday = list(amc.AMCRecord.objects.filter(date=datetime.datetime.today().date(),
+                                                     company_id=request.session.get('company_id')).values("date",
+                                                                                                   "client", "phone"))
         # print(amcToday)
         if not len(amcToday) == 0:
             context.update({'amcToday': amcToday})
         from .amc_task import amcAlert
-        amc_alert = amcAlert()
+        print(f"{request} this is request")
+        amc_alert = amcAlert(request)
         # print(amc_alert)
         context.update({'amc_alert': amc_alert})
         print(context)
@@ -119,6 +126,13 @@ class Dashboard(View):
             user = authenticate(request, username=username, password=password)
             if user:
                 a = login(request, user)
+                company = list(CompanyDetail.objects.filter(employee__user=request.user.id).values('pk'))
+                request.session['company_id'] = company[0]['pk']
+                employee_photo = list(employee_data.Employee.objects.filter(user_id=request.user.id).annotate(
+                    employee=F('name'),
+                ))
+                for each in employee_photo:
+                    request.session['photo'] = each.photo.url
                 return redirect(to='dashboard')
             else:
                 return render(request, self.login_template)
@@ -139,8 +153,8 @@ class ClientView(DashboardLoginRequiredMixin, ListView):
     form = ClientForm
     model = Client
 
-    def get_data(self):
-        data = self.model.objects.all().values('pk', 'name').annotate(
+    def get_data(self, request, company_id=None):
+        data = self.model.objects.filter(company_id=company_id).values('pk', 'name').annotate(
             client_contact_Name=Coalesce('contact_Name', Value("-")),
             client_TIN=Coalesce('TIN', Value("-")),
             client_email=Coalesce('email', Value("-")),
@@ -168,10 +182,11 @@ class ClientView(DashboardLoginRequiredMixin, ListView):
             return render(request, self.form_template, {'form': self.form})
         elif 'object_id' in kwargs:
             from .reports import ClientReport
-            data = ClientReport().get_data(request, client_id=kwargs.get('object_id'))
+            data = ClientReport().get_data(request, client_id=kwargs.get('object_id'),
+                                           company_id=request.session.get('company_id'))
             print(f'check data {data}')
             return render(request, self.detailed_view, data)
-        data = self.get_data()
+        data = self.get_data(request, company_id=request.session.get('company_id'))
         print(data)
         return render(request, self.data_template, {'data': data})
 
@@ -253,7 +268,7 @@ class ClientView(DashboardLoginRequiredMixin, ListView):
                                                  shipping_zip=shipping_zip[i], shipping_city=shipping_city[i],
                                                  shipping_state=shipping_state[i], shipping_country=shipping_country[i],
                                                  details=private_details[i], GSTIN=gstin[i], PAN=pan[i],
-                                                 balance=balance[i])
+                                                 balance=balance[i], company_id=request.session.get('company_id'))
             return redirect(to='client_data')
         return redirect(to='new_client')
 
@@ -303,7 +318,7 @@ class ClientAdd(DashboardLoginRequiredMixin, ListView):
                 billing_country=billing_country,
                 shipping_address=shipping_address, shipping_zip=shipping_zip, shipping_city=shipping_city,
                 shipping_state=shipping_state, shipping_country=shipping_country, details=details, GSTIN=GSTIN,
-                PAN=PAN, balance=balance
+                PAN=PAN, balance=balance, company_id=request.session.get('company_id')
             )
             return redirect(to='client_data')
         return redirect(to='new_client_add')
@@ -634,21 +649,21 @@ class Enquiry(DashboardLoginRequiredMixin, ListView):
         if request.user.groups.filter(name=OWNER_GROUP).exists():
             if 'filter_date' in kwargs:
                 data = self.model.objects.filter(enquiry_date__gte=request.POST.get('fromDate'),
-                                                enquiry_date__lte=request.POST.get('toDate')).values(
-                                        'first_name', 'last_name', 'mobile_no',
-                                        'address', 'pk',
-                                        ).annotate(
-                                            customer=F('customer_type__name'),
-                                            handled=F('create_user__first_name'),
-                                            enquiry=F('enquiry_type__name'),
+                                                 enquiry_date__lte=request.POST.get('toDate')).values(
+                    'first_name', 'last_name', 'mobile_no',
+                    'address', 'pk',
+                ).annotate(
+                    customer=F('customer_type__name'),
+                    handled=F('create_user__first_name'),
+                    enquiry=F('enquiry_type__name'),
 
-                                            enquiry_product_name=Coalesce('product_name', Value("-")),
-                                            enquiry_description=Coalesce('description', Value("-")),
-                                            enquiry_price=Coalesce('price', Value("-")),
-                                            enquiry_email_id=Coalesce('email_id', Value("-")),
-                                            date=ExpressionWrapper(Func(F('enquiry_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
-                                            output_field=CharField()),
-                                     ).order_by("-date")
+                    enquiry_product_name=Coalesce('product_name', Value("-")),
+                    enquiry_description=Coalesce('description', Value("-")),
+                    enquiry_price=Coalesce('price', Value("-")),
+                    enquiry_email_id=Coalesce('email_id', Value("-")),
+                    date=ExpressionWrapper(Func(F('enquiry_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                           output_field=CharField()),
+                ).order_by("-date")
                 return list(data)
 
             data = self.model.objects.all().values(
@@ -671,21 +686,21 @@ class Enquiry(DashboardLoginRequiredMixin, ListView):
         elif 'filter_date' in kwargs:
             data = self.model.objects.filter(create_user_id=request.user,
                                              enquiry_date__gte=request.POST.get('fromDate'),
-                                                enquiry_date__lte=request.POST.get('toDate')).values(
-                                    'first_name', 'last_name', 'mobile_no',
-                                    'address', 'pk',
-                                    ).annotate(
-                            customer=F('customer_type__name'),
-                            handled=F('create_user__first_name'),
-                            enquiry=F('enquiry_type__name'),
+                                             enquiry_date__lte=request.POST.get('toDate')).values(
+                'first_name', 'last_name', 'mobile_no',
+                'address', 'pk',
+            ).annotate(
+                customer=F('customer_type__name'),
+                handled=F('create_user__first_name'),
+                enquiry=F('enquiry_type__name'),
 
-                            enquiry_product_name=Coalesce('product_name', Value("-")),
-                            enquiry_description=Coalesce('description', Value("-")),
-                            enquiry_price=Coalesce('price', Value("-")),
-                            enquiry_email_id=Coalesce('email_id', Value("-")),
-                            date=ExpressionWrapper(Func(F('enquiry_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
-                                   output_field=CharField()),
-                    ).order_by("-date")
+                enquiry_product_name=Coalesce('product_name', Value("-")),
+                enquiry_description=Coalesce('description', Value("-")),
+                enquiry_price=Coalesce('price', Value("-")),
+                enquiry_email_id=Coalesce('email_id', Value("-")),
+                date=ExpressionWrapper(Func(F('enquiry_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                       output_field=CharField()),
+            ).order_by("-date")
             return list(data)
         data = self.model.objects.filter(create_user_id=request.user).values(
             'first_name', 'last_name', 'mobile_no',
@@ -963,12 +978,12 @@ class Employee(OwnerRequiredMinxin, ListView):
         if 'filter_date' in kwargs:
             data = self.model.objects.filter(join_date__gte=request.POST.get('fromDate'),
                                              join_date__lte=request.POST.get('toDate')).values(
-                    'photo', 'name', 'address', 'city', 'state', 'pin_code', 'country', 'mobile_no', 'email_id',
-                    'qualification', 'type', 'job_profile', 'job_description', 'pk',
-                    ).annotate(
-                        date=ExpressionWrapper(Func(F('join_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
-                        output_field=CharField()),
-                )
+                'photo', 'name', 'address', 'city', 'state', 'pin_code', 'country', 'mobile_no', 'email_id',
+                'qualification', 'type', 'job_profile', 'job_description', 'pk',
+            ).annotate(
+                date=ExpressionWrapper(Func(F('join_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                       output_field=CharField()),
+            )
             return list(data)
 
         data = self.model.objects.all().values(

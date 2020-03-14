@@ -3,6 +3,7 @@ from django import forms
 from SM import enquiry, employee_data, service, dayBook, company_data, amc
 import datetime
 
+
 class ClientForm(forms.Form):
     input_excel = forms.FileField(required=True, label=u"Upload the Excel file to import to the system.")
 
@@ -53,6 +54,7 @@ class ClientAddForm(forms.ModelForm):
 
         }
 
+
 class ClientEditForm(forms.ModelForm):
     class Meta:
         model = company_data.Client
@@ -83,9 +85,6 @@ class ClientEditForm(forms.ModelForm):
             'balance': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
 
         }
-
-
-
 
 
 class ProductForm(forms.Form):
@@ -224,6 +223,7 @@ class DayBookForm(forms.ModelForm):
             'debit_amount': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
         }
 
+
 class DayBookEditForm(forms.ModelForm):
     class Meta:
         model = dayBook.DayBook
@@ -242,7 +242,6 @@ class DayBookEditForm(forms.ModelForm):
             'credit_amount': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'debit_amount': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
         }
-
 
 
 class EmployeeForm(forms.ModelForm):
@@ -349,4 +348,4 @@ class AMC_Form(forms.ModelForm):
             'description': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control form-control-sm'}),
             'start_date': forms.widgets.DateInput(attrs={'type': 'date', 'class': 'form-control form-control-sm'}),
             'end_date': forms.widgets.DateInput(attrs={'type': 'date', 'class': 'form-control form-control-sm'}),
-            }
+        }

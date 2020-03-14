@@ -1,7 +1,9 @@
 from django.db import models
 # from django.utils import timezone
 from .models import BaseModel
-# from .company_data import Client, Vendor
+
+
+from .company_data import CompanyDetail
 # from .PO import POData
 
 
@@ -19,10 +21,11 @@ class Product(BaseModel):
     tax = models.CharField(max_length=100, null=True, blank=False)
     c_e_s_s_percent = models.CharField(max_length=100, null=True, blank=False)
     c_e_s_s = models.CharField(max_length=100, null=True, blank=False)
+    company = models.ForeignKey(CompanyDetail, on_delete=models.SET_NULL, null=True,
+                                blank=True)
 
     def __str__(self):
         return self.name
-
 
 # class Invoice(BaseModel):
 #     client_name = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)

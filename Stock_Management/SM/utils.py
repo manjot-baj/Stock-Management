@@ -35,6 +35,7 @@ import warnings
 # ~ SIZE = getattr(settings, 'FRIENDLY_ID_SIZE', 10000000)
 from django.db.models import Func
 import time
+
 SIZE = 1000000000000
 
 # OPTIONAL PARAMETERS
@@ -56,76 +57,80 @@ STRING_LENGTH = None
 
 
 def find_suitable_period():
-	""" Automatically find a suitable period to use.
-		Factors are best, because they will have 1 left over when
-		dividing SIZE+1.
-		This only needs to be run once, on import.
-	"""
-	# The highest acceptable factor will be the square root of the size.
-	highest_acceptable_factor = int(math.sqrt(SIZE))
+    """ Automatically find a suitable period to use.
+        Factors are best, because they will have 1 left over when
+        dividing SIZE+1.
+        This only needs to be run once, on import.
+    """
+    # The highest acceptable factor will be the square root of the size.
+    highest_acceptable_factor = int(math.sqrt(SIZE))
 
-	# Too high a factor (eg SIZE/2) and the interval is too small, too
-	# low (eg 2) and the period is too small.
-	# We would prefer it to be lower than the number of VALID_CHARS, but more
-	# than say 4.
-	starting_point = int(len(VALID_CHARS) > 14 and len(VALID_CHARS) / 2 or 13)
-	# print("starting_point", starting_point, highest_acceptable_factor)
-	# print("starting_point", list(range(starting_point, 7, -1)))
-	for p in list(range(starting_point, 7, -1)) + list(range(highest_acceptable_factor, starting_point + 1, -1)) + [6, 5, 4, 3, 2]:
-		if SIZE % p == 0:
-			return p
-	raise Exception("No valid period could be found for SIZE=%d.\n Try avoiding prime numbers :-)" % SIZE)
+    # Too high a factor (eg SIZE/2) and the interval is too small, too
+    # low (eg 2) and the period is too small.
+    # We would prefer it to be lower than the number of VALID_CHARS, but more
+    # than say 4.
+    starting_point = int(len(VALID_CHARS) > 14 and len(VALID_CHARS) / 2 or 13)
+    # print("starting_point", starting_point, highest_acceptable_factor)
+    # print("starting_point", list(range(starting_point, 7, -1)))
+    for p in list(range(starting_point, 7, -1)) + list(range(highest_acceptable_factor, starting_point + 1, -1)) + [6,
+                                                                                                                    5,
+                                                                                                                    4,
+                                                                                                                    3,
+                                                                                                                    2]:
+        if SIZE % p == 0:
+            return p
+    raise Exception("No valid period could be found for SIZE=%d.\n Try avoiding prime numbers :-)" % SIZE)
 
 
 # Set the period if it is missing
 if not PERIOD:
-	PERIOD = find_suitable_period()
+    PERIOD = find_suitable_period()
 
 
 def perfect_hash(num):
-	""" Translate a number to another unique number, using a perfect hash function.
-		Only meaningful where 0 <= num <= SIZE.
-	"""
-	return ((num + OFFSET) * (SIZE / PERIOD)) % (SIZE + 1) + 1
+    """ Translate a number to another unique number, using a perfect hash function.
+        Only meaningful where 0 <= num <= SIZE.
+    """
+    return ((num + OFFSET) * (SIZE / PERIOD)) % (SIZE + 1) + 1
 
 
 def friendly_number(num):
-	""" Convert a base 10 number to a base X string.
-		Charcters from VALID_CHARS are chosen, to convert the number
-		to eg base 24, if there are 24 characters to choose from.
-		Use valid chars to choose characters that are friendly, avoiding
-		ones that could be confused in print or over the phone.
-	"""
-	# Convert to a (shorter) string for human consumption
-	string = ""
-	# The length of the string can be determined by STRING_LENGTH or by how many
-	# characters are necessary to present a base 30 representation of SIZE.
-	while STRING_LENGTH and len(string) <= STRING_LENGTH or len(VALID_CHARS) ** len(string) <= SIZE:
-		# PREpend string (to remove all obvious signs of order)
-		string = VALID_CHARS[int(num % len(VALID_CHARS))] + string
-		num = num / len(VALID_CHARS)
-	return string
+    """ Convert a base 10 number to a base X string.
+        Charcters from VALID_CHARS are chosen, to convert the number
+        to eg base 24, if there are 24 characters to choose from.
+        Use valid chars to choose characters that are friendly, avoiding
+        ones that could be confused in print or over the phone.
+    """
+    # Convert to a (shorter) string for human consumption
+    string = ""
+    # The length of the string can be determined by STRING_LENGTH or by how many
+    # characters are necessary to present a base 30 representation of SIZE.
+    while STRING_LENGTH and len(string) <= STRING_LENGTH or len(VALID_CHARS) ** len(string) <= SIZE:
+        # PREpend string (to remove all obvious signs of order)
+        string = VALID_CHARS[int(num % len(VALID_CHARS))] + string
+        num = num / len(VALID_CHARS)
+    return string
 
 
 def encode(num=None):
-	""" Encode a simple number, using a perfect hash and converting to a
-		more user friendly string of characters.
-	"""
-	# Check the number is within our working range
-	num = num or time.time()
-	if num > SIZE:
-		return None
-	if num < 0:
-		return None
+    """ Encode a simple number, using a perfect hash and converting to a
+        more user friendly string of characters.
+    """
+    # Check the number is within our working range
+    num = num or time.time()
+    if num > SIZE:
+        return None
+    if num < 0:
+        return None
 
-	return friendly_number(perfect_hash(num))
+    return friendly_number(perfect_hash(num))
 
 
 class TO_CHAR(Func):
-	function = 'TO_CHAR'
-	template = "%(function)s(%(expressions)s)"
+    function = 'TO_CHAR'
+    template = "%(function)s(%(expressions)s)"
 
 
 class TIMEZONE(Func):
-	function = 'TIMEZONE'
-	template = "%(function)s(%(expressions)s)"
+    function = 'TIMEZONE'
+    template = "%(function)s(%(expressions)s)"

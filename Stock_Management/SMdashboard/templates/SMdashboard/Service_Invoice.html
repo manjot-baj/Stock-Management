@@ -3,16 +3,16 @@
 {% block content %}
 <div>
     <div>
-    {{invoice_data.company_name}}<br/>
-    {{invoice_data.company_address|safe}}<br/>
+        {{invoice_data.company_name}}<br/>
+        {{invoice_data.company_address|safe}}<br/>
     </div>
     <div>
-    {{invoice_data.pk}}<br/>
-    {{invoice_data.number}}<br/>
-    {{invoice_data.service_date}}<br/>
-    {{invoice_data.service_client}}<br/>
-    {{invoice_data.service_description}}<br/>
-    {{invoice_data.service_name}}<br/>
+        {{invoice_data.pk}}<br/>
+        {{invoice_data.number}}<br/>
+        {{invoice_data.service_date}}<br/>
+        {{invoice_data.service_client}}<br/>
+        {{invoice_data.service_description}}<br/>
+        {{invoice_data.service_name}}<br/>
         {{invoice_data.service_by}}<br/>
         <img src="{{invoice_data.service_photo}}" height="150px" width="200px"><br/>
     </div>
@@ -26,8 +26,6 @@
         <img src="{{action.photo}}" height="150px" width="200px"><br/>
     </div>
     {% endfor %}
-
-
 
 
 </div>

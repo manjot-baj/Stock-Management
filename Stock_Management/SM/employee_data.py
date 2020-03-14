@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from .models import BaseModel
+from .company_data import CompanyDetail
 
 
 class Employee(BaseModel):
@@ -15,7 +16,7 @@ class Employee(BaseModel):
     country = models.CharField(max_length=100, null=True, blank=False)
     mobile_no = models.CharField(max_length=100, null=True, blank=False)
     email_id = models.CharField(max_length=100, null=True, blank=False)
-    user = models.ForeignKey(User, related_name='employee_user', on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     qualification = models.TextField(null=True, blank=False)
     JobType = (
         ("Part Time", "Part Time"),
@@ -25,6 +26,8 @@ class Employee(BaseModel):
     type = models.CharField(max_length=50, choices=JobType, null=True, blank=False)
     job_profile = models.CharField(max_length=100, null=True, blank=False)
     job_description = models.TextField(null=True, blank=False)
+    company = models.ForeignKey(CompanyDetail, on_delete=models.SET_NULL, null=True,
+                                blank=True)
 
     def __str__(self):
         return self.name
