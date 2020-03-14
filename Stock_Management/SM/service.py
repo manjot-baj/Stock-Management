@@ -26,6 +26,8 @@ class Service(BaseModel):
     description = models.TextField(max_length=200, null=True, blank=True)
     photo = models.ImageField(default='/uploads/default_service.jpg')
     status = models.CharField(max_length=100, default='Open')
+    company = models.ForeignKey(CompanyDetail, on_delete=models.SET_NULL, null=True,
+                                blank=True)
 
     def __str__(self):
         return self.service_number

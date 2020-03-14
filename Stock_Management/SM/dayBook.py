@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.db import models
 import random
 from .models import BaseModel
-from .company_data import Client, Vendor
+from .company_data import Client, Vendor, CompanyDetail
 from .employee_data import Employee
 
 
@@ -33,6 +33,8 @@ class DayBook(BaseModel):
     status = models.CharField(max_length=100, choices=statusType)
     credit_amount = models.DecimalField(max_digits=30, decimal_places=2, default=0.0)
     debit_amount = models.DecimalField(max_digits=30, decimal_places=2, default=0.0)
+    company = models.ForeignKey(CompanyDetail, on_delete=models.SET_NULL, null=True,
+                                blank=True)
 
     def __str__(self):
         return self.number

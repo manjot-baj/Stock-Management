@@ -46,6 +46,8 @@ class Vendor(BaseModel):
     shipping_country = models.CharField(max_length=100, null=True, blank=True)
     details = models.CharField(max_length=100, null=True, blank=True)
     GSTIN = models.CharField(max_length=100, null=True, blank=True)
+    company = models.ForeignKey(CompanyDetail, on_delete=models.SET_NULL, null=True,
+                                blank=True)
 
     def __str__(self):
         return self.name
@@ -71,6 +73,8 @@ class Client(BaseModel):
     GSTIN = models.CharField(max_length=100, null=True, blank=True)
     PAN = models.CharField(max_length=100, null=True, blank=True)
     balance = models.CharField(max_length=100, null=True, blank=True)
+    company = models.ForeignKey(CompanyDetail, on_delete=models.SET_NULL, null=True,
+                                blank=True)
 
     def __str__(self):
         return self.name

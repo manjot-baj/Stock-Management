@@ -29,9 +29,9 @@ class CompanyDetailAdmin(admin.ModelAdmin):
 class VendorAdmin(admin.ModelAdmin):
     list_display = ['name', 'contact_Name', 'TIN', 'email', 'phone', 'billing_address',
                     'billing_zip', 'billing_city', 'billing_state', 'billing_country', 'shipping_address',
-                    'shipping_zip', 'shipping_city', 'shipping_state', 'shipping_country', 'details', 'GSTIN']
-    list_filter = ['name', 'phone', 'contact_Name']
-    search_fields = ['name', 'phone', 'contact_Name']
+                    'shipping_zip', 'shipping_city', 'shipping_state', 'shipping_country', 'details', 'GSTIN', 'company']
+    list_filter = ['name', 'phone', 'contact_Name', 'company']
+    search_fields = ['name', 'phone', 'contact_Name', 'company']
 
 
 @admin.register(Client)
@@ -39,17 +39,17 @@ class ClientAdmin(admin.ModelAdmin):
     list_display = ['name', 'contact_Name', 'TIN', 'email', 'phone', 'billing_address',
                     'billing_zip', 'billing_city', 'billing_state', 'billing_country', 'shipping_address',
                     'shipping_zip', 'shipping_city', 'shipping_state', 'shipping_country', 'details',
-                    'GSTIN', 'PAN', 'balance']
-    list_filter = ['name', 'phone', 'contact_Name']
-    search_fields = ['name', 'phone', 'contact_Name']
+                    'GSTIN', 'PAN', 'balance', 'company']
+    list_filter = ['name', 'phone', 'contact_Name', 'company']
+    search_fields = ['name', 'phone', 'contact_Name', 'company']
 
 
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
     list_display = ['join_date', 'name', 'type', 'job_profile', 'qualification', 'address', 'city', 'state',
-                    'pin_code', 'country', 'mobile_no', 'email_id']
-    list_filter = ['type', 'join_date', 'city', 'state']
-    search_fields = ['name', 'type', 'join_date', 'mobile_no', 'email_id']
+                    'pin_code', 'country', 'mobile_no', 'email_id', 'company']
+    list_filter = ['type', 'join_date', 'city', 'state', 'company']
+    search_fields = ['name', 'type', 'join_date', 'mobile_no', 'email_id', 'company']
 
 
 @admin.register(Enquiry)
@@ -57,11 +57,11 @@ class EnquiryAdmin(admin.ModelAdmin):
     list_display = ['enquiry_date', 'customer_type', 'first_name', 'last_name', 'enquiry_type', 'create_user',
                     'write_user',
                     'product_name', 'price', 'mobile_no', 'email_id', 'create_user',
-                    'write_user']
+                    'write_user', 'company']
     list_select_related = ['customer_type', 'enquiry_type']
     list_filter = ['customer_type', 'enquiry_date', 'create_user',
-                   'write_user']
-    search_fields = ['first_name', 'enquiry_date', 'mobile_no']
+                   'write_user', 'company']
+    search_fields = ['first_name', 'enquiry_date', 'mobile_no', 'company']
 
 
 @admin.register(EnquiryRecord)
@@ -83,33 +83,33 @@ class ServiceRecordAdmin(admin.ModelAdmin):
 @admin.register(DayBook)
 class DayBookAdmin(admin.ModelAdmin):
     list_display = ['date', 'number', 'name', 'customer_type', 'customer_name', 'employee_name', 'vendor_name',
-                    'status', 'credit_amount', 'debit_amount']
+                    'status', 'credit_amount', 'debit_amount', 'company']
     list_select_related = ['customer_name', 'employee_name', 'vendor_name']
-    list_filter = ['customer_type', 'status', 'date']
-    search_fields = ['customer_type', 'status', 'date', 'number']
+    list_filter = ['customer_type', 'status', 'date', 'company']
+    search_fields = ['customer_type', 'status', 'date', 'number', 'company']
 
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ['date', 'service_number', 'client', 'service_type']
+    list_display = ['date', 'service_number', 'client', 'service_type', 'company']
     list_select_related = ['client', 'service_type']
-    list_filter = ['service_number', 'date']
-    search_fields = ['service_number', 'date', 'client']
+    list_filter = ['service_number', 'date', 'company']
+    search_fields = ['service_number', 'date', 'client', 'company']
 
 
 @admin.register(AMC)
 class AMCAdmin(admin.ModelAdmin):
-    list_display = ['start_date', 'number', 'client_name', 'end_date']
-    list_filter = ['start_date', 'number', 'client_name', 'end_date']
-    search_fields = ['start_date', 'number', 'client_name']
+    list_display = ['start_date', 'number', 'client_name', 'end_date', 'company']
+    list_filter = ['start_date', 'number', 'client_name', 'end_date', 'company']
+    search_fields = ['start_date', 'number', 'client_name', 'company']
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['name', 'unit_price', 'u_o_m', 'quantity', 'product_type', 'purchase_rate',
-                    'purchase_rate_currency', 'h_s_n_or_s_a_c', 's_k_u', 'tax', 'c_e_s_s_percent', 'c_e_s_s']
-    list_filter = ['name', 'product_type']
-    search_fields = ['name', 'product_type']
+                    'purchase_rate_currency', 'h_s_n_or_s_a_c', 's_k_u', 'tax', 'c_e_s_s_percent', 'c_e_s_s', 'company']
+    list_filter = ['name', 'product_type', 'company']
+    search_fields = ['name', 'product_type', 'company']
 
 
 admin.site.register(CostumerType)

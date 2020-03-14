@@ -11,8 +11,12 @@ conn = http.client.HTTPSConnection("api.msg91.com")
 
 def amcSms():
     today_amc = []
-    data = list(amc.AMC.objects.all().values('pk', 'first_service_date', 'second_service_date',
-                                             'third_service_date', 'fourth_service_date').annotate(
+    data = list(amc.AMC.objects.all().values('pk',
+                                             'first_service_date',
+                                             'second_service_date',
+                                             'third_service_date',
+                                             'fourth_service_date'
+                                             ).annotate(
         amc_client=F('client_name__name'),
         amc_client_phone=F('client_name__phone'),
     ))
@@ -64,17 +68,17 @@ def amcSms():
                                                                                                 f"and Regards,\n "
                                                                                                 f" Kalpesh Infotech\n"
                                                                                                 f"[www"
-                                                                                                f".kalpeshinfotech.com]"
-                          ).save()
+                                                                                                f".kalpeshinfotech.com]",
+                          company_id=1).save()
     if len(today_amc) == 0:
         return "Today No AMC Service"
     return today_amc
 
 
-def amcAlert():
+def amcAlert(request):
     tommorrow_amc = []
-    data = list(amc.AMC.objects.all().values('pk', 'first_service_date', 'second_service_date',
-                                             'third_service_date', 'fourth_service_date').annotate(
+    data = list(amc.AMC.objects.filter(company_id=request.session.get('company_id')).values(
+        'pk', 'first_service_date', 'second_service_date', 'third_service_date', 'fourth_service_date').annotate(
         amc_client=F('client_name__name'),
         amc_client_phone=F('client_name__phone'),
     ))
