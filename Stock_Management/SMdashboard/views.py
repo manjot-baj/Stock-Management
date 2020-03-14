@@ -126,7 +126,7 @@ class Dashboard(View):
             username = request.POST['username']
             password = request.POST['password']
             user = authenticate(request, username=username, password=password)
-            if not user.is_superuser:
+            if user:
                 a = login(request, user)
                 company = list(CompanyDetail.objects.filter(employee__user=request.user.id).values('pk'))
                 request.session['company_id'] = company[0]['pk']
