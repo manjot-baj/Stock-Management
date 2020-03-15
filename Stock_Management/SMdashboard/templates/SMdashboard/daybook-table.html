@@ -35,11 +35,13 @@
                     </table>
                 </div>
                 <div class="tile-footer">
-                    <div class="row text-right">
+                    <div class="row">
                         <div class="col-md-8 col-md-offset-3 " id="total">
-                            Total Credited = <label for="id_credited">{{credited}}</label>&nbsp;&nbsp;|&nbsp;&nbsp;
-                            Total Debited = <label for="id_debited">{{debited}}</label> |
-                            Total Amount = <label for="id_total">{{total}}</label>
+                            <strong><label for="id_opening_amount_label">Opening Amount Today</label></strong>
+                            = <label for="id_opening_amount">{{opening_amount}}</label>&nbsp;&nbsp;|&nbsp;&nbsp;
+                            <strong>Total Credited</strong> = <label for="id_credited">{{credited}}</label>&nbsp;&nbsp;|&nbsp;&nbsp;
+                            <strong>Total Debited</strong> = <label for="id_debited">{{debited}}</label> |
+                            <strong>Total Amount</strong> = <label for="id_total">{{total}}</label>
                         </div>
                     </div>
                 </div>
@@ -171,10 +173,13 @@ var table = $('#sampleTable').DataTable({
                     $('label[for="id_credited"]').html(data["credited"]);
                     $('label[for="id_debited"]').html(data["debited"]);
                     $('label[for="id_total"]').html(data["total"]);
+                    $('label[for="id_opening_amount"]').html(data["opening_amount"]);
+                    $('label[for="id_opening_amount_label"]').html("Opening Amount Then");
             }
             }
         })
      }
+
 
 </script>
 {% endblock %}

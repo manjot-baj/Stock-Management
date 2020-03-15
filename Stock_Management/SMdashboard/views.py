@@ -16,6 +16,7 @@ from django.utils import timezone
 import http.client
 import json
 import datetime
+from datetime import timedelta
 
 conn = http.client.HTTPSConnection("api.msg91.com")
 OWNER_GROUP = "Owner"
@@ -866,7 +867,28 @@ class DayBookView(OwnerRequiredMinxin, ListView):
                 dayBook_debit_amount=ExpressionWrapper(
                     F('debit_amount'), output_field=FloatField()),
             )
-            return list(data)
+            data1 = self.model.objects.filter(company_id=company_id).values('pk', 'date').first()
+            data3 = self.model.objects.filter(date__gte=data1['date'].date(),
+                                              date__lte=request.POST.get('fromDate'),
+                                              company_id=company_id).values('pk').annotate(
+                dayBook_date=ExpressionWrapper(Func(F('date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                               output_field=CharField()),
+                dayBook_credit_amount=ExpressionWrapper(
+                    F('credit_amount'), output_field=FloatField()),
+                dayBook_debit_amount=ExpressionWrapper(
+                    F('debit_amount'), output_field=FloatField()),
+            )
+            credit_total = []
+            debit_total = []
+            for i in range(len(data3)):
+                credit_total.append(data3[i].get("dayBook_credit_amount"))
+                debit_total.append(data3[i].get("dayBook_debit_amount"))
+            credited = sum(credit_total)
+            debited = sum(debit_total)
+            total = credited - debited
+            # print(data3)
+            # print(total)
+            return [list(data), total]
         data = self.model.objects.filter(company_id=company_id).values('pk', 'number', 'customer_type',
                                                                        'description', 'status').annotate(
             dayBook_name=Coalesce('name', Value("-")),
@@ -880,7 +902,28 @@ class DayBookView(OwnerRequiredMinxin, ListView):
             dayBook_debit_amount=ExpressionWrapper(
                 F('debit_amount'), output_field=FloatField()),
         ).order_by("-dayBook_date")
-        return list(data)
+        data1 = self.model.objects.filter(company_id=company_id).values('pk', 'date').first()
+        data3 = self.model.objects.filter(date__gte=data1['date'].date(),
+                                          date__lte=datetime.datetime.today().date(),
+                                          company_id=company_id).values('pk').annotate(
+            dayBook_date=ExpressionWrapper(Func(F('date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                           output_field=CharField()),
+            dayBook_credit_amount=ExpressionWrapper(
+                F('credit_amount'), output_field=FloatField()),
+            dayBook_debit_amount=ExpressionWrapper(
+                F('debit_amount'), output_field=FloatField()),
+        )
+        credit_total = []
+        debit_total = []
+        for i in range(len(data3)):
+            credit_total.append(data3[i].get("dayBook_credit_amount"))
+            debit_total.append(data3[i].get("dayBook_debit_amount"))
+        credited = sum(credit_total)
+        debited = sum(debit_total)
+        total = credited - debited
+        print(data3)
+        print(total)
+        return [list(data), total]
 
     def get(self, request, *args, **kwargs):
         if 'daybook_form' in kwargs:
@@ -891,8 +934,8 @@ class DayBookView(OwnerRequiredMinxin, ListView):
                                             company_id=request.session.get('company_id'))
             template = self.detailed_template_view
             return render(request, template, data)
-        data = self.get_data(request, company_id=request.session.get('company_id'))
-        print(data)
+        data = self.get_data(request, company_id=request.session.get('company_id'))[0]
+        opening_amount = self.get_data(request, company_id=request.session.get('company_id'))[1]
         credit_total = []
         debit_total = []
         for i in range(len(data)):
@@ -901,13 +944,17 @@ class DayBookView(OwnerRequiredMinxin, ListView):
         credited = sum(credit_total)
         debited = sum(debit_total)
         total = credited - debited
-        print(total)
+        # print(total)
         return render(request, self.data_template,
-                      {'data': data, 'credited': credited, 'debited': debited, 'total': total})
+                      {'data': data, 'opening_amount': opening_amount, 'credited': credited,
+                       'debited': debited, 'total': total})
 
     def post(self, request, *args, **kwargs):
         if 'filterDate' in kwargs:
-            data = {'data': self.get_data(request, company_id=request.session.get('company_id'), filter_date='')}
+            data = {'data': self.get_data(request, company_id=request.session.get('company_id'), filter_date='')[0],
+                    'opening_amount': self.get_data(request, company_id=request.session.get('company_id'),
+                                                    filter_date='')[1]}
+            print(data)
             credit_total = []
             debit_total = []
             for i in range(len(data.get('data'))):
