@@ -65,6 +65,29 @@ class Dashboard(View):
             dayBook_debit_amount=ExpressionWrapper(
                 F('debit_amount'), output_field=FloatField()),
         )
+        dayBook_data2 = dayBook.DayBook.objects.filter(company_id=request.session.get('company_id')).values(
+            'pk', 'date').first()
+        dayBook_data3 = dayBook.DayBook.objects.filter(date__gte=dayBook_data2['date'].date(),
+                                                       date__lte=datetime.datetime.today().date(),
+                                                       company_id=request.session.get('company_id')).values(
+            'pk').annotate(
+            dayBook_date=ExpressionWrapper(Func(F('date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                           output_field=CharField()),
+            dayBook_credit_amount=ExpressionWrapper(
+                F('credit_amount'), output_field=FloatField()),
+            dayBook_debit_amount=ExpressionWrapper(
+                F('debit_amount'), output_field=FloatField()),
+        )
+        previous_credit_total = []
+        previous_debit_total = []
+        for i in range(len(dayBook_data3)):
+            previous_credit_total.append(dayBook_data3[i].get("dayBook_credit_amount"))
+            previous_debit_total.append(dayBook_data3[i].get("dayBook_debit_amount"))
+        credited = sum(previous_credit_total)
+        debited = sum(previous_debit_total)
+        previous_total = credited - debited
+        print(dayBook_data3)
+        print(previous_total)
         dayBook_data_list = list(dayBook_data)
         credit_total = []
         debit_total = []
@@ -73,7 +96,8 @@ class Dashboard(View):
             debit_total.append(dayBook_data_list[i].get("dayBook_debit_amount"))
         credited = sum(credit_total)
         debited = sum(debit_total)
-        total = credited - debited
+        present_total = credited - debited
+        total = previous_total + present_total
         context.update({'credited': credited, 'debited': debited, 'total': total})
         enquiry_info = enquiry.Enquiry.objects.filter(company_id=request.session.get('company_id')).count()
         context.update({"enquiry": enquiry_info})
@@ -86,11 +110,6 @@ class Dashboard(View):
                                                  company_id=request.session.get('company_id')).count()
         context.update({"service": service_info, 'pending': pending, 'on_progress': on_progress,
                         'completed': completed})
-        # employee_photo = list(employee_data.Employee.objects.filter(user_id=request.user.id).annotate(
-        #     employee=F('name'),
-        # ))
-        # for each in employee_photo:
-        #     context.update({'employee_photo': each.photo.url})
         if not len(company) == 0:
             context.update({"company": company[0]})
 
