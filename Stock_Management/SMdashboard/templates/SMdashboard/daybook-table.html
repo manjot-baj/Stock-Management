@@ -38,7 +38,9 @@
                     <div class="row">
                         <div class="col-md-8 col-md-offset-3 " id="total">
                             <strong><label for="id_opening_amount_label">Opening Amount Today</label></strong>
-                            = <label for="id_opening_amount">{{opening_amount}}</label>&nbsp;&nbsp;|&nbsp;&nbsp;
+                            = {% if opening_amount %}<label for="id_opening_amount">{{opening_amount}}</label>
+                            {% else %}<label for="id_opening_amount">0</label>
+                            {% endif %}&nbsp;&nbsp;|&nbsp;&nbsp;
                             <strong>Total Credited</strong> = <label for="id_credited">{{credited}}</label>&nbsp;&nbsp;|&nbsp;&nbsp;
                             <strong>Total Debited</strong> = <label for="id_debited">{{debited}}</label> |
                             <strong>Total Amount</strong> = <label for="id_total">{{total}}</label>

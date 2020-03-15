@@ -67,38 +67,40 @@ class Dashboard(View):
         )
         dayBook_data2 = dayBook.DayBook.objects.filter(company_id=request.session.get('company_id')).values(
             'pk', 'date').first()
-        dayBook_data3 = dayBook.DayBook.objects.filter(date__gte=dayBook_data2['date'].date(),
-                                                       date__lte=datetime.datetime.today().date(),
-                                                       company_id=request.session.get('company_id')).values(
-            'pk').annotate(
-            dayBook_date=ExpressionWrapper(Func(F('date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
-                                           output_field=CharField()),
-            dayBook_credit_amount=ExpressionWrapper(
-                F('credit_amount'), output_field=FloatField()),
-            dayBook_debit_amount=ExpressionWrapper(
-                F('debit_amount'), output_field=FloatField()),
-        )
-        previous_credit_total = []
-        previous_debit_total = []
-        for i in range(len(dayBook_data3)):
-            previous_credit_total.append(dayBook_data3[i].get("dayBook_credit_amount"))
-            previous_debit_total.append(dayBook_data3[i].get("dayBook_debit_amount"))
-        credited = sum(previous_credit_total)
-        debited = sum(previous_debit_total)
-        previous_total = credited - debited
-        print(dayBook_data3)
-        print(previous_total)
-        dayBook_data_list = list(dayBook_data)
-        credit_total = []
-        debit_total = []
-        for i in range(len(dayBook_data_list)):
-            credit_total.append(dayBook_data_list[i].get("dayBook_credit_amount"))
-            debit_total.append(dayBook_data_list[i].get("dayBook_debit_amount"))
-        credited = sum(credit_total)
-        debited = sum(debit_total)
-        present_total = credited - debited
-        total = previous_total + present_total
-        context.update({'credited': credited, 'debited': debited, 'total': total})
+        if dayBook_data2:
+            dayBook_data3 = dayBook.DayBook.objects.filter(date__gte=dayBook_data2['date'].date(),
+                                                           date__lte=datetime.datetime.today().date(),
+                                                           company_id=request.session.get('company_id')).values(
+                'pk').annotate(
+                dayBook_date=ExpressionWrapper(Func(F('date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                               output_field=CharField()),
+                dayBook_credit_amount=ExpressionWrapper(
+                    F('credit_amount'), output_field=FloatField()),
+                dayBook_debit_amount=ExpressionWrapper(
+                    F('debit_amount'), output_field=FloatField()),
+            )
+            previous_credit_total = []
+            previous_debit_total = []
+            for i in range(len(dayBook_data3)):
+                previous_credit_total.append(dayBook_data3[i].get("dayBook_credit_amount"))
+                previous_debit_total.append(dayBook_data3[i].get("dayBook_debit_amount"))
+            credited = sum(previous_credit_total)
+            debited = sum(previous_debit_total)
+            previous_total = credited - debited
+            print(dayBook_data3)
+            print(previous_total)
+            dayBook_data_list = list(dayBook_data)
+            credit_total = []
+            debit_total = []
+            for i in range(len(dayBook_data_list)):
+                credit_total.append(dayBook_data_list[i].get("dayBook_credit_amount"))
+                debit_total.append(dayBook_data_list[i].get("dayBook_debit_amount"))
+            credited = sum(credit_total)
+            debited = sum(debit_total)
+            present_total = credited - debited
+            total = previous_total + present_total
+            context.update({'credited': credited, 'debited': debited, 'total': total})
+
         enquiry_info = enquiry.Enquiry.objects.filter(company_id=request.session.get('company_id')).count()
         context.update({"enquiry": enquiry_info})
         service_info = service.Service.objects.filter(company_id=request.session.get('company_id')).count()
@@ -887,8 +889,46 @@ class DayBookView(OwnerRequiredMinxin, ListView):
                     F('debit_amount'), output_field=FloatField()),
             )
             data1 = self.model.objects.filter(company_id=company_id).values('pk', 'date').first()
+            if data1:
+                data3 = self.model.objects.filter(date__gte=data1['date'].date(),
+                                                  date__lte=request.POST.get('fromDate'),
+                                                  company_id=company_id).values('pk').annotate(
+                    dayBook_date=ExpressionWrapper(Func(F('date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                                   output_field=CharField()),
+                    dayBook_credit_amount=ExpressionWrapper(
+                        F('credit_amount'), output_field=FloatField()),
+                    dayBook_debit_amount=ExpressionWrapper(
+                        F('debit_amount'), output_field=FloatField()),
+                )
+                credit_total = []
+                debit_total = []
+                for i in range(len(data3)):
+                    credit_total.append(data3[i].get("dayBook_credit_amount"))
+                    debit_total.append(data3[i].get("dayBook_debit_amount"))
+                credited = sum(credit_total)
+                debited = sum(debit_total)
+                total = credited - debited
+                # print(data3)
+                # print(total)
+                return [list(data), total]
+            return [list(data)]
+        data = self.model.objects.filter(company_id=company_id).values('pk', 'number', 'customer_type',
+                                                                       'description', 'status').annotate(
+            dayBook_name=Coalesce('name', Value("-")),
+            customer=Coalesce('customer_name__name', Value("-")),
+            employee=Coalesce('employee_name__name', Value("-")),
+            vendor=Coalesce('vendor_name__name', Value("-")),
+            dayBook_date=ExpressionWrapper(Func(F('date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                           output_field=CharField()),
+            dayBook_credit_amount=ExpressionWrapper(
+                F('credit_amount'), output_field=FloatField()),
+            dayBook_debit_amount=ExpressionWrapper(
+                F('debit_amount'), output_field=FloatField()),
+        ).order_by("-dayBook_date")
+        data1 = self.model.objects.filter(company_id=company_id).values('pk', 'date').first()
+        if data1:
             data3 = self.model.objects.filter(date__gte=data1['date'].date(),
-                                              date__lte=request.POST.get('fromDate'),
+                                              date__lte=datetime.datetime.today().date(),
                                               company_id=company_id).values('pk').annotate(
                 dayBook_date=ExpressionWrapper(Func(F('date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
                                                output_field=CharField()),
@@ -905,44 +945,10 @@ class DayBookView(OwnerRequiredMinxin, ListView):
             credited = sum(credit_total)
             debited = sum(debit_total)
             total = credited - debited
-            # print(data3)
-            # print(total)
+            print(data3)
+            print(total)
             return [list(data), total]
-        data = self.model.objects.filter(company_id=company_id).values('pk', 'number', 'customer_type',
-                                                                       'description', 'status').annotate(
-            dayBook_name=Coalesce('name', Value("-")),
-            customer=Coalesce('customer_name__name', Value("-")),
-            employee=Coalesce('employee_name__name', Value("-")),
-            vendor=Coalesce('vendor_name__name', Value("-")),
-            dayBook_date=ExpressionWrapper(Func(F('date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
-                                           output_field=CharField()),
-            dayBook_credit_amount=ExpressionWrapper(
-                F('credit_amount'), output_field=FloatField()),
-            dayBook_debit_amount=ExpressionWrapper(
-                F('debit_amount'), output_field=FloatField()),
-        ).order_by("-dayBook_date")
-        data1 = self.model.objects.filter(company_id=company_id).values('pk', 'date').first()
-        data3 = self.model.objects.filter(date__gte=data1['date'].date(),
-                                          date__lte=datetime.datetime.today().date(),
-                                          company_id=company_id).values('pk').annotate(
-            dayBook_date=ExpressionWrapper(Func(F('date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
-                                           output_field=CharField()),
-            dayBook_credit_amount=ExpressionWrapper(
-                F('credit_amount'), output_field=FloatField()),
-            dayBook_debit_amount=ExpressionWrapper(
-                F('debit_amount'), output_field=FloatField()),
-        )
-        credit_total = []
-        debit_total = []
-        for i in range(len(data3)):
-            credit_total.append(data3[i].get("dayBook_credit_amount"))
-            debit_total.append(data3[i].get("dayBook_debit_amount"))
-        credited = sum(credit_total)
-        debited = sum(debit_total)
-        total = credited - debited
-        print(data3)
-        print(total)
-        return [list(data), total]
+        return [list(data)]
 
     def get(self, request, *args, **kwargs):
         if 'daybook_form' in kwargs:
@@ -953,8 +959,14 @@ class DayBookView(OwnerRequiredMinxin, ListView):
                                             company_id=request.session.get('company_id'))
             template = self.detailed_template_view
             return render(request, template, data)
-        data = self.get_data(request, company_id=request.session.get('company_id'))[0]
-        opening_amount = self.get_data(request, company_id=request.session.get('company_id'))[1]
+        context = {}
+        main_data = self.get_data(request, company_id=request.session.get('company_id'))
+        if len(main_data) > 1:
+            data = main_data[0]
+            opening_amount = main_data[1]
+            context.update({'data': data, 'opening_amount': opening_amount})
+        data = main_data[0]
+        context.update({'data': data})
         credit_total = []
         debit_total = []
         for i in range(len(data)):
@@ -963,16 +975,18 @@ class DayBookView(OwnerRequiredMinxin, ListView):
         credited = sum(credit_total)
         debited = sum(debit_total)
         total = credited - debited
-        # print(total)
-        return render(request, self.data_template,
-                      {'data': data, 'opening_amount': opening_amount, 'credited': credited,
+        context.update({'credited': credited,
                        'debited': debited, 'total': total})
+        print(context)
+        return render(request, self.data_template, context)
 
     def post(self, request, *args, **kwargs):
         if 'filterDate' in kwargs:
-            data = {'data': self.get_data(request, company_id=request.session.get('company_id'), filter_date='')[0],
-                    'opening_amount': self.get_data(request, company_id=request.session.get('company_id'),
-                                                    filter_date='')[1]}
+            main_data = self.get_data(request, company_id=request.session.get('company_id'), filter_date='')
+            if len(main_data) > 1:
+                data = {'data': main_data[0],
+                        'opening_amount': main_data[1]}
+            data = {'data': main_data[0]}
             print(data)
             credit_total = []
             debit_total = []
