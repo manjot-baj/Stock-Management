@@ -33,8 +33,8 @@ class Dashboard(View):
     dashboard_template = 'SMdashboard/dashboard.html'
 
     def dashboard_info(self, request):
-        # from .amc_task import amcAlertMonth
-        # print(amcAlertMonth(request))
+        from .amc_task import amcAlertMonth
+        print(amcAlertMonth(request))
         # print(request.session.get('company_id'))
         company_info = CompanyDetail.objects.filter(pk=request.session.get('company_id')).values('pk', 'name').annotate(
 
@@ -129,6 +129,8 @@ class Dashboard(View):
         from .amc_task import amcAlert
         print(f"{request} this is request")
         amc_alert = amcAlert(request)
+        this_month_amc = amcAlertMonth(request)
+        context.update({'this_month_amc': this_month_amc})
         # print(amc_alert)
         context.update({'amc_alert': amc_alert})
         print(context)
