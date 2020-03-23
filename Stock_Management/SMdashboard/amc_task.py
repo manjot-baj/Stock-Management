@@ -96,3 +96,34 @@ def amcAlert(request):
     if len(tommorrow_amc) == 0:
         return "Tommorrow No AMC Service"
     return tommorrow_amc
+
+
+def amcAlertMonth(request):
+    this_month_amc = []
+    data = list(amc.AMC.objects.filter(company_id=request.session.get('company_id')).values(
+        'pk').annotate(
+        amc_client=F('client_name__name'),
+        amc_first_service_date=ExpressionWrapper(Func(F('first_service_date'), Value("MM-YY"), function='TO_CHAR'),
+                                                 output_field=CharField()),
+        amc_second_service_date=ExpressionWrapper(Func(F('second_service_date'), Value("MM-YY"), function='TO_CHAR'),
+                                                  output_field=CharField()),
+        amc_third_service_date=ExpressionWrapper(Func(F('third_service_date'), Value("MM-YY"), function='TO_CHAR'),
+                                                 output_field=CharField()),
+        amc_fourth_service_date=ExpressionWrapper(Func(F('fourth_service_date'), Value("MM-YY"), function='TO_CHAR'),
+                                                  output_field=CharField()),
+        amc_client_phone=F('client_name__phone'),
+    ))
+
+    for each in data:
+        if each.get('amc_first_service_date') == datetime.today().date().strftime("%m-%y") \
+                or each.get('amc_second_service_date') == datetime.today().date().strftime("%m-%y") \
+                or each.get('amc_third_service_date') == datetime.today().date().strftime("%m-%y") \
+                or each.get('amc_fourth_service_date') == datetime.today().date().strftime("%m-%y"):
+            client_no = each.get('amc_client_phone')
+            client = each.get('amc_client')
+            this_month_amc.append({"date": datetime.today().date().strftime("%m-%y"), "client": client,
+                                   "phone": client_no})
+
+    if len(this_month_amc) == 0:
+        return "This Month No AMC Service"
+    return this_month_amc
