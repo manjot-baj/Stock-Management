@@ -226,6 +226,36 @@
             </div>
         </div>
     </div>
+    <div class="col-md-6">
+        <div class="tile">
+            <h3 class="tile-title"> This Month AMC Services</h3>
+            <div>
+                {% if this_month_amc %}
+                <strong>The Following Clients have AMC Services this Month</strong><br/><br/>
+                <table class="table table-hover table-striped">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Client Name</th>
+                        <th>Phone</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for data in this_month_amc %}
+                    <tr>
+                        <th> {{data.date}}</th>
+                        <th>{{data.client}}</th>
+                        <th>{{data.phone}}</th>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <strong>This Month No AMC Services</strong>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 {% block script %}

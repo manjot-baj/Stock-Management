@@ -121,7 +121,7 @@ def amcAlertMonth(request):
                 or each.get('amc_fourth_service_date') == datetime.today().date().strftime("%m-%y"):
             client_no = each.get('amc_client_phone')
             client = each.get('amc_client')
-            this_month_amc.append({"date": datetime.today().date().strftime("%m-%y"), "client": client,
+            this_month_amc.append({"date": datetime.today().date().strftime("%m/%y"), "client": client,
                                    "phone": client_no})
 
     if len(this_month_amc) == 0:
