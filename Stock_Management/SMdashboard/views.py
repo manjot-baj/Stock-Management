@@ -33,9 +33,7 @@ class Dashboard(View):
     dashboard_template = 'SMdashboard/dashboard.html'
 
     def dashboard_info(self, request):
-        # from .amc_task import amcAlertMonth
-        # print(amcAlertMonth(request))
-        # print(request.session.get('company_id'))
+        print(request.session.get('company_id'))
         company_info = CompanyDetail.objects.filter(pk=request.session.get('company_id')).values('pk', 'name').annotate(
 
             company_address=Concat(
