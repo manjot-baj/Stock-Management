@@ -82,6 +82,7 @@ def amcAlert(request):
         amc_client=F('client_name__name'),
         amc_client_phone=F('client_name__phone'),
     ))
+    service_status = ""
 
     for each in data:
         if each.get('first_service_date') - timedelta(days=1) == datetime.today().date() \
@@ -90,8 +91,22 @@ def amcAlert(request):
                 or each.get('fourth_service_date') - timedelta(days=1) == datetime.today().date():
             client_no = each.get('amc_client_phone')
             client = each.get('amc_client')
-            tommorrow_amc.append({"date": datetime.today().date() + timedelta(days=1), "client": client,
-                                  "phone": client_no})
+            if each.get('first_service_date') - timedelta(days=1) == datetime.today().date():
+                service_status = "First Service"
+                tommorrow_amc.append({"date": datetime.today().date() + timedelta(days=1), "client": client,
+                                      'service_status': service_status, "phone": client_no})
+            elif each.get('second_service_date') - timedelta(days=1) == datetime.today().date():
+                service_status = "Second Service"
+                tommorrow_amc.append({"date": datetime.today().date() + timedelta(days=1), "client": client,
+                                      'service_status': service_status, "phone": client_no})
+            elif each.get('third_service_date') - timedelta(days=1) == datetime.today().date():
+                service_status = "Third Service"
+                tommorrow_amc.append({"date": datetime.today().date() + timedelta(days=1), "client": client,
+                                      'service_status': service_status, "phone": client_no})
+            else:
+                service_status = 'Fourth Service'
+                tommorrow_amc.append({"date": datetime.today().date() + timedelta(days=1), "client": client,
+                                      'service_status': service_status, "phone": client_no})
 
     if len(tommorrow_amc) == 0:
         return "Tommorrow No AMC Service"
