@@ -128,6 +128,7 @@ def amcAlertMonth(request):
                                                   output_field=CharField()),
         amc_client_phone=F('client_name__phone'),
     ))
+    service_status = ""
 
     for each in data:
         if each.get('amc_first_service_date') == datetime.today().date().strftime("%m-%y") \
@@ -136,8 +137,22 @@ def amcAlertMonth(request):
                 or each.get('amc_fourth_service_date') == datetime.today().date().strftime("%m-%y"):
             client_no = each.get('amc_client_phone')
             client = each.get('amc_client')
-            this_month_amc.append({"date": datetime.today().date().strftime("%m/%y"), "client": client,
-                                   "phone": client_no})
+            if each.get('amc_first_service_date') == datetime.today().date().strftime("%m-%y"):
+                service_status = "First Service"
+                this_month_amc.append({"date": datetime.today().date().strftime("%m/%y"), "client": client,
+                                       'service_status': service_status, "phone": client_no})
+            elif each.get('amc_second_service_date') == datetime.today().date().strftime("%m-%y"):
+                service_status = "Second Service"
+                this_month_amc.append({"date": datetime.today().date().strftime("%m/%y"), "client": client,
+                                       'service_status': service_status, "phone": client_no})
+            elif each.get('amc_third_service_date') == datetime.today().date().strftime("%m-%y"):
+                service_status = "Third Service"
+                this_month_amc.append({"date": datetime.today().date().strftime("%m/%y"), "client": client,
+                                       'service_status': service_status, "phone": client_no})
+            else:
+                service_status = 'Fourth Service'
+                this_month_amc.append({"date": datetime.today().date().strftime("%m/%y"), "client": client,
+                                       'service_status': service_status, "phone": client_no})
 
     if len(this_month_amc) == 0:
         return "This Month No AMC Service"
