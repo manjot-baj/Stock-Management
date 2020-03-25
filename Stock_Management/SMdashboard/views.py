@@ -1293,13 +1293,16 @@ class Service(DashboardLoginRequiredMixin, ListView):
             # res = conn.getresponse()
             # data = res.read()
             # print(data.decode("utf-8"))
-            service.ServiceStoreData(date=datetime.datetime.today().date(), client=client,
-                                     phone=client_no,
-                                     service_number=service_number,
-                                     message=f"Dear {client},\n Your Service number for {service_type} is {service_number} "
-                                             f"generated on {date} \n Thanks and Regards,\n Kalpesh Infotech\n"
-                                             f"[www.kalpeshinfotech.com]",
-                                     company_id=request.session.get('company_id')).save()
+            service.ServiceStoreData.objects.create(date=date, client=client,
+                                                    phone=client_no,
+                                                    service_number=service_number,
+                                                    message=f"Dear {client},"
+                                                            f"\n Your Service number for {service_type} is"
+                                                            f" {service_number} "
+                                                            f"generated on {date} \n"
+                                                            f" Thanks and Regards,\n Kalpesh Infotech\n"
+                                                            f"[www.kalpeshinfotech.com]",
+                                                    company_id=request.session.get('company_id'))
         return redirect(to="service")
 
 
