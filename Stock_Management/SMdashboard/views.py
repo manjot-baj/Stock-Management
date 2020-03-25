@@ -16,6 +16,7 @@ from django.utils import timezone
 import http.client
 import json
 import datetime
+
 from datetime import timedelta
 
 conn = http.client.HTTPSConnection("api.msg91.com")
@@ -977,7 +978,7 @@ class DayBookView(OwnerRequiredMinxin, ListView):
         debited = sum(debit_total)
         total = credited - debited
         context.update({'credited': credited,
-                       'debited': debited, 'total': total})
+                        'debited': debited, 'total': total})
         print(context)
         return render(request, self.data_template, context)
 
@@ -1291,6 +1292,13 @@ class Service(DashboardLoginRequiredMixin, ListView):
             # res = conn.getresponse()
             # data = res.read()
             # print(data.decode("utf-8"))
+            service.ServiceStoreData(date=datetime.datetime.today().date(), client=client,
+                                     phone=client_no,
+                                     service_number=service_number,
+                                     message=f"Dear {client},\n Your Service number for {service_type} is {service_number} "
+                                             f"generated on {date} \n Thanks and Regards,\n Kalpesh Infotech\n"
+                                             f"[www.kalpeshinfotech.com]",
+                                     company_id=request.session.get('company_id')).save()
         return redirect(to="service")
 
 
