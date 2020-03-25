@@ -1396,6 +1396,16 @@ class ServiceReply(DashboardLoginRequiredMixin, ListView):
             # res = conn.getresponse()
             # data = res.read()
             # print(data.decode("utf-8"))
+            service.ServiceRecordStoreData.objects.create(date=datetime.datetime.now(),
+                                                    client=client,
+                                                    phone=client_no,
+                                                    status=status,
+                                                    service_number=service_number,
+                                                    message=f"Dear {client},\n Your Service Status for {service_type} having Service no "
+                                                            f"{service_number}"
+                                                            f" is changed to {status} on \n {datetime.datetime.now()}\n Thanks and Regards,\n"
+                                                            f"Kalpesh Infotech\n[www.kalpeshinfotech.com]",
+                                                    company_id=request.session.get('company_id'))
             return redirect(to="service")
         return redirect(to='service_form')
 
