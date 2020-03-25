@@ -33,6 +33,19 @@ class Service(BaseModel):
         return self.service_number
 
 
+class ServiceStoreData(BaseModel):
+    date = models.DateField(null=True, blank=False)
+    client = models.CharField(max_length=100, null=True, blank=False)
+    service_number = models.CharField(max_length=100, null=True, blank=False)
+    phone = models.CharField(max_length=12, null=True, blank=False)
+    message = models.TextField(null=True, blank=False)
+    company = models.ForeignKey(CompanyDetail, on_delete=models.SET_NULL, null=True,
+                                blank=True)
+
+    def __str__(self):
+        return self.client
+
+
 class ServiceRecord(BaseModel):
     service_number = models.ForeignKey(Service, on_delete=models.CASCADE, null=True, blank=False)
     date = models.DateTimeField(default=timezone.now, null=True, blank=False)
