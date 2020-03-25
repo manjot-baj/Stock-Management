@@ -124,7 +124,8 @@ class Dashboard(View):
         # print(amcToday)
         if not len(amcToday) == 0:
             context.update({'amcToday': amcToday})
-        from .amc_task import amcAlert, amcAlertMonth
+        from .amc_task import amcAlert, amcAlertMonth, amcSms
+        # print(amcSms())
         print(f"{request} this is request")
         amc_alert = amcAlert(request)
         this_month_amc = amcAlertMonth(request)
@@ -1292,13 +1293,16 @@ class Service(DashboardLoginRequiredMixin, ListView):
             # res = conn.getresponse()
             # data = res.read()
             # print(data.decode("utf-8"))
-            service.ServiceStoreData(date=datetime.datetime.today().date(), client=client,
-                                     phone=client_no,
-                                     service_number=service_number,
-                                     message=f"Dear {client},\n Your Service number for {service_type} is {service_number} "
-                                             f"generated on {date} \n Thanks and Regards,\n Kalpesh Infotech\n"
-                                             f"[www.kalpeshinfotech.com]",
-                                     company_id=request.session.get('company_id')).save()
+            service.ServiceStoreData.objects.create(date=date, client=client,
+                                                    phone=client_no,
+                                                    service_number=service_number,
+                                                    message=f"Dear {client},"
+                                                            f"\n Your Service number for {service_type} is"
+                                                            f" {service_number} "
+                                                            f"generated on {date} \n"
+                                                            f" Thanks and Regards,\n Kalpesh Infotech\n"
+                                                            f"[www.kalpeshinfotech.com]",
+                                                    company_id=request.session.get('company_id'))
         return redirect(to="service")
 
 
