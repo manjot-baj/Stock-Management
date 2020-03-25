@@ -123,7 +123,8 @@ class Dashboard(View):
         # print(amcToday)
         if not len(amcToday) == 0:
             context.update({'amcToday': amcToday})
-        from .amc_task import amcAlert, amcAlertMonth
+        from .amc_task import amcAlert, amcAlertMonth, amcSms
+        # print(amcSms())
         print(f"{request} this is request")
         amc_alert = amcAlert(request)
         this_month_amc = amcAlertMonth(request)
