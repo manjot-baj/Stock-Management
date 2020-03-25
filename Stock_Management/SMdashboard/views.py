@@ -1284,10 +1284,10 @@ class Service(DashboardLoginRequiredMixin, ListView):
             }
             my_payload = json.dumps(payload)
             print(my_payload)
-            # headers = {
-            #     'authkey': "319771ADVdNvaEDkN5e525394P1",
-            #     'content-type': "application/json"
-            # }
+            headers = {
+                'authkey': "319771ADVdNvaEDkN5e525394P1",
+                'content-type': "application/json"
+            }
             # conn.request("POST", "/api/v2/sendsms", my_payload, headers)
             # res = conn.getresponse()
             # data = res.read()
