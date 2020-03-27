@@ -403,5 +403,14 @@ class AmcReport:
                 'amc_fourth_service_date': each.amc_fourth_service_date,
                 'amc_end_date': each.amc_end_date,
             })
+            data1 = list(amc.AMC.objects.filter(pk=amc_id, company_id=company_id).values('client_name'))
+            service_type = list(service.ServiceType.objects.filter(name='AMC').values('pk'))
+            amc_service_records = list(service.Service.objects.filter(client_id=data1[0]['client_name'],
+                                                                      company_id=company_id,
+                                                                      service_type_id=service_type[0]['pk']).values(
+                'pk').annotate(service_date=ExpressionWrapper(Func(F('date'), V("DD/MM/YYYY"), function='TO_CHAR'),
+                                                              output_field=CharField()), service_status=F('status')))
+            if not len(amc_service_records) == 0:
+                data.update({"service_record": amc_service_records})
         print(data)
         return data
