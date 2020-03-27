@@ -1264,9 +1264,17 @@ class Service(DashboardLoginRequiredMixin, ListView):
                                                                  company_id=request.session.get('company_id')
                                                                  ).values('pk').annotate(
                 phone=F('client__phone'),
+                company_name=F('company__name'),
+                company_phone=F('company__phone'),
+                company_email=F('company__email_id'),
+                company_website=F('company__website')
             ))
             print(my_client_data)
             client_no = my_client_data[0].get('phone')
+            company_name = my_client_data[0].get('company_name')
+            company_phone = my_client_data[0].get('company_phone')
+            company_email = my_client_data[0].get('company_email')
+            company_website = my_client_data[0].get('company_website')
             payload = {
                 "sender": "KIINFO",
                 "route": "4",
@@ -1274,11 +1282,11 @@ class Service(DashboardLoginRequiredMixin, ListView):
                 "sms": [
                     {
                         "message": f"Dear {client},\n Your Service number for {service_type} is {service_number} "
-                                   f"generated on {date} \n Thanks and Regards,\n Kalpesh Infotech\n"
-                                   f"[www.kalpeshinfotech.com]",
+                                   f"generated on {date} \n Thanks and Regards,\n {company_name}\n "
+                                   f"[{company_phone}] / [{company_email}]"
+                                   f"[{company_website}]",
                         "to": [
                             client_no,
-                            # "9922620357",
                         ]
                     }
                 ]
@@ -1296,176 +1304,183 @@ class Service(DashboardLoginRequiredMixin, ListView):
             service.ServiceStoreData.objects.create(date=date, client=client,
                                                     phone=client_no,
                                                     service_number=service_number,
-                                                    message=f"Dear {client},"
-                                                            f"\n Your Service number for {service_type} is"
-                                                            f" {service_number} "
-                                                            f"generated on {date} \n"
-                                                            f" Thanks and Regards,\n Kalpesh Infotech\n"
-                                                            f"[www.kalpeshinfotech.com]",
-                                                    company_id=request.session.get('company_id'))
-        return redirect(to="service")
-
-
-class ServiceEdit(DashboardLoginRequiredMixin, ListView):
-    from .forms import ServiceEditForm
-    editform = ServiceEditForm
-    model = service.Service
-    service_edit_Form_template = 'SMdashboard/service_edit_form.html'
-
-    def get(self, request, *args, **kwargs):
-        if 'service_edit_form' in kwargs:
-            record = self.model.objects.get(id=kwargs.get('object_id'))
-            print(record)
-            form = self.ServiceEditForm(instance=record)
-            return render(request, self.service_edit_Form_template, {'service': form})
-
-    def post(self, request, *args, **kwargs):
-        editform = self.ServiceEditForm(request.POST, request.FILES)
-        if editform.is_valid():
-            service_number = editform.cleaned_data.get('service_number')
-            date = editform.cleaned_data.get('date')
-            client = editform.cleaned_data.get('client')
-            service_type = editform.cleaned_data.get('service_type')
-            description = editform.cleaned_data.get('description')
-            # photo = editform.cleaned_data.get('photo')
-
-            service.Service.objects.filter(pk=kwargs.get('object_id')).update(
-                service_number=service_number, date=date, client=client, service_type=service_type,
-                description=description, create_user=request.user, write_user=request.user
-            )
-        return redirect(to="service")
-
-
-class ServiceReply(DashboardLoginRequiredMixin, ListView):
-    from .forms import ServiceReplyForm
-    form = ServiceReplyForm
-    service_reply_Form_template = 'SMdashboard/service_reply_form.html'
-
-    def get(self, request, *args, **kwargs):
-        if 'service_reply_form' in kwargs:
-            return render(request, self.service_reply_Form_template, {'replyService': self.form()})
-
-    def post(self, request, *args, **kwargs):
-        replyForm = self.form(request.POST, request.FILES)
-        print(f'object id : {replyForm}')
-        print(kwargs.get('object_id'))
-        if replyForm.is_valid():
-            photo = replyForm.cleaned_data.get('photo')
-            status = replyForm.cleaned_data.get('status')
-            comment = replyForm.cleaned_data.get('comment')
-            service.ServiceRecord.objects.create(service_number_id=kwargs.get('object_id'),
-                                                 photo=photo, status=status, comment=comment,
-                                                 create_user=request.user, write_user=request.user)
-            service.Service.objects.filter(id=kwargs.get('object_id')).update(status=status)
-            my_client_data = list(service.ServiceRecord.objects.filter(
-                service_number_id=kwargs.get('object_id')).values('pk').annotate(
-                client=F('service_number__client__name'),
-                service_no=F('service_number__service_number'),
-                service_type=F('service_number__service_type__name'),
-                phone=F('service_number__client__phone'),
-            ))
-            print(my_client_data)
-            service_number = my_client_data[0].get('service_no')
-            service_type = my_client_data[0].get('service_type')
-            client_no = my_client_data[0].get('phone')
-            client = my_client_data[0].get('client')
-            payload = {
-                "sender": "KIINFO",
-                "route": "4",
-                "country": "91",
-                "sms": [
-                    {
-                        "message": f"Dear {client},\n Your Service Status for {service_type} having Service no "
-                                   f"{service_number}"
-                                   f" is changed to {status} on \n {datetime.datetime.now()}\n Thanks and Regards,\n"
-                                   f"Kalpesh Infotech\n[www.kalpeshinfotech.com]",
-                        "to": [
-                            client_no,
-                            # "9922620357",
-                        ]
-                    }
-                ]
-            }
-            my_payload = json.dumps(payload)
-            print(my_payload)
-            # headers = {
-            #     'authkey': "319771ADVdNvaEDkN5e525394P1",
-            #     'content-type': "application/json"
-            # }
-            # conn.request("POST", "/api/v2/sendsms", my_payload, headers)
-            # res = conn.getresponse()
-            # data = res.read()
-            # print(data.decode("utf-8"))
-            service.ServiceRecordStoreData.objects.create(date=datetime.datetime.now(),
-                                                    client=client,
-                                                    phone=client_no,
-                                                    status=status,
-                                                    service_number=service_number,
-                                                    message=f"Dear {client},\n Your Service Status for {service_type} having Service no "
-                                                            f"{service_number}"
-                                                            f" is changed to {status} on \n {datetime.datetime.now()}\n Thanks and Regards,\n"
-                                                            f"Kalpesh Infotech\n[www.kalpeshinfotech.com]",
+                                                    message=f"Dear {client},\n Your Service number for {service_type}"
+                                                            f" is {service_number} "
+                                                            f"generated on {date} \n "
+                                                            f"Thanks and Regards,\n {company_name}\n "
+                                                            f"[{company_phone}] / [{company_email}]"
+                                                            f"[{company_website}]",
                                                     company_id=request.session.get('company_id'))
             return redirect(to="service")
-        return redirect(to='service_form')
 
+    class ServiceEdit(DashboardLoginRequiredMixin, ListView):
+        from .forms import ServiceEditForm
+        editform = ServiceEditForm
+        model = service.Service
+        service_edit_Form_template = 'SMdashboard/service_edit_form.html'
 
-class AMC_View(OwnerRequiredMinxin, ListView):
-    from .forms import AMC_Form
-    model = amc.AMC
-    form = AMC_Form
-    data_template = 'SMdashboard/amc_datatable.html'
-    detailed_view_template = 'SMdashboard/view_amc.html'
-    AMC_Form_template = 'SMdashboard/amc_form.html'
+        def get(self, request, *args, **kwargs):
+            if 'service_edit_form' in kwargs:
+                record = self.model.objects.get(id=kwargs.get('object_id'))
+                print(record)
+                form = self.ServiceEditForm(instance=record)
+                return render(request, self.service_edit_Form_template, {'service': form})
 
-    def get_data(self, request, company_id=None):
-        data = self.model.objects.filter(company_id=company_id).values('pk', 'number').annotate(
-            amc_client=F('client_name__name'),
-            amc_start_date=ExpressionWrapper(Func(F('start_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
-                                             output_field=CharField()),
-            amc_end_date=ExpressionWrapper(Func(F('end_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
-                                           output_field=CharField()),
-        )
-        return list(data)
+        def post(self, request, *args, **kwargs):
+            editform = self.ServiceEditForm(request.POST, request.FILES)
+            if editform.is_valid():
+                service_number = editform.cleaned_data.get('service_number')
+                date = editform.cleaned_data.get('date')
+                client = editform.cleaned_data.get('client')
+                service_type = editform.cleaned_data.get('service_type')
+                description = editform.cleaned_data.get('description')
+                # photo = editform.cleaned_data.get('photo')
 
-    def get(self, request, *args, **kwargs):
-        if 'amc_form' in kwargs:
-            a = Client.objects.filter(id=kwargs.get('object_id'),
-                                      company_id=request.session.get("company_id")).values('name')
-            print(a)
-            context = {}
-            context.update({'amc': self.form()})
-            for i in a:
-                context.update({"client_name": i.get('name')})
-            return render(request, self.AMC_Form_template, context)
-        if 'object_id' in kwargs:
-            from .reports import AmcReport
-            data = AmcReport().get_data(request, amc_id=kwargs.get('object_id'),
-                                        company_id=request.session.get("company_id"))
+                service.Service.objects.filter(pk=kwargs.get('object_id')).update(
+                    service_number=service_number, date=date, client=client, service_type=service_type,
+                    description=description, create_user=request.user, write_user=request.user
+                )
+            return redirect(to="service")
+
+    class ServiceReply(DashboardLoginRequiredMixin, ListView):
+        from .forms import ServiceReplyForm
+        form = ServiceReplyForm
+        service_reply_Form_template = 'SMdashboard/service_reply_form.html'
+
+        def get(self, request, *args, **kwargs):
+            if 'service_reply_form' in kwargs:
+                return render(request, self.service_reply_Form_template, {'replyService': self.form()})
+
+        def post(self, request, *args, **kwargs):
+            replyForm = self.form(request.POST, request.FILES)
+            print(f'object id : {replyForm}')
+            print(kwargs.get('object_id'))
+            if replyForm.is_valid():
+                photo = replyForm.cleaned_data.get('photo')
+                status = replyForm.cleaned_data.get('status')
+                comment = replyForm.cleaned_data.get('comment')
+                service.ServiceRecord.objects.create(service_number_id=kwargs.get('object_id'),
+                                                     photo=photo, status=status, comment=comment,
+                                                     create_user=request.user, write_user=request.user)
+                service.Service.objects.filter(id=kwargs.get('object_id')).update(status=status)
+                my_client_data = list(service.ServiceRecord.objects.filter(
+                    service_number_id=kwargs.get('object_id')).values('pk').annotate(
+                    client=F('service_number__client__name'),
+                    service_no=F('service_number__service_number'),
+                    service_type=F('service_number__service_type__name'),
+                    phone=F('service_number__client__phone'),
+                    company_name=F('service_number__company__name'),
+                    company_phone=F('service_number__company__phone'),
+                    company_email=F('service_number__company__email_id'),
+                    company_website=F('service_number__company__website')
+                ))
+                print(my_client_data)
+                service_number = my_client_data[0].get('service_no')
+                service_type = my_client_data[0].get('service_type')
+                client_no = my_client_data[0].get('phone')
+                client = my_client_data[0].get('client')
+                company_name = my_client_data[0].get('company_name')
+                company_phone = my_client_data[0].get('company_phone')
+                company_email = my_client_data[0].get('company_email')
+                company_website = my_client_data[0].get('company_website')
+                payload = {
+                    "sender": "KIINFO",
+                    "route": "4",
+                    "country": "91",
+                    "sms": [
+                        {
+                            "message": f"Dear {client},\n Your Service Status for {service_type} having Service no "
+                                       f"{service_number}"
+                                       f" is changed to {status} on \n {datetime.datetime.now()}\n "
+                                       f"Thanks and Regards,\n {company_name}\n "
+                                       f"[{company_phone}] / [{company_email}]"
+                                       f"[{company_website}]",
+                            "to": [
+                                client_no,
+                            ]
+                        }
+                    ]
+                }
+                my_payload = json.dumps(payload)
+                print(my_payload)
+                # headers = {
+                #     'authkey': "319771ADVdNvaEDkN5e525394P1",
+                #     'content-type': "application/json"
+                # }
+                # conn.request("POST", "/api/v2/sendsms", my_payload, headers)
+                # res = conn.getresponse()
+                # data = res.read()
+                # print(data.decode("utf-8"))
+                service.ServiceStoreData.objects.create(date=datetime.datetime.now(), client=client, phone=client_no,
+                                                        status=status, service_number=service_number,
+                                                        message=f"Dear {client},\n"
+                                                                f" Your Service Status for {service_type}"
+                                                                f" having Service no {service_number}"
+                                                                f" is changed to {status} on"
+                                                                f" \n {datetime.datetime.now()}\n "
+                                                                f"Thanks and Regards,\n {company_name}\n "
+                                                                f"[{company_phone}] / [{company_email}]"
+                                                                f"[{company_website}]",
+                                                        company_id=request.session.get('company_id'))
+                return redirect(to="service")
+            return redirect(to='service_form')
+
+    class AMC_View(OwnerRequiredMinxin, ListView):
+        from .forms import AMC_Form
+        model = amc.AMC
+        form = AMC_Form
+        data_template = 'SMdashboard/amc_datatable.html'
+        detailed_view_template = 'SMdashboard/view_amc.html'
+        AMC_Form_template = 'SMdashboard/amc_form.html'
+
+        def get_data(self, request, company_id=None):
+            data = self.model.objects.filter(company_id=company_id).values('pk', 'number').annotate(
+                amc_client=F('client_name__name'),
+                amc_start_date=ExpressionWrapper(Func(F('start_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                                 output_field=CharField()),
+                amc_end_date=ExpressionWrapper(Func(F('end_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                               output_field=CharField()),
+            )
+            return list(data)
+
+        def get(self, request, *args, **kwargs):
+            if 'amc_form' in kwargs:
+                a = Client.objects.filter(id=kwargs.get('object_id'),
+                                          company_id=request.session.get("company_id")).values('name')
+                print(a)
+                context = {}
+                context.update({'amc': self.form()})
+                for i in a:
+                    context.update({"client_name": i.get('name')})
+                return render(request, self.AMC_Form_template, context)
+            if 'object_id' in kwargs:
+                from .reports import AmcReport
+                data = AmcReport().get_data(request, amc_id=kwargs.get('object_id'),
+                                            company_id=request.session.get("company_id"))
+                print(data)
+                return render(request, self.detailed_view_template, {'data': data})
+            data = self.get_data(request, company_id=request.session.get("company_id"))
             print(data)
-            return render(request, self.detailed_view_template, {'data': data})
-        data = self.get_data(request, company_id=request.session.get("company_id"))
-        print(data)
-        return render(request, self.data_template, {'data': data})
+            return render(request, self.data_template, {'data': data})
 
-    def post(self, request, *args, **kwargs):
-        amcForm = self.form(request.POST)
-        print(amcForm.is_valid())
-        print(amcForm)
+        def post(self, request, *args, **kwargs):
+            amcForm = self.form(request.POST)
+            print(amcForm.is_valid())
+            print(amcForm)
 
-        if amcForm.is_valid():
-            number = amcForm.cleaned_data.get('number')
-            description = amcForm.cleaned_data.get('description')
-            start_date = amcForm.cleaned_data.get('start_date')
-            end_date = amcForm.cleaned_data.get('end_date')
-            self.model.objects.create(number=number, client_name_id=kwargs.get('object_id'),
-                                      description=description, start_date=start_date,
-                                      company_id=request.session.get("company_id"))
-            return redirect(to="amc_data")
-        return redirect(to="dashboard")
+            if amcForm.is_valid():
+                number = amcForm.cleaned_data.get('number')
+                description = amcForm.cleaned_data.get('description')
+                start_date = amcForm.cleaned_data.get('start_date')
+                end_date = amcForm.cleaned_data.get('end_date')
+                self.model.objects.create(number=number, client_name_id=kwargs.get('object_id'),
+                                          description=description, start_date=start_date,
+                                          company_id=request.session.get("company_id"))
+                return redirect(to="amc_data")
+            return redirect(to="dashboard")
 
-# from datetime import datetime
-# from datetime import timedelta
-#
-# today = datetime.today().date()
-# yesterday = today + timedelta(days=90 + 90 + 90 + 90)
+    # from datetime import datetime
+    # from datetime import timedelta
+    #
+    # today = datetime.today().date()
+    # yesterday = today + timedelta(days=90 + 90 + 90 + 90)
