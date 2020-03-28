@@ -104,12 +104,7 @@ class AMCAdmin(admin.ModelAdmin):
     search_fields = ['start_date', 'number', 'client_name', 'company']
 
 
-@admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
-    list_display = ['name', 'unit_price', 'u_o_m', 'quantity', 'product_type', 'purchase_rate',
-                    'purchase_rate_currency', 'h_s_n_or_s_a_c', 's_k_u', 'tax', 'c_e_s_s_percent', 'c_e_s_s', 'company']
-    list_filter = ['name', 'product_type', 'company']
-    search_fields = ['name', 'product_type', 'company']
+
 
 
 admin.site.register(CostumerType)
