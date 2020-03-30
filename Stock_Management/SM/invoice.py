@@ -5,8 +5,45 @@ from .models import BaseModel
 from .company_data import CompanyDetail
 
 
+
 # from .PO import POData
 
+
+class Product(BaseModel):
+    TYPE_UOM = (
+        ('Boxes', 'Boxes'),
+        ('CFT', 'CFT'),
+        ('Centimerets', 'Centimerets'),
+        ('Cubic Meters', 'Cubic Meters'),
+        ('Gram', 'Gram'),
+        ('Hours', 'Hours'),
+        ('Inches', 'Inches'),
+        ('Killowgrams', 'Killowgrams'),
+        ('Piece', 'Piece'),
+    )
+    Tax_Type = (
+        ('1', '1% GST'),
+        ('3', '3% GST'),
+        ('5', '5% GST'),
+        ('12', '12% GST'),
+        ('18', '18% GST'),
+        ('28', '28% GST'),
+    )
+    Product_Type = (('Product', 'Product'), ('Service', 'Service'))
+    type = models.CharField(max_length=50, choices=Product_Type, null=True, blank=False)
+    uom = models.CharField(choices=TYPE_UOM, max_length=20, null=True, blank=False)
+    sku = models.CharField(max_length=100, null=True, blank=True)
+    name = models.CharField(max_length=100, null=True, blank=False)
+    description = models.TextField(null=True, blank=True)
+    hsn = models.CharField(max_length=100, null=True, blank=True)
+    sac = models.CharField(max_length=100, null=True, blank=True)
+    unit_price = models.FloatField(null=True, blank=False, default=0.0)
+    purchase_rate = models.FloatField(null=True, blank=True, default=0.0)
+    tax = models.CharField(choices=Tax_Type, max_length=50, null=True, blank=False)
+    company = models.ForeignKey(CompanyDetail, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
 
 # class Invoice(BaseModel):
 #     client_name = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)
