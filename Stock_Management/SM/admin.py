@@ -10,6 +10,7 @@ from .service import *
 from django.urls import path, reverse
 from django.utils.html import format_html
 from SMdashboard import reports
+from .invoice2 import Invoice
 
 admin.site.site_header = 'Storeck'
 admin.site.site_title = 'Storeck'
@@ -111,3 +112,4 @@ admin.site.register(ServiceType)
 admin.site.register(AMCRecord)
 admin.site.register(Product)
 admin.site.register(ServiceStoreData)
+admin.site.register(Invoice)
