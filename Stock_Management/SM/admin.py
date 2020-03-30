@@ -29,7 +29,8 @@ class CompanyDetailAdmin(admin.ModelAdmin):
 class VendorAdmin(admin.ModelAdmin):
     list_display = ['name', 'contact_Name', 'TIN', 'email', 'phone', 'billing_address',
                     'billing_zip', 'billing_city', 'billing_state', 'billing_country', 'shipping_address',
-                    'shipping_zip', 'shipping_city', 'shipping_state', 'shipping_country', 'details', 'GSTIN', 'company']
+                    'shipping_zip', 'shipping_city', 'shipping_state', 'shipping_country', 'details', 'GSTIN',
+                    'company']
     list_filter = ['name', 'phone', 'contact_Name', 'company']
     search_fields = ['name', 'phone', 'contact_Name', 'company']
 
@@ -102,9 +103,6 @@ class AMCAdmin(admin.ModelAdmin):
     list_display = ['start_date', 'number', 'client_name', 'end_date', 'company']
     list_filter = ['start_date', 'number', 'client_name', 'end_date', 'company']
     search_fields = ['start_date', 'number', 'client_name', 'company']
-
-
-
 
 
 admin.site.register(CostumerType)
