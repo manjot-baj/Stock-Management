@@ -11,14 +11,10 @@ from .invoice import Product
 
 class Invoice(BaseModel):
     client_name = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)
-
-    issue_date = models.DateTimeField(default=timezone.now, null=True, blank=False)
-    due_date = models.DateTimeField()
-
-    total = models.FloatField(null=True, blank=True, default=0.0)
     ship_to = models.TextField(null=False, blank=False, max_length=250)
     place_of_supply = models.CharField(null=False, blank=False, max_length=100)
     document_number = models.CharField(null=True, blank=False, max_length=100)
+    issue_date = models.DateTimeField(default=timezone.now, null=True, blank=False)
     payment_status = (
         ("Net 7", "Net 7"),
         ("Net 10", "Net 10"),
@@ -31,15 +27,22 @@ class Invoice(BaseModel):
         ("Due on The Specified Date", "Due on The Specified Date"),
     )
     payment_terms = models.CharField(max_length=50, choices=payment_status, null=True, blank=False)
+    due_date = models.DateTimeField()
 
+    grand_total = models.DecimalField(decimal_places=2, max_digits=10, default=0.00)
+    company = models.ForeignKey(CompanyDetail, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.client_name
 
+    class Meta:
+        db_table = 'invoice'
+        verbose_name_plural = 'Invoice'
 
-class invoiceLines(BaseModel):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
+
+class InvoiceLines(BaseModel):
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE, null=True, blank=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
 
     TYPE_UOM = (
@@ -69,5 +72,6 @@ class invoiceLines(BaseModel):
     )
     tax = models.CharField(choices=Tax_Type, max_length=50, null=True, blank=False)
 
-    def __str__(self):
-        return self.product
+
+    class Meta:
+        db_table = 'Invoice_Lines'

@@ -10,7 +10,7 @@ from .service import *
 from django.urls import path, reverse
 from django.utils.html import format_html
 from SMdashboard import reports
-from .invoice2 import Invoice, invoiceLines
+from .invoice2 import Invoice, InvoiceLines
 
 admin.site.site_header = 'Storeck'
 admin.site.site_title = 'Storeck'
@@ -106,11 +106,33 @@ class AMCAdmin(admin.ModelAdmin):
     search_fields = ['start_date', 'number', 'client_name', 'company']
 
 
+class InvoiceAdminInline(admin.TabularInline):
+    model = InvoiceLines
+    fieldsets = [
+        ('InvoiceLines', {'fields': (
+            ('product', 'description', 'uom', 'quantity', 'unit_price', 'discount', 'tax'),
+        )}),
+    ]
+    extra = 1
+
+@admin.register(Invoice)
+class InvoiceAdmin(admin.ModelAdmin):
+    list_display = ['client_name', 'ship_to', 'document_number', 'issue_date', 'grand_total']
+    search_fields = ['document_number', 'client_name']
+    inlines = [InvoiceAdminInline]
+
+    fieldsets = [
+        ('Invoice Order Details', {'fields': (
+            ('client_name', 'ship_to'),
+            ('document_number', 'issue_date'),
+            ('grand_total'),
+        ), }),
+    ]
+
+
 admin.site.register(CostumerType)
 admin.site.register(EnquiryType)
 admin.site.register(ServiceType)
 admin.site.register(AMCRecord)
 admin.site.register(Product)
 admin.site.register(ServiceStoreData)
-admin.site.register(Invoice)
-admin.site.register(invoiceLines)
