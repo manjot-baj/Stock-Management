@@ -39,6 +39,7 @@ class Invoice(BaseModel):
 
 class invoiceLines(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
+    invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
 
     TYPE_UOM = (
