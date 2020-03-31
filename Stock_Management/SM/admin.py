@@ -10,6 +10,7 @@ from .service import *
 from django.urls import path, reverse
 from django.utils.html import format_html
 from SMdashboard import reports
+from .quotation import Quotation, Quotation_lines
 
 admin.site.site_header = 'Storeck'
 admin.site.site_title = 'Storeck'
@@ -29,7 +30,8 @@ class CompanyDetailAdmin(admin.ModelAdmin):
 class VendorAdmin(admin.ModelAdmin):
     list_display = ['name', 'contact_Name', 'TIN', 'email', 'phone', 'billing_address',
                     'billing_zip', 'billing_city', 'billing_state', 'billing_country', 'shipping_address',
-                    'shipping_zip', 'shipping_city', 'shipping_state', 'shipping_country', 'details', 'GSTIN', 'company']
+                    'shipping_zip', 'shipping_city', 'shipping_state', 'shipping_country', 'details', 'GSTIN',
+                    'company']
     list_filter = ['name', 'phone', 'contact_Name', 'company']
     search_fields = ['name', 'phone', 'contact_Name', 'company']
 
@@ -104,7 +106,30 @@ class AMCAdmin(admin.ModelAdmin):
     search_fields = ['start_date', 'number', 'client_name', 'company']
 
 
+class QuotationAdminInline(admin.TabularInline):
+    model = Quotation_lines
+    fieldsets = [
+        ('Quotation Lines', {'fields': (
+            ('product', 'uom', 'quantity', 'unit_price', 'tax'),
+        )}),
+    ]
+    extra = 1
 
+
+@admin.register(Quotation)
+class PurchaseOrderAdmin(admin.ModelAdmin):
+    list_display = ['issue_date', 'number', 'client_name', 'due_date']
+    search_fields = ['number']
+    inlines = [QuotationAdminInline]
+
+    fieldsets = [
+        ('Quotation Details', {'fields': (
+            ('issue_date', 'due_date', 'number'),
+            ('client_name', 'ship_to'),
+            ('grand_total'),
+            ('company'),
+        ), }),
+    ]
 
 
 admin.site.register(CostumerType)

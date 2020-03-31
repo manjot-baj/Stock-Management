@@ -2,7 +2,7 @@ from django.db import models
 # from django.utils import timezone
 from .models import BaseModel
 
-from .company_data import CompanyDetail
+from .company_data import CompanyDetail, Client
 
 
 class Product(BaseModel):
@@ -36,10 +36,14 @@ class Product(BaseModel):
     unit_price = models.FloatField(null=True, blank=False, default=0.0)
     purchase_rate = models.FloatField(null=True, blank=True, default=0.0)
     tax = models.CharField(choices=Tax_Type, max_length=50, null=True, blank=False)
-    company = models.ForeignKey(CompanyDetail, on_delete=models.SET_NULL, null=True, blank=True)
+    company = models.ForeignKey(CompanyDetail, on_delete=models.SET_NULL, null=True, blank=False)
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        db_table = 'product'
+        verbose_name_plural = 'Product'
 
 # class Invoice(BaseModel):
 #     client_name = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)
