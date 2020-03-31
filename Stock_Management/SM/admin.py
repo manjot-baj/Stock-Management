@@ -11,6 +11,8 @@ from django.urls import path, reverse
 from django.utils.html import format_html
 from SMdashboard import reports
 from .quotation import Quotation, Quotation_lines
+from .invoice2 import Invoice, invoiceLines
+
 
 admin.site.site_header = 'Storeck'
 admin.site.site_title = 'Storeck'
@@ -117,7 +119,7 @@ class QuotationAdminInline(admin.TabularInline):
 
 
 @admin.register(Quotation)
-class PurchaseOrderAdmin(admin.ModelAdmin):
+class QuotationAdmin(admin.ModelAdmin):
     list_display = ['issue_date', 'number', 'client_name', 'due_date']
     search_fields = ['number']
     inlines = [QuotationAdminInline]
@@ -131,10 +133,11 @@ class PurchaseOrderAdmin(admin.ModelAdmin):
         ), }),
     ]
 
-
 admin.site.register(CostumerType)
 admin.site.register(EnquiryType)
 admin.site.register(ServiceType)
 admin.site.register(AMCRecord)
 admin.site.register(Product)
 admin.site.register(ServiceStoreData)
+admin.site.register(Invoice)
+admin.site.register(invoiceLines)
