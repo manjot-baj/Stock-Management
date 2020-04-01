@@ -39,7 +39,7 @@ class Product(BaseModel):
     company = models.ForeignKey(CompanyDetail, on_delete=models.SET_NULL, null=True, blank=False)
 
     def __str__(self):
-        return self.number
+        return self.name
 
     class Meta:
         db_table = 'product'
