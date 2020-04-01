@@ -61,7 +61,7 @@ class Product(BaseModel):
                                 blank=True)
 
     def __str__(self):
-        return self.name
+        return self.number
 
 # class Invoice(BaseModel):
 #     client_name = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)
