@@ -10,6 +10,8 @@ from .service import *
 from django.urls import path, reverse
 from django.utils.html import format_html
 from SMdashboard import reports
+from .quotation import Quotation, Quotation_lines
+from .invoice2 import Invoice, InvoiceLines
 
 admin.site.site_header = 'Storeck'
 admin.site.site_title = 'Storeck'
@@ -29,7 +31,8 @@ class CompanyDetailAdmin(admin.ModelAdmin):
 class VendorAdmin(admin.ModelAdmin):
     list_display = ['name', 'contact_Name', 'TIN', 'email', 'phone', 'billing_address',
                     'billing_zip', 'billing_city', 'billing_state', 'billing_country', 'shipping_address',
-                    'shipping_zip', 'shipping_city', 'shipping_state', 'shipping_country', 'details', 'GSTIN', 'company']
+                    'shipping_zip', 'shipping_city', 'shipping_state', 'shipping_country', 'details', 'GSTIN',
+                    'company']
     list_filter = ['name', 'phone', 'contact_Name', 'company']
     search_fields = ['name', 'phone', 'contact_Name', 'company']
 
@@ -104,11 +107,60 @@ class AMCAdmin(admin.ModelAdmin):
     search_fields = ['start_date', 'number', 'client_name', 'company']
 
 
+class QuotationAdminInline(admin.TabularInline):
+    model = Quotation_lines
+    fieldsets = [
+        ('Quotation Lines', {'fields': (
+            ('product', 'uom', 'quantity', 'unit_price', 'tax'),
+        )}),
+    ]
+    extra = 1
 
+
+@admin.register(Quotation)
+class QuotationAdmin(admin.ModelAdmin):
+    list_display = ['issue_date', 'number', 'client_name', 'due_date']
+    search_fields = ['number']
+    inlines = [QuotationAdminInline]
+
+    fieldsets = [
+        ('Quotation Details', {'fields': (
+            ('issue_date', 'due_date', 'number'),
+            ('client_name', 'ship_to'),
+            ('grand_total'),
+            ('company'),
+        ), }),
+    ]
+
+
+class InvoiceAdminInline(admin.TabularInline):
+    model = InvoiceLines
+    fieldsets = [
+        ('InvoiceLines', {'fields': (
+            ('product', 'description', 'uom', 'quantity', 'unit_price', 'discount', 'tax'),
+        )}),
+    ]
+    extra = 1
+
+
+@admin.register(Invoice)
+class InvoiceAdmin(admin.ModelAdmin):
+    list_display = ['client_name', 'ship_to', 'document_number', 'issue_date', 'grand_total']
+    search_fields = ['document_number', 'client_name']
+    inlines = [InvoiceAdminInline]
+
+    fieldsets = [
+        ('Invoice Order Details', {'fields': (
+            ('client_name', 'ship_to'),
+            ('document_number', 'issue_date'),
+            ('grand_total'),
+        ), }),
+    ]
 
 
 admin.site.register(CostumerType)
 admin.site.register(EnquiryType)
 admin.site.register(ServiceType)
 admin.site.register(AMCRecord)
+admin.site.register(Product)
 admin.site.register(ServiceStoreData)
