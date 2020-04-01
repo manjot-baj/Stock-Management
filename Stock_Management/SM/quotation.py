@@ -3,7 +3,7 @@ from django.db import models
 from .models import BaseModel
 
 from .company_data import CompanyDetail, Client
-from .invoice import Product
+from .product import Product
 
 
 class Quotation(BaseModel):

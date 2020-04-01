@@ -3,7 +3,7 @@ from .enquiry import *
 from .dayBook import *
 from .company_data import *
 from .PO import *
-from .invoice import *
+from .product import *
 from .amc import *
 from .employee_data import *
 from .service import *
@@ -11,7 +11,7 @@ from django.urls import path, reverse
 from django.utils.html import format_html
 from SMdashboard import reports
 from .quotation import Quotation, Quotation_lines
-from .invoice2 import Invoice, InvoiceLines
+from .invoice import Invoice, InvoiceLines
 
 admin.site.site_header = 'Storeck'
 admin.site.site_title = 'Storeck'

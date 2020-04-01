@@ -11,7 +11,7 @@ from django.views.generic import ListView, View
 from django.db.models import (Case, CharField, Count, DateTimeField,
                               ExpressionWrapper, F, FloatField, Func, Max, Min,
                               Prefetch, Q, Sum, Value, When, Subquery)
-from SM import enquiry, employee_data, service, dayBook, invoice, amc
+from SM import enquiry, employee_data, service, dayBook, product, amc
 from django.utils import timezone
 import http.client
 import json
@@ -51,8 +51,8 @@ class Dashboard(View):
         context.update({"vendor": vendor_info})
         employee_info = employee_data.Employee.objects.filter(company_id=request.session.get('company_id')).count()
         context.update({"employee": employee_info})
-        product_info = invoice.Product.objects.filter(company_id=request.session.get('company_id')).count()
-        context.update({"product": product_info})
+        # product_info = product.Product.objects.filter(company_id=request.session.get('company_id')).count()
+        # context.update({"product": product_info})
         today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
         today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
         dayBook_data = dayBook.DayBook.objects.filter(date__range=(today_min, today_max),
@@ -403,102 +403,102 @@ class ClientEdit(DashboardLoginRequiredMixin, ListView):
         return redirect(to='new_client_add')
 
 
-class ProductView(OwnerRequiredMinxin, ListView):
-    from .forms import ProductForm
-    dashboard_template = 'SMdashboard/dashboard.html'
-    data_template = 'SMdashboard/product-table.html'
-    form_template = 'SMdashboard/productform.html'
-    detailed_template_view = 'SMdashboard/product.html'
-    form = ProductForm
-    model = invoice.Product
-
-    def get_data(self, request, company_id=None):
-        data = self.model.objects.filter(company_id=company_id).values('pk', 'name', 'unit_price', 'u_o_m', 'quantity',
-                                                                       'description',
-                                                                       'product_type',
-                                                                       'purchase_rate', 'purchase_rate_currency',
-                                                                       'h_s_n_or_s_a_c', 's_k_u',
-                                                                       'tax', 'c_e_s_s_percent', 'c_e_s_s'
-                                                                       ).order_by("-pk")
-        return list(data)
-
-    def get(self, request, *args, **kwargs):
-        if 'product_form' in kwargs:
-            return render(request, self.form_template, {'form': self.form})
-        elif 'object_id' in kwargs:
-            from .reports import ProductReport
-            data = ProductReport().get_data(request, product_id=kwargs.get('object_id'),
-                                            company_id=request.session.get('company_id'))
-            template = self.detailed_template_view
-            return render(request, template, data)
-
-        data = self.get_data(request, company_id=request.session.get('company_id'))
-        print(data)
-        return render(request, self.data_template, {'data': data})
-
-    def post(self, request, *args, **kwargs):
-        form = self.ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            input_excel = request.FILES['input_excel']
-            book = xlrd.open_workbook(file_contents=input_excel.read())
-            sheet = book.sheet_by_index(0)
-            # data = [[sheet.cell_value(r, c) for c in range(sheet.ncols)] for r in range(sheet.nrows)]
-            product_name = []
-            unit_price = []
-            uom = []
-            quantity = []
-            description = []
-            type = []
-            purchase_rate = []
-            purchase_rate_currency = []
-            h_s_n_or_s_a_c = []
-            s_k_u = []
-            tax = []
-            c_e_s_s_percent = []
-            c_e_s_s = []
-
-            for i in range(sheet.nrows):
-                product_name.append(sheet.cell_value(i, 0))
-                unit_price.append(sheet.cell_value(i, 1))
-                uom.append(sheet.cell_value(i, 2))
-                quantity.append(sheet.cell_value(i, 3))
-                description.append(sheet.cell_value(i, 4))
-                type.append(sheet.cell_value(i, 5))
-                purchase_rate.append(sheet.cell_value(i, 6))
-                purchase_rate_currency.append(sheet.cell_value(i, 7))
-                h_s_n_or_s_a_c.append(sheet.cell_value(i, 8))
-                s_k_u.append(sheet.cell_value(i, 9))
-                tax.append(sheet.cell_value(i, 10))
-                c_e_s_s_percent.append(sheet.cell_value(i, 11))
-                c_e_s_s.append(sheet.cell_value(i, 12))
-
-            product_name.pop(0)
-            unit_price.pop(0)
-            uom.pop(0)
-            quantity.pop(0)
-            description.pop(0)
-            type.pop(0)
-            purchase_rate.pop(0)
-            purchase_rate_currency.pop(0)
-            h_s_n_or_s_a_c.pop(0)
-            s_k_u.pop(0)
-            tax.pop(0)
-            c_e_s_s_percent.pop(0)
-            c_e_s_s.pop(0)
-
-            for i in range(len(product_name)):
-                self.model.objects.get_or_create(name=product_name[i], unit_price=unit_price[i],
-                                                 u_o_m=uom[i], quantity=quantity[i], description=description[i],
-                                                 product_type=type[i], purchase_rate=purchase_rate[i],
-                                                 purchase_rate_currency=purchase_rate_currency[i],
-                                                 h_s_n_or_s_a_c=h_s_n_or_s_a_c[i],
-                                                 s_k_u=s_k_u[i],
-                                                 tax=tax[i],
-                                                 c_e_s_s_percent=c_e_s_s_percent[i], c_e_s_s=c_e_s_s[i],
-                                                 company_id=request.session.get('company_id'))
-
-            return redirect(to='product_data')
-        return redirect(to='new_product')
+# class ProductView(OwnerRequiredMinxin, ListView):
+#     from .forms import ProductForm
+#     dashboard_template = 'SMdashboard/dashboard.html'
+#     data_template = 'SMdashboard/product-table.html'
+#     form_template = 'SMdashboard/productform.html'
+#     detailed_template_view = 'SMdashboard/product.html'
+#     form = ProductForm
+#     model = product.Product
+#
+#     def get_data(self, request, company_id=None):
+#         data = self.model.objects.filter(company_id=company_id).values('pk', 'name', 'unit_price', 'u_o_m', 'quantity',
+#                                                                        'description',
+#                                                                        'product_type',
+#                                                                        'purchase_rate', 'purchase_rate_currency',
+#                                                                        'h_s_n_or_s_a_c', 's_k_u',
+#                                                                        'tax', 'c_e_s_s_percent', 'c_e_s_s'
+#                                                                        ).order_by("-pk")
+#         return list(data)
+#
+#     def get(self, request, *args, **kwargs):
+#         if 'product_form' in kwargs:
+#             return render(request, self.form_template, {'form': self.form})
+#         elif 'object_id' in kwargs:
+#             from .reports import ProductReport
+#             data = ProductReport().get_data(request, product_id=kwargs.get('object_id'),
+#                                             company_id=request.session.get('company_id'))
+#             template = self.detailed_template_view
+#             return render(request, template, data)
+#
+#         data = self.get_data(request, company_id=request.session.get('company_id'))
+#         print(data)
+#         return render(request, self.data_template, {'data': data})
+#
+#     def post(self, request, *args, **kwargs):
+#         form = self.ProductForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             input_excel = request.FILES['input_excel']
+#             book = xlrd.open_workbook(file_contents=input_excel.read())
+#             sheet = book.sheet_by_index(0)
+#             # data = [[sheet.cell_value(r, c) for c in range(sheet.ncols)] for r in range(sheet.nrows)]
+#             product_name = []
+#             unit_price = []
+#             uom = []
+#             quantity = []
+#             description = []
+#             type = []
+#             purchase_rate = []
+#             purchase_rate_currency = []
+#             h_s_n_or_s_a_c = []
+#             s_k_u = []
+#             tax = []
+#             c_e_s_s_percent = []
+#             c_e_s_s = []
+#
+#             for i in range(sheet.nrows):
+#                 product_name.append(sheet.cell_value(i, 0))
+#                 unit_price.append(sheet.cell_value(i, 1))
+#                 uom.append(sheet.cell_value(i, 2))
+#                 quantity.append(sheet.cell_value(i, 3))
+#                 description.append(sheet.cell_value(i, 4))
+#                 type.append(sheet.cell_value(i, 5))
+#                 purchase_rate.append(sheet.cell_value(i, 6))
+#                 purchase_rate_currency.append(sheet.cell_value(i, 7))
+#                 h_s_n_or_s_a_c.append(sheet.cell_value(i, 8))
+#                 s_k_u.append(sheet.cell_value(i, 9))
+#                 tax.append(sheet.cell_value(i, 10))
+#                 c_e_s_s_percent.append(sheet.cell_value(i, 11))
+#                 c_e_s_s.append(sheet.cell_value(i, 12))
+#
+#             product_name.pop(0)
+#             unit_price.pop(0)
+#             uom.pop(0)
+#             quantity.pop(0)
+#             description.pop(0)
+#             type.pop(0)
+#             purchase_rate.pop(0)
+#             purchase_rate_currency.pop(0)
+#             h_s_n_or_s_a_c.pop(0)
+#             s_k_u.pop(0)
+#             tax.pop(0)
+#             c_e_s_s_percent.pop(0)
+#             c_e_s_s.pop(0)
+#
+#             for i in range(len(product_name)):
+#                 self.model.objects.get_or_create(name=product_name[i], unit_price=unit_price[i],
+#                                                  u_o_m=uom[i], quantity=quantity[i], description=description[i],
+#                                                  product_type=type[i], purchase_rate=purchase_rate[i],
+#                                                  purchase_rate_currency=purchase_rate_currency[i],
+#                                                  h_s_n_or_s_a_c=h_s_n_or_s_a_c[i],
+#                                                  s_k_u=s_k_u[i],
+#                                                  tax=tax[i],
+#                                                  c_e_s_s_percent=c_e_s_s_percent[i], c_e_s_s=c_e_s_s[i],
+#                                                  company_id=request.session.get('company_id'))
+#
+#             return redirect(to='product_data')
+#         return redirect(to='new_product')
 
 
 class VendorView(OwnerRequiredMinxin, ListView):

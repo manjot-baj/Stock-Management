@@ -3,7 +3,7 @@ from django.db.models import Value as V
 from django.db.models.functions import Cast, Concat, Coalesce
 from django.shortcuts import redirect
 from SM.company_data import Client, Vendor, CompanyDetail
-from SM import employee_data, enquiry, invoice, service, dayBook, amc
+from SM import employee_data, enquiry, product, service, dayBook, amc
 
 
 class ClientReport:
@@ -183,49 +183,49 @@ class EnquiryReport:
         return list(record)
 
 
-class ProductReport:
-
-    def get_data(self, request, product_id=None, company_id=None):
-        data = {}
-        record = invoice.Product.objects.filter(pk=product_id, company_id=company_id).annotate(
-            product_name=F('name'),
-            product_unit_price=F('unit_price'),
-            product_u_o_m=F('u_o_m'),
-            product_quantity=F('quantity'),
-            product_description=F('description'),
-            product_product_type=F('product_type'),
-            product_purchase_rate=F('purchase_rate'),
-            product_purchase_rate_currency=F('purchase_rate_currency'),
-            product_h_s_n_or_s_a_c=F('h_s_n_or_s_a_c'),
-            product_s_k_u=F('s_k_u'),
-            product_tax=F('tax'),
-            product_c_e_s_s_percent=F('c_e_s_s_percent'),
-            product_c_e_s_s=F('c_e_s_s'),
-            #
-            # date=ExpressionWrapper(Func(F('enquiry_date'), V("DD/MM/YYYY"), function='TO_CHAR'),
-            #                                 output_field=CharField()),
-        )
-        print(record)
-
-        for each in record:
-            data.update({
-                'pk': each.pk,
-                'product_name': each.product_name,
-                'product_unit_price': each.product_unit_price,
-                'product_u_o_m': each.product_u_o_m,
-                'product_quantity': each.product_quantity,
-                'product_description': each.product_description,
-                'product_product_type': each.product_product_type,
-                'product_purchase_rate': each.product_purchase_rate,
-                'product_purchase_rate_currency': each.product_purchase_rate_currency,
-                'product_h_s_n_or_s_a_c': each.product_h_s_n_or_s_a_c,
-                'product_s_k_u': each.product_s_k_u,
-                'product_tax': each.product_tax,
-                'product_c_e_s_s_percent': each.product_c_e_s_s_percent,
-                'product_c_e_s_s': each.product_c_e_s_s,
-            })
-            print(data)
-        return data
+# class ProductReport:
+#
+#     def get_data(self, request, product_id=None, company_id=None):
+#         data = {}
+#         record = product.Product.objects.filter(pk=product_id, company_id=company_id).annotate(
+#             product_name=F('name'),
+#             product_unit_price=F('unit_price'),
+#             product_u_o_m=F('u_o_m'),
+#             product_quantity=F('quantity'),
+#             product_description=F('description'),
+#             product_product_type=F('product_type'),
+#             product_purchase_rate=F('purchase_rate'),
+#             product_purchase_rate_currency=F('purchase_rate_currency'),
+#             product_h_s_n_or_s_a_c=F('h_s_n_or_s_a_c'),
+#             product_s_k_u=F('s_k_u'),
+#             product_tax=F('tax'),
+#             product_c_e_s_s_percent=F('c_e_s_s_percent'),
+#             product_c_e_s_s=F('c_e_s_s'),
+#             #
+#             # date=ExpressionWrapper(Func(F('enquiry_date'), V("DD/MM/YYYY"), function='TO_CHAR'),
+#             #                                 output_field=CharField()),
+#         )
+#         print(record)
+#
+#         for each in record:
+#             data.update({
+#                 'pk': each.pk,
+#                 'product_name': each.product_name,
+#                 'product_unit_price': each.product_unit_price,
+#                 'product_u_o_m': each.product_u_o_m,
+#                 'product_quantity': each.product_quantity,
+#                 'product_description': each.product_description,
+#                 'product_product_type': each.product_product_type,
+#                 'product_purchase_rate': each.product_purchase_rate,
+#                 'product_purchase_rate_currency': each.product_purchase_rate_currency,
+#                 'product_h_s_n_or_s_a_c': each.product_h_s_n_or_s_a_c,
+#                 'product_s_k_u': each.product_s_k_u,
+#                 'product_tax': each.product_tax,
+#                 'product_c_e_s_s_percent': each.product_c_e_s_s_percent,
+#                 'product_c_e_s_s': each.product_c_e_s_s,
+#             })
+#             print(data)
+#         return data
 
 
 class ServiceReportInvoice:
