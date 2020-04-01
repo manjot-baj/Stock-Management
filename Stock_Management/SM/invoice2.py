@@ -13,7 +13,7 @@ class Invoice(BaseModel):
     client_name = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)
     ship_to = models.TextField(null=False, blank=False, max_length=250)
     place_of_supply = models.CharField(null=False, blank=False, max_length=100)
-    document_number = models.CharField(null=True, blank=False, max_length=100)
+    number = models.CharField(null=True, blank=True, max_length=100)
     issue_date = models.DateTimeField(default=timezone.now, null=True, blank=False)
     payment_status = (
         ("Net 7", "Net 7"),

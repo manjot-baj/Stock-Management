@@ -7,7 +7,7 @@ from .invoice import Product
 
 
 class Quotation(BaseModel):
-    number = models.CharField(max_length=100, null=True, blank=False)
+    number = models.CharField(max_length=100, null=True, blank=True)
     client_name = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=False)
     ship_to = models.TextField(null=True, blank=False)
     issue_date = models.DateField(null=True, blank=False)

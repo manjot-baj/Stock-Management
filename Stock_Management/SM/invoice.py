@@ -27,6 +27,7 @@ class Product(BaseModel):
     )
     Product_Type = (('Product', 'Product'), ('Service', 'Service'))
     type = models.CharField(max_length=50, choices=Product_Type, null=True, blank=False)
+    sn = models.CharField(max_length=100, null=True, blank=True)
     uom = models.CharField(choices=TYPE_UOM, max_length=20, null=True, blank=False)
     sku = models.CharField(max_length=100, null=True, blank=True)
     name = models.CharField(max_length=100, null=True, blank=False)

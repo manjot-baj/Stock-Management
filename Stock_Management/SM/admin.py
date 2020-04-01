@@ -145,14 +145,14 @@ class InvoiceAdminInline(admin.TabularInline):
 
 @admin.register(Invoice)
 class InvoiceAdmin(admin.ModelAdmin):
-    list_display = ['client_name', 'ship_to', 'document_number', 'issue_date', 'grand_total']
-    search_fields = ['document_number', 'client_name']
+    list_display = ['client_name', 'ship_to', 'number', 'issue_date', 'grand_total']
+    search_fields = ['number', 'client_name']
     inlines = [InvoiceAdminInline]
 
     fieldsets = [
         ('Invoice Order Details', {'fields': (
             ('client_name', 'ship_to'),
-            ('document_number', 'issue_date'),
+            ('number', 'issue_date'),
             ('grand_total'),
         ), }),
     ]
