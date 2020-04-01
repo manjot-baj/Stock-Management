@@ -12,6 +12,8 @@ from django.utils.html import format_html
 from SMdashboard import reports
 from .quotation import Quotation, Quotation_lines
 from .invoice import Invoice, InvoiceLines
+from .bill_of_supply import Bill_of_supply, Bill_of_supply_Lines
+from .payment_document import Payment_document
 
 admin.site.site_header = 'Storeck'
 admin.site.site_title = 'Storeck'
@@ -158,9 +160,35 @@ class InvoiceAdmin(admin.ModelAdmin):
     ]
 
 
+class Bill_of_supplyAdminInline(admin.TabularInline):
+    model = Bill_of_supply_Lines
+    fieldsets = [
+        ('BillLines', {'fields': (
+            ('product', 'description', 'uom', 'quantity', 'unit_price', 'discount'),
+        )}),
+    ]
+    extra = 1
+
+
+@admin.register(Bill_of_supply)
+class Bill_of_supplyAdmin(admin.ModelAdmin):
+    list_display = ['client_name', 'ship_to', 'number', 'issue_date', 'grand_total']
+    search_fields = ['number', 'client_name']
+    inlines = [Bill_of_supplyAdminInline]
+
+    fieldsets = [
+        ('Bill_of_supply Order Details', {'fields': (
+            ('client_name', 'ship_to'),
+            ('number', 'issue_date'),
+            ('grand_total'),
+        ), }),
+    ]
+
+
 admin.site.register(CostumerType)
 admin.site.register(EnquiryType)
 admin.site.register(ServiceType)
 admin.site.register(AMCRecord)
 admin.site.register(Product)
 admin.site.register(ServiceStoreData)
+admin.site.register(Payment_document)
