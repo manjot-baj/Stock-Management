@@ -13,6 +13,8 @@ from SMdashboard import reports
 from .quotation import Quotation, Quotation_lines
 from .invoice import Invoice, InvoiceLines
 from .purchase_and_bill import Bill, BillLines, PurchaseOrder, PurchaseOrderLines
+from .bill_of_supply import BillOfSupply, BillOfSupplyLines
+from .payment_document import PaymentDocument
 
 admin.site.site_header = 'Storeck'
 admin.site.site_title = 'Storeck'
@@ -218,9 +220,37 @@ class PurchaseOrderAdmin(admin.ModelAdmin):
     ]
 
 
+class BillOfSupplyAdminInline(admin.TabularInline):
+    model = BillOfSupplyLines
+    fieldsets = [
+        ('BillLines', {'fields': (
+            ('product', 'description', 'uom', 'quantity', 'unit_price', 'discount'),
+        )}),
+    ]
+    extra = 1
+
+
+@admin.register(BillOfSupply)
+class BillOfSupplyAdmin(admin.ModelAdmin):
+    list_display = ['number', 'client', 'ship_to', 'issue_date', 'grand_total']
+    search_fields = ['number', 'client']
+    list_filter = ['client', 'company']
+    inlines = [BillOfSupplyAdminInline]
+
+    fieldsets = [
+        ('Bill Of Supply Details', {'fields': (
+            ('number', 'issue_date', 'due_date'),
+            ('client', 'ship_to', 'place_of_supply'),
+            ('payment_terms', 'grand_total'),
+            ('company'),
+        ), }),
+    ]
+
+
 admin.site.register(CostumerType)
 admin.site.register(EnquiryType)
 admin.site.register(ServiceType)
 admin.site.register(AMCRecord)
 admin.site.register(Product)
 admin.site.register(ServiceStoreData)
+admin.site.register(PaymentDocument)

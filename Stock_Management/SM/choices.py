@@ -78,3 +78,19 @@ Places = (
     ('Uttarakhand', 'Uttarakhand'),
     ('West Bengal', 'West Bengal')
 )
+
+Payment_status = (
+        ("Received", "Received"),
+        ("Mad", "Mad"),
+    )
+
+Payment_Type = (
+        ("Cash", "Cash"),
+        ("Cash Memo", "Cash Memo"),
+        ("Credit Note", "Credit Note"),
+        ("Credit Card", "Credit Card"),
+        ("Check", "Check"),
+        ("Cheque", "Cheque"),
+        ("Bank Transfer", "Bank Transfer"),
+        ("Pay Slip", "Pay Slip"),
+    )
