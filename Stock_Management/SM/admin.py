@@ -184,7 +184,7 @@ class BillAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Bill Details', {'fields': (
             ('number', 'issue_date', 'due_date'),
-            ('vendor', 'ship_to', 'place_of_supply'),
+            ('vendor', 'place_of_supply'),
             ('payment_terms', 'grand_total'),
             ('company'),
 
@@ -212,7 +212,7 @@ class PurchaseOrderAdmin(admin.ModelAdmin):
     fieldsets = [
         ('PurchaseOrder Details', {'fields': (
             ('number', 'issue_date', 'due_date'),
-            ('vendor', 'ship_to', 'place_of_supply'),
+            ('vendor', 'place_of_supply'),
             ('payment_terms', 'grand_total'),
             ('company'),
 
