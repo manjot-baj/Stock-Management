@@ -2,7 +2,7 @@ from django.contrib import admin
 from .enquiry import *
 from .dayBook import *
 from .company_data import *
-from .PO import *
+from .purchase_and_bill import *
 from .product import *
 from .amc import *
 from .employee_data import *
@@ -12,6 +12,7 @@ from django.utils.html import format_html
 from SMdashboard import reports
 from .quotation import Quotation, Quotation_lines
 from .invoice import Invoice, InvoiceLines
+from .purchase_and_bill import Bill, BillLines, PurchaseOrder, PurchaseOrderLines
 
 admin.site.site_header = 'Storeck'
 admin.site.site_title = 'Storeck'
@@ -103,7 +104,7 @@ class ServiceAdmin(admin.ModelAdmin):
 @admin.register(AMC)
 class AMCAdmin(admin.ModelAdmin):
     list_display = ['start_date', 'number', 'client_name', 'end_date', 'company']
-    list_filter = ['start_date', 'number', 'client_name', 'end_date', 'company']
+    list_filter = ['client_name', 'company']
     search_fields = ['start_date', 'number', 'client_name', 'company']
 
 
@@ -119,14 +120,15 @@ class QuotationAdminInline(admin.TabularInline):
 
 @admin.register(Quotation)
 class QuotationAdmin(admin.ModelAdmin):
-    list_display = ['issue_date', 'number', 'client_name', 'due_date']
-    search_fields = ['number']
+    list_display = ['issue_date', 'number', 'client', 'due_date']
+    list_filter = ['client', 'company']
+    search_fields = ['number', 'client']
     inlines = [QuotationAdminInline]
 
     fieldsets = [
         ('Quotation Details', {'fields': (
             ('issue_date', 'due_date', 'number'),
-            ('client_name', 'ship_to'),
+            ('client', 'ship_to'),
             ('grand_total'),
             ('company'),
         ), }),
@@ -145,15 +147,73 @@ class InvoiceAdminInline(admin.TabularInline):
 
 @admin.register(Invoice)
 class InvoiceAdmin(admin.ModelAdmin):
-    list_display = ['client_name', 'ship_to', 'number', 'issue_date', 'grand_total']
-    search_fields = ['number', 'client_name']
+    list_display = ['number', 'client', 'place_of_supply', 'issue_date', 'due_date', 'grand_total', 'company']
+    list_filter = ['client', 'company']
+    search_fields = ['number', 'client', 'place_of_supply']
     inlines = [InvoiceAdminInline]
 
     fieldsets = [
-        ('Invoice Order Details', {'fields': (
-            ('client_name', 'ship_to'),
-            ('number', 'issue_date'),
-            ('grand_total'),
+        ('Invoice Details', {'fields': (
+            ('number', 'issue_date', 'due_date'),
+            ('client', 'ship_to', 'place_of_supply'),
+            ('payment_terms', 'grand_total'),
+            ('company'),
+        ), }),
+    ]
+
+
+class BillAdminInLine(admin.TabularInline):
+    model = BillLines
+    fieldsets = [
+        ('BillLines', {'fields': (
+            ('product', 'description', 'uom', 'quantity', 'purchase_rate', 'discount', 'tax'),
+        )}),
+    ]
+    extra = 1
+
+
+@admin.register(Bill)
+class BillAdmin(admin.ModelAdmin):
+    list_display = ['number', 'vendor', 'place_of_supply', 'issue_date', 'due_date', 'grand_total', 'company']
+    list_filter = ['vendor', 'company']
+    search_fields = ['number', 'vendor', 'place_of_supply']
+    inlines = [BillAdminInLine]
+
+    fieldsets = [
+        ('Bill Details', {'fields': (
+            ('number', 'issue_date', 'due_date'),
+            ('vendor', 'ship_to', 'place_of_supply'),
+            ('payment_terms', 'grand_total'),
+            ('company'),
+
+        ), }),
+    ]
+
+
+class PurchaseOrderAdminInLine(admin.TabularInline):
+    model = PurchaseOrderLines
+    fieldsets = [
+        ('PurchaseOrderLines', {'fields': (
+            ('product', 'description', 'uom', 'quantity', 'purchase_rate', 'discount', 'tax'),
+        )}),
+    ]
+    extra = 1
+
+
+@admin.register(PurchaseOrder)
+class PurchaseOrderAdmin(admin.ModelAdmin):
+    list_display = ['number', 'vendor', 'place_of_supply', 'issue_date', 'due_date', 'grand_total', 'company']
+    list_filter = ['vendor', 'company']
+    search_fields = ['number', 'vendor', 'place_of_supply']
+    inlines = [PurchaseOrderAdminInLine]
+
+    fieldsets = [
+        ('PurchaseOrder Details', {'fields': (
+            ('number', 'issue_date', 'due_date'),
+            ('vendor', 'ship_to', 'place_of_supply'),
+            ('payment_terms', 'grand_total'),
+            ('company'),
+
         ), }),
     ]
 
