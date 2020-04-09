@@ -149,17 +149,19 @@ class InvoiceAdminInline(admin.TabularInline):
 
 @admin.register(Invoice)
 class InvoiceAdmin(admin.ModelAdmin):
-    list_display = ['number', 'client', 'place_of_supply', 'issue_date', 'due_date', 'grand_total', 'company']
-    list_filter = ['client', 'company']
+    list_display = ['no', 'number', 'client', 'place_of_supply', 'issue_date', 'due_date', 'grand_total', 'company',
+                    'with_gst']
+    list_filter = ['client', 'company', 'with_gst']
     search_fields = ['number', 'client', 'place_of_supply']
     inlines = [InvoiceAdminInline]
 
     fieldsets = [
         ('Invoice Details', {'fields': (
+            ('no'),
             ('number', 'issue_date', 'due_date'),
             ('client', 'ship_to', 'place_of_supply'),
             ('payment_terms', 'grand_total'),
-            ('company'),
+            ('company', 'with_gst'),
         ), }),
     ]
 
@@ -252,5 +254,6 @@ admin.site.register(EnquiryType)
 admin.site.register(ServiceType)
 admin.site.register(AMCRecord)
 admin.site.register(Product)
+admin.site.register(InvoiceLines)
 admin.site.register(ServiceStoreData)
 admin.site.register(PaymentDocument)
