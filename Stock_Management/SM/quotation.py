@@ -44,13 +44,13 @@ class Quotation_lines(BaseModel):
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if self.pk is None:
-            if self.tax == '0':
+            if self.tax == 0:
                 company = list(Quotation.objects.filter(no=self.quotation).values('company'))
                 count = Quotation.objects.filter(company_id=company[0].get('company'), with_gst=False).count()
                 Quotation.objects.filter(no=self.quotation).update(number=count + 1, with_gst=False)
                 quotation_save = super(Quotation_lines, self).save(force_insert=False, force_update=False, using=None,
                                                                    update_fields=None)
-            elif not self.tax == '0':
+            elif not self.tax == 0:
                 company = list(Quotation.objects.filter(no=self.quotation).values('company'))
                 count = Quotation.objects.filter(company_id=company[0].get('company'), with_gst=True).count()
                 Quotation.objects.filter(no=self.quotation).update(number=count + 1, with_gst=True)

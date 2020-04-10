@@ -50,13 +50,13 @@ class InvoiceLines(BaseModel):
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if self.pk is None:
-            if self.tax == '0':
+            if self.tax == 0:
                 company = list(Invoice.objects.filter(no=self.invoice).values('company'))
                 count = Invoice.objects.filter(company_id=company[0].get('company'), with_gst=False).count()
                 Invoice.objects.filter(no=self.invoice).update(number=count+1, with_gst=False)
                 invoice_save = super(InvoiceLines, self).save(force_insert=False, force_update=False, using=None,
                                                               update_fields=None)
-            elif not self.tax == '0':
+            elif not self.tax == 0:
                 company = list(Invoice.objects.filter(no=self.invoice).values('company'))
                 count = Invoice.objects.filter(company_id=company[0].get('company'), with_gst=True).count()
                 Invoice.objects.filter(no=self.invoice).update(number=count+1, with_gst=True)
