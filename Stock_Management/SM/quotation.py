@@ -6,6 +6,7 @@ from .product import Product
 from .choices import Places, PaymentStatus, Prices, TaxType, TypeUOM
 import random
 
+
 def random_string():
     return str(random.randint(10000, 99999))
 
@@ -48,9 +49,7 @@ class Quotation_lines(BaseModel):
                 count = Quotation.objects.filter(company_id=company[0].get('company'), with_gst=False).count()
                 Quotation.objects.filter(no=self.quotation).update(number=count + 1, with_gst=False)
                 quotation_save = super(Quotation_lines, self).save(force_insert=False, force_update=False, using=None,
-                                                              update_fields=None)
-
-
+                                                                   update_fields=None)
             elif not self.tax == '0':
                 company = list(Quotation.objects.filter(no=self.quotation).values('company'))
                 count = Quotation.objects.filter(company_id=company[0].get('company'), with_gst=True).count()
@@ -60,5 +59,5 @@ class Quotation_lines(BaseModel):
 
         else:
             quotation_save = super(Quotation_lines, self).save(force_insert=False, force_update=False, using=None,
-                                                          update_fields=None)
+                                                               update_fields=None)
         return quotation_save

@@ -129,6 +129,7 @@ class QuotationAdmin(admin.ModelAdmin):
 
     fieldsets = [
         ('Quotation Details', {'fields': (
+            ('no'),
             ('issue_date', 'due_date', 'number'),
             ('client', 'ship_to'),
             ('grand_total'),
