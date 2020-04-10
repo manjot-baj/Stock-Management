@@ -122,8 +122,8 @@ class QuotationAdminInline(admin.TabularInline):
 
 @admin.register(Quotation)
 class QuotationAdmin(admin.ModelAdmin):
-    list_display = ['issue_date', 'number', 'client', 'due_date']
-    list_filter = ['client', 'company']
+    list_display = ['no', 'issue_date', 'number', 'client', 'due_date', 'with_gst']
+    list_filter = ['client', 'company', 'with_gst']
     search_fields = ['number', 'client']
     inlines = [QuotationAdminInline]
 
@@ -132,7 +132,7 @@ class QuotationAdmin(admin.ModelAdmin):
             ('issue_date', 'due_date', 'number'),
             ('client', 'ship_to'),
             ('grand_total'),
-            ('company'),
+            ('company', 'with_gst'),
         ), }),
     ]
 
