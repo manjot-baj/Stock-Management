@@ -4,9 +4,15 @@ from .models import BaseModel
 from .company_data import Vendor, CompanyDetail
 from .product import Product
 from .choices import Places, PaymentStatus, Prices, TaxType, TypeUOM
+import random
+
+
+def random_string():
+    return str(random.randint(10000, 99999))
 
 
 class Bill(BaseModel):
+    no = models.CharField(default=random_string, max_length=50, null=True)
     number = models.CharField(max_length=100, null=True, blank=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, null=True, blank=False)
     issue_date = models.DateField(null=True, blank=False)
@@ -16,9 +22,10 @@ class Bill(BaseModel):
     place_of_supply = models.CharField(max_length=50, choices=Places, null=True, blank=False)
     grand_total = models.FloatField(null=True, blank=True, default=0.0)
     company = models.ForeignKey(CompanyDetail, on_delete=models.SET_NULL, null=True, blank=False)
+    with_gst = models.BooleanField(null=True, blank=True)
 
     def __str__(self):
-        return self.number
+        return self.no
 
     class Meta:
         db_table = 'bill'
@@ -40,8 +47,29 @@ class BillLines(BaseModel):
         db_table = 'bill_lines'
         verbose_name_plural = 'Bill Lines'
 
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if self.pk is None:
+            if self.tax == '0':
+                company = list(Bill.objects.filter(no=self.bill).values('company'))
+                count = Bill.objects.filter(company_id=company[0].get('company'), with_gst=False).count()
+                Bill.objects.filter(no=self.bill).update(number=count + 1, with_gst=False)
+                bill_save = super(BillLines, self).save(force_insert=False, force_update=False, using=None,
+                                                        update_fields=None)
+            elif not self.tax == '0':
+                company = list(Bill.objects.filter(no=self.bill).values('company'))
+                count = Bill.objects.filter(company_id=company[0].get('company'), with_gst=True).count()
+                print(count)
+                Bill.objects.filter(no=self.bill).update(number=count + 1, with_gst=True)
+                bill_save = super(BillLines, self).save(force_insert=False, force_update=False, using=None,
+                                                        update_fields=None)
+        else:
+            bill_save = super(BillLines, self).save(force_insert=False, force_update=False, using=None,
+                                                    update_fields=None)
+        return bill_save
+
 
 class PurchaseOrder(BaseModel):
+    no = models.CharField(default=random_string, max_length=50, null=True)
     number = models.CharField(max_length=100, null=True, blank=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, null=True, blank=False)
     issue_date = models.DateField(null=True, blank=False)
@@ -51,9 +79,10 @@ class PurchaseOrder(BaseModel):
     place_of_supply = models.CharField(max_length=50, choices=Places, null=True, blank=False)
     grand_total = models.FloatField(null=True, blank=True, default=0.0)
     company = models.ForeignKey(CompanyDetail, on_delete=models.SET_NULL, null=True, blank=False)
+    with_gst = models.BooleanField(null=True, blank=True)
 
     def __str__(self):
-        return self.number
+        return self.no
 
     class Meta:
         db_table = 'purchase_order'
@@ -74,3 +103,26 @@ class PurchaseOrderLines(BaseModel):
     class Meta:
         db_table = 'purchase_order_lines'
         verbose_name_plural = 'PurchaseOrder Lines'
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if self.pk is None:
+            if self.tax == '0':
+                company = list(PurchaseOrder.objects.filter(no=self.purchase_order).values('company'))
+                count = PurchaseOrder.objects.filter(company_id=company[0].get('company'), with_gst=False).count()
+                PurchaseOrder.objects.filter(no=self.purchase_order).update(number=count + 1, with_gst=False)
+                purchase_order_save = super(PurchaseOrderLines, self).save(force_insert=False, force_update=False,
+                                                                           using=None,
+                                                                           update_fields=None)
+            elif not self.tax == '0':
+                company = list(PurchaseOrder.objects.filter(no=self.purchase_order).values('company'))
+                count = PurchaseOrder.objects.filter(company_id=company[0].get('company'), with_gst=True).count()
+                print(count)
+                PurchaseOrder.objects.filter(no=self.purchase_order).update(number=count + 1, with_gst=True)
+                purchase_order_save = super(PurchaseOrderLines, self).save(force_insert=False, force_update=False,
+                                                                           using=None,
+                                                                           update_fields=None)
+        else:
+            purchase_order_save = super(PurchaseOrderLines, self).save(force_insert=False, force_update=False,
+                                                                       using=None,
+                                                                       update_fields=None)
+        return purchase_order_save

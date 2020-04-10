@@ -178,17 +178,19 @@ class BillAdminInLine(admin.TabularInline):
 
 @admin.register(Bill)
 class BillAdmin(admin.ModelAdmin):
-    list_display = ['number', 'vendor', 'place_of_supply', 'issue_date', 'due_date', 'grand_total', 'company']
-    list_filter = ['vendor', 'company']
+    list_display = ['no', 'number', 'vendor', 'place_of_supply', 'issue_date', 'due_date', 'grand_total', 'company',
+                    'with_gst']
+    list_filter = ['vendor', 'company', 'with_gst']
     search_fields = ['number', 'vendor', 'place_of_supply']
     inlines = [BillAdminInLine]
 
     fieldsets = [
         ('Bill Details', {'fields': (
+            ('no'),
             ('number', 'issue_date', 'due_date'),
             ('vendor', 'place_of_supply'),
             ('payment_terms', 'grand_total'),
-            ('company'),
+            ('company', 'with_gst'),
 
         ), }),
     ]
@@ -206,17 +208,19 @@ class PurchaseOrderAdminInLine(admin.TabularInline):
 
 @admin.register(PurchaseOrder)
 class PurchaseOrderAdmin(admin.ModelAdmin):
-    list_display = ['number', 'vendor', 'place_of_supply', 'issue_date', 'due_date', 'grand_total', 'company']
-    list_filter = ['vendor', 'company']
+    list_display = ['no', 'number', 'vendor', 'place_of_supply', 'issue_date', 'due_date', 'grand_total', 'company',
+                    'with_gst']
+    list_filter = ['vendor', 'company', 'with_gst']
     search_fields = ['number', 'vendor', 'place_of_supply']
     inlines = [PurchaseOrderAdminInLine]
 
     fieldsets = [
         ('PurchaseOrder Details', {'fields': (
+            ('no'),
             ('number', 'issue_date', 'due_date'),
             ('vendor', 'place_of_supply'),
             ('payment_terms', 'grand_total'),
-            ('company'),
+            ('company', 'with_gst'),
 
         ), }),
     ]
@@ -255,5 +259,7 @@ admin.site.register(ServiceType)
 admin.site.register(AMCRecord)
 admin.site.register(Product)
 admin.site.register(InvoiceLines)
+admin.site.register(BillLines)
+admin.site.register(PurchaseOrderLines)
 admin.site.register(ServiceStoreData)
 admin.site.register(PaymentDocument)
