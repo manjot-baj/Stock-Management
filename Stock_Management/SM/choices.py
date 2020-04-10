@@ -1,13 +1,13 @@
 Product_Type = (('Product', 'Product'), ('Service', 'Service'))
 
 PaymentStatus = (
-        (7, "Net 7"),
-        (10, "Net 10"),
-        (15, "Net 15"),
-        (30, "Net 30"),
-        (45, "Net 45"),
-        (60, "Net 60"),
-        (90, "Net 90"),
+        ("7", "Net 7"),
+        ("10", "Net 10"),
+        ("15", "Net 15"),
+        ("30", "Net 30"),
+        ("45", "Net 45"),
+        ("60", "Net 60"),
+        ("90", "Net 90"),
         ("Due on Receipt", "Due on Receipt"),
         ("Due on The Specified Date", "Due on The Specified Date"),
     )
@@ -25,13 +25,13 @@ TypeUOM = (
 )
 
 TaxType = (
-        (0, 'None'),
-        (1, '1% GST'),
-        (3, '3% GST'),
-        (5, '5% GST'),
-        (12, '12% GST'),
-        (18, '18% GST'),
-        (28, '28% GST'),
+        ('0', 'None'),
+        ('1', '1% GST'),
+        ('3', '3% GST'),
+        ('5', '5% GST'),
+        ('12', '12% GST'),
+        ('18', '18% GST'),
+        ('28', '28% GST'),
     )
 
 Prices = (

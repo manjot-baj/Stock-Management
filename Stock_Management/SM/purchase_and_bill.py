@@ -49,13 +49,13 @@ class BillLines(BaseModel):
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if self.pk is None:
-            if self.tax == 0:
+            if self.tax == '0':
                 company = list(Bill.objects.filter(no=self.bill).values('company'))
                 count = Bill.objects.filter(company_id=company[0].get('company'), with_gst=False).count()
                 Bill.objects.filter(no=self.bill).update(number=count + 1, with_gst=False)
                 bill_save = super(BillLines, self).save(force_insert=False, force_update=False, using=None,
                                                         update_fields=None)
-            elif not self.tax == 0:
+            elif not self.tax == '0':
                 company = list(Bill.objects.filter(no=self.bill).values('company'))
                 count = Bill.objects.filter(company_id=company[0].get('company'), with_gst=True).count()
                 print(count)
@@ -106,14 +106,14 @@ class PurchaseOrderLines(BaseModel):
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if self.pk is None:
-            if self.tax == 0:
+            if self.tax == '0':
                 company = list(PurchaseOrder.objects.filter(no=self.purchase_order).values('company'))
                 count = PurchaseOrder.objects.filter(company_id=company[0].get('company'), with_gst=False).count()
                 PurchaseOrder.objects.filter(no=self.purchase_order).update(number=count + 1, with_gst=False)
                 purchase_order_save = super(PurchaseOrderLines, self).save(force_insert=False, force_update=False,
                                                                            using=None,
                                                                            update_fields=None)
-            elif not self.tax == 0:
+            elif not self.tax == '0':
                 company = list(PurchaseOrder.objects.filter(no=self.purchase_order).values('company'))
                 count = PurchaseOrder.objects.filter(company_id=company[0].get('company'), with_gst=True).count()
                 print(count)
