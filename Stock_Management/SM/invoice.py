@@ -6,6 +6,7 @@ from .company_data import CompanyDetail, Client
 from .product import Product
 from .choices import Places, PaymentStatus, Prices, TaxType, TypeUOM
 import random
+from datetime import datetime, timedelta
 
 
 def random_string():
@@ -32,6 +33,56 @@ class Invoice(BaseModel):
         db_table = 'invoice'
         verbose_name_plural = 'Invoice'
 
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if self.pk is None:
+            if self.payment_terms == "7":
+                date = self.issue_date + timedelta(days=7)
+                self.due_date = date
+                invoice_save = super(Invoice, self).save(force_insert=False, force_update=False, using=None,
+                                                         update_fields=None)
+            elif self.payment_terms == "10":
+                date = self.issue_date + timedelta(days=10)
+                self.due_date = date
+                invoice_save = super(Invoice, self).save(force_insert=False, force_update=False, using=None,
+                                                         update_fields=None)
+            elif self.payment_terms == "15":
+                date = self.issue_date + timedelta(days=15)
+                self.due_date = date
+                invoice_save = super(Invoice, self).save(force_insert=False, force_update=False, using=None,
+                                                         update_fields=None)
+            elif self.payment_terms == "30":
+                date = self.issue_date + timedelta(days=30)
+                self.due_date = date
+                invoice_save = super(Invoice, self).save(force_insert=False, force_update=False, using=None,
+                                                         update_fields=None)
+            elif self.payment_terms == "45":
+                date = self.issue_date + timedelta(days=45)
+                self.due_date = date
+                invoice_save = super(Invoice, self).save(force_insert=False, force_update=False, using=None,
+                                                         update_fields=None)
+            elif self.payment_terms == "60":
+                date = self.issue_date + timedelta(days=60)
+                self.due_date = date
+                invoice_save = super(Invoice, self).save(force_insert=False, force_update=False, using=None,
+                                                         update_fields=None)
+            elif self.payment_terms == "90":
+                date = self.issue_date + timedelta(days=90)
+                self.due_date = date
+                invoice_save = super(Invoice, self).save(force_insert=False, force_update=False, using=None,
+                                                         update_fields=None)
+            elif self.payment_terms == "Due on Receipt":
+                date = self.issue_date
+                self.due_date = date
+                invoice_save = super(Invoice, self).save(force_insert=False, force_update=False, using=None,
+                                                         update_fields=None)
+            else:
+                invoice_save = super(Invoice, self).save(force_insert=False, force_update=False, using=None,
+                                                         update_fields=None)
+        else:
+            invoice_save = super(Invoice, self).save(force_insert=False, force_update=False, using=None,
+                                                     update_fields=None)
+        return invoice_save
+
 
 class InvoiceLines(BaseModel):
     invoice = models.ForeignKey(Invoice, null=True, on_delete=models.PROTECT)
@@ -53,13 +104,16 @@ class InvoiceLines(BaseModel):
             if self.tax == '0':
                 company = list(Invoice.objects.filter(no=self.invoice).values('company'))
                 count = Invoice.objects.filter(company_id=company[0].get('company'), with_gst=False).count()
-                Invoice.objects.filter(no=self.invoice).update(number=count+1, with_gst=False)
+                Invoice.objects.filter(no=self.invoice).update(number=count + 1, with_gst=False)
                 invoice_save = super(InvoiceLines, self).save(force_insert=False, force_update=False, using=None,
                                                               update_fields=None)
             elif not self.tax == '0':
                 company = list(Invoice.objects.filter(no=self.invoice).values('company'))
                 count = Invoice.objects.filter(company_id=company[0].get('company'), with_gst=True).count()
-                Invoice.objects.filter(no=self.invoice).update(number=count+1, with_gst=True)
+                Invoice.objects.filter(no=self.invoice).update(number=count + 1, with_gst=True)
+                invoice_save = super(InvoiceLines, self).save(force_insert=False, force_update=False, using=None,
+                                                              update_fields=None)
+            else:
                 invoice_save = super(InvoiceLines, self).save(force_insert=False, force_update=False, using=None,
                                                               update_fields=None)
         else:

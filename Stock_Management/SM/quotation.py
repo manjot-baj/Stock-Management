@@ -5,6 +5,7 @@ from .company_data import CompanyDetail, Client
 from .product import Product
 from .choices import Places, PaymentStatus, Prices, TaxType, TypeUOM
 import random
+from datetime import datetime, timedelta
 
 
 def random_string():
@@ -17,7 +18,7 @@ class Quotation(BaseModel):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=False)
     ship_to = models.TextField(null=True, blank=False)
     issue_date = models.DateField(null=True, blank=False)
-    due_date = models.DateField(null=True, blank=False)
+    due_date = models.DateField(null=True, blank=True)
     grand_total = models.FloatField(null=True, blank=True, default=0.0)
     company = models.ForeignKey(CompanyDetail, on_delete=models.SET_NULL, null=True, blank=False)
     with_gst = models.BooleanField(null=True, blank=True)
@@ -28,6 +29,17 @@ class Quotation(BaseModel):
     class Meta:
         db_table = 'quotation'
         verbose_name_plural = 'Quotation'
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if self.pk is None:
+            date = self.issue_date + timedelta(days=30)
+            self.due_date = date
+            quotation_save = super(Quotation, self).save(force_insert=False, force_update=False, using=None,
+                                                         update_fields=None)
+        else:
+            quotation_save = super(Quotation, self).save(force_insert=False, force_update=False, using=None,
+                                                         update_fields=None)
+        return quotation_save
 
 
 class Quotation_lines(BaseModel):
@@ -56,7 +68,9 @@ class Quotation_lines(BaseModel):
                 Quotation.objects.filter(no=self.quotation).update(number=count + 1, with_gst=True)
                 quotation_save = super(Quotation_lines, self).save(force_insert=False, force_update=False, using=None,
                                                                    update_fields=None)
-
+            else:
+                quotation_save = super(Quotation_lines, self).save(force_insert=False, force_update=False, using=None,
+                                                                   update_fields=None)
         else:
             quotation_save = super(Quotation_lines, self).save(force_insert=False, force_update=False, using=None,
                                                                update_fields=None)
