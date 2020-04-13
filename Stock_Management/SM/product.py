@@ -18,6 +18,7 @@ class Product(BaseModel):
     purchase_rate = models.FloatField(null=True, blank=True, default=0.0)
     tax = models.CharField(choices=TaxType, max_length=50, null=True, blank=False)
     company = models.ForeignKey(CompanyDetail, on_delete=models.SET_NULL, null=True, blank=False)
+    is_available = models.BooleanField(default=True, null=True, blank=True)
 
     def __str__(self):
         return self.name
