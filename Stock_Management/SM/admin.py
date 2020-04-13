@@ -15,6 +15,7 @@ from .invoice import Invoice, InvoiceLines
 from .purchase_and_bill import Bill, BillLines, PurchaseOrder, PurchaseOrderLines
 from .bill_of_supply import BillOfSupply, BillOfSupplyLines
 from .payment_document import PaymentDocument
+from .inventory import Inventory
 
 admin.site.site_header = 'Storeck'
 admin.site.site_title = 'Storeck'
@@ -264,3 +265,4 @@ admin.site.register(BillLines)
 admin.site.register(PurchaseOrderLines)
 admin.site.register(ServiceStoreData)
 admin.site.register(PaymentDocument)
+admin.site.register(Inventory)
