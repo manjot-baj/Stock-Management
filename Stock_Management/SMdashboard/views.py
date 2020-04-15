@@ -34,6 +34,7 @@ class Dashboard(View):
     dashboard_template = 'SMdashboard/dashboard.html'
 
     def dashboard_info(self, request):
+        print(request.session.get('company_id'))
         company_info = CompanyDetail.objects.filter(pk=request.session.get('company_id')).values('pk', 'name').annotate(
 
             company_address=Concat(
@@ -1487,3 +1488,79 @@ class AMC_View(OwnerRequiredMinxin, ListView):
 #
 # today = datetime.today().date()
 # yesterday = today + timedelta(days=90 + 90 + 90 + 90)
+
+class Quotation(OwnerRequiredMinxin, ListView):
+    from .forms import QuotationForm, QuotationLineForm, QuotationLineFormSet, QuotationLineFormSetData
+    from SM.quotation import Quotation, Quotation_lines
+
+    template_name = 'SMdashboard/table-quotation-order.html'
+    formTemplate = 'SMdashboard/quotation_order_build.html'
+    model = Quotation
+    detailed_template_view = 'SMdashboard/view-quotation.html'
+    quotionForm = QuotationForm
+
+    def get_data(self, request, user_id=None, company_id=None, **kwargs):
+        qs = self.model.objects.filter(company_id=company_id)
+        # if 'filter_date' in kwargs:
+        #     qs = qs.filter(
+        #         order_date__gte=request.POST.get('fromDate'),
+        #         order_date__lte=request.POST.get('toDate')
+        #     )
+        data = qs.values('pk', 'number').annotate(
+            client=F('client__name'),
+            date_issue=ExpressionWrapper(Func(F('issue_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                   output_field=CharField()),
+            date_due=ExpressionWrapper(Func(F('due_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                         output_field=CharField()),
+            # grand_total=ExpressionWrapper(
+            #     F('grand_total'), output_field=FloatField())
+        ).order_by('-pk')
+        return list(data)
+
+    def get(self, request, *args, **kwargs):
+        if 'quotation_order_maker' and 'quotation_order_lines' in kwargs:
+            return render(request, self.formTemplate,
+                          {'quotation_order_maker': self.quotionForm(),
+                           'quotation_order_lines': self.QuotationLineFormSetData})
+
+        company_id = request.session.get('company_id')
+        data = self.get_data(request, user_id=request.user.id, company_id=company_id)
+        print(data)
+        return render(request, self.template_name, {'data': data})
+
+
+    def post(self, request, *args, **kwargs):
+        from .forms import QuotationForm, QuotationLineFormSet
+        from SM.quotation import Quotation, Quotation_lines
+
+        quotationForm = QuotationForm(request.POST)
+        quotationLineFormSet = QuotationLineFormSet(request.POST)
+
+        if quotationForm.is_valid() and quotationLineFormSet.is_valid():
+            # number = quotationForm.cleaned_data.get('number')
+            client = quotationForm.cleaned_data.get('client')
+            # society = request.session.get('society_ids')[0]
+            ship_to = quotationForm.cleaned_data.get('ship_to')
+            issue_date = quotationForm.cleaned_data.get('issue_date')
+            # due_date = quotationForm.cleaned_data.get('due_date')
+
+            po_obj = Quotation.objects.create(
+                client=client,
+                ship_to=ship_to,
+                issue_date=issue_date,
+                company_id=request.session.get("company_id")
+                # due_date=due_date,
+                # grand_total=sum(map(lambda x: x.cleaned_data.get('unit_price') * x.cleaned_data.get('quantity'),
+                #                     quotationLineFormSet))
+            )
+            lines = []
+            for pol_form in quotationLineFormSet:
+            #     lines.append(Quotation_lines(**pol_form.cleaned_data, quotation_id=po_obj.pk))
+            # Quotation_lines.objects.bulk_create(lines)
+                object = Quotation_lines(**pol_form.cleaned_data, quotation_id=po_obj.pk)
+                object.save()
+            return redirect(to='quotation_order_table')
+        else:
+            redirect(to='quotation_order_maker')
+
+

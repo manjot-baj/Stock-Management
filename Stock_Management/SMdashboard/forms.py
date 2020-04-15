@@ -1,6 +1,6 @@
 import os
 from django import forms
-from SM import enquiry, employee_data, service, dayBook, company_data, amc
+from SM import enquiry, employee_data, service, dayBook, company_data, amc, quotation
 import datetime
 
 
@@ -348,3 +348,43 @@ class AMC_Form(forms.ModelForm):
             'description': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control form-control-sm'}),
             'start_date': forms.widgets.DateInput(attrs={'type': 'date', 'class': 'form-control form-control-sm'}),
         }
+
+
+class QuotationForm(forms.ModelForm):
+    class Meta:
+        model = quotation.Quotation
+
+        fields = ['client', 'ship_to', 'issue_date', 'due_date']
+
+        widgets = {
+
+            'client': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'ship_to': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control-sm'}),
+            'issue_date': forms.widgets.DateInput(attrs={'type': 'date', 'class': 'form-control form-control-sm'}),
+            # 'due_date': forms.widgets.DateInput(attrs={'type': 'date', 'class': 'form-control form-control-sm'}),
+        }
+
+class QuotationLineForm(forms.ModelForm):
+    class Meta:
+        model = quotation.Quotation_lines
+
+        fields = ['product', 'uom', 'quantity', 'unit_price', 'tax']
+
+        widgets = {
+            'product': forms.Select(attrs={'class': 'form-control form-control-sm', 'required': True}),
+            'uom': forms.Select(attrs={'class': 'form-control form-control-sm', 'required': True}),
+            'quantity': forms.NumberInput(attrs={'class': 'form-control-sm', 'required': True}),
+            'unit_price': forms.NumberInput(
+                attrs={'class': 'form-control-sm', 'min': 0.0, 'step': 0.01, 'required': True}),
+            'tax': forms.Select(attrs={'class': 'form-control form-control-sm', 'required': True}),
+
+        }
+
+data = {
+    'form-TOTAL_FORMS': '1',
+    'form-INITIAL_FORMS': '0',
+    'form-MAX_NUM_FORMS': '',
+}
+
+QuotationLineFormSet = forms.formset_factory(QuotationLineForm)
+QuotationLineFormSetData = QuotationLineFormSet(data)
