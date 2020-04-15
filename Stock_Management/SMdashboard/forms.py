@@ -1,6 +1,6 @@
 import os
 from django import forms
-from SM import enquiry, employee_data, service, dayBook, company_data, amc, quotation
+from SM import enquiry, employee_data, service, dayBook, company_data, amc, quotation, invoice
 import datetime
 
 
@@ -364,6 +364,7 @@ class QuotationForm(forms.ModelForm):
             # 'due_date': forms.widgets.DateInput(attrs={'type': 'date', 'class': 'form-control form-control-sm'}),
         }
 
+
 class QuotationLineForm(forms.ModelForm):
     class Meta:
         model = quotation.Quotation_lines
@@ -380,6 +381,7 @@ class QuotationLineForm(forms.ModelForm):
 
         }
 
+
 data = {
     'form-TOTAL_FORMS': '1',
     'form-INITIAL_FORMS': '0',
@@ -388,3 +390,46 @@ data = {
 
 QuotationLineFormSet = forms.formset_factory(QuotationLineForm)
 QuotationLineFormSetData = QuotationLineFormSet(data)
+
+
+class InvoiceForm(forms.ModelForm):
+    class Meta:
+        model = invoice.Invoice
+
+        fields = ['issue_date', 'client', 'ship_to', 'place_of_supply', 'payment_terms']
+
+        widgets = {
+            'issue_date': forms.HiddenInput(attrs={'class': 'form-control-sm'}),
+            'client': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'ship_to': forms.Textarea(attrs={'rows': 10, 'cols': 60, 'class': 'form-control-sm'}),
+            'place_of_supply': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'payment_terms': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+        }
+
+
+class InvoiceLineForm(forms.ModelForm):
+    class Meta:
+        model = invoice.InvoiceLines
+
+        fields = ['product', 'description', 'uom', 'quantity', 'unit_price', 'discount', 'tax']
+
+        widgets = {
+            'product': forms.Select(attrs={'class': 'form-control form-control-sm', 'required': True}),
+            'description': forms.Textarea(attrs={'rows': 5, 'cols': 30, 'class': 'form-control-sm'}),
+            'uom': forms.Select(attrs={'class': 'form-control form-control-sm', 'required': True}),
+            'quantity': forms.NumberInput(attrs={'class': 'form-control-sm', 'required': True}),
+            'unit_price': forms.NumberInput(attrs={'class': 'form-control-sm', 'min': 0.0, 'step': 0.01,
+                                                   'required': True}),
+            'discount': forms.NumberInput(attrs={'class': 'form-control-sm', 'required': True}),
+            'tax': forms.Select(attrs={'class': 'form-control form-control-sm', 'required': True}),
+        }
+
+
+data = {
+    'form-TOTAL_FORMS': '1',
+    'form-INITIAL_FORMS': '0',
+    'form-MAX_NUM_FORMS': '',
+}
+
+InvoiceLineFormSet = forms.formset_factory(InvoiceLineForm)
+InvoiceLineFormSetData = InvoiceLineFormSet(data)

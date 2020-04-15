@@ -16,7 +16,10 @@ from django.utils import timezone
 import http.client
 import json
 import datetime
-
+from .forms import QuotationForm, QuotationLineForm, QuotationLineFormSet, QuotationLineFormSetData, \
+    InvoiceForm, InvoiceLineForm, InvoiceLineFormSet, InvoiceLineFormSetData
+from SM.quotation import Quotation, Quotation_lines
+from SM.invoice import Invoice, InvoiceLines
 from datetime import timedelta
 
 conn = http.client.HTTPSConnection("api.msg91.com")
@@ -1483,6 +1486,7 @@ class AMC_View(OwnerRequiredMinxin, ListView):
             return redirect(to="amc_data")
         return redirect(to="dashboard")
 
+
 # from datetime import datetime
 # from datetime import timedelta
 #
@@ -1490,9 +1494,6 @@ class AMC_View(OwnerRequiredMinxin, ListView):
 # yesterday = today + timedelta(days=90 + 90 + 90 + 90)
 
 class Quotation(OwnerRequiredMinxin, ListView):
-    from .forms import QuotationForm, QuotationLineForm, QuotationLineFormSet, QuotationLineFormSetData
-    from SM.quotation import Quotation, Quotation_lines
-
     template_name = 'SMdashboard/table-quotation-order.html'
     formTemplate = 'SMdashboard/quotation_order_build.html'
     model = Quotation
@@ -1509,9 +1510,9 @@ class Quotation(OwnerRequiredMinxin, ListView):
         data = qs.values('pk', 'number').annotate(
             client=F('client__name'),
             date_issue=ExpressionWrapper(Func(F('issue_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
-                                   output_field=CharField()),
-            date_due=ExpressionWrapper(Func(F('due_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
                                          output_field=CharField()),
+            date_due=ExpressionWrapper(Func(F('due_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                       output_field=CharField()),
             # grand_total=ExpressionWrapper(
             #     F('grand_total'), output_field=FloatField())
         ).order_by('-pk')
@@ -1521,18 +1522,14 @@ class Quotation(OwnerRequiredMinxin, ListView):
         if 'quotation_order_maker' and 'quotation_order_lines' in kwargs:
             return render(request, self.formTemplate,
                           {'quotation_order_maker': self.quotionForm(),
-                           'quotation_order_lines': self.QuotationLineFormSetData})
+                           'quotation_order_lines': QuotationLineFormSetData})
 
         company_id = request.session.get('company_id')
         data = self.get_data(request, user_id=request.user.id, company_id=company_id)
         print(data)
         return render(request, self.template_name, {'data': data})
 
-
     def post(self, request, *args, **kwargs):
-        from .forms import QuotationForm, QuotationLineFormSet
-        from SM.quotation import Quotation, Quotation_lines
-
         quotationForm = QuotationForm(request.POST)
         quotationLineFormSet = QuotationLineFormSet(request.POST)
 
@@ -1555,8 +1552,8 @@ class Quotation(OwnerRequiredMinxin, ListView):
             )
             lines = []
             for pol_form in quotationLineFormSet:
-            #     lines.append(Quotation_lines(**pol_form.cleaned_data, quotation_id=po_obj.pk))
-            # Quotation_lines.objects.bulk_create(lines)
+                #     lines.append(Quotation_lines(**pol_form.cleaned_data, quotation_id=po_obj.pk))
+                # Quotation_lines.objects.bulk_create(lines)
                 object = Quotation_lines(**pol_form.cleaned_data, quotation_id=po_obj.pk)
                 object.save()
             return redirect(to='quotation_order_table')
@@ -1564,3 +1561,52 @@ class Quotation(OwnerRequiredMinxin, ListView):
             redirect(to='quotation_order_maker')
 
 
+class InvoiceView(OwnerRequiredMinxin, ListView):
+    template_name = 'SMdashboard/table-invoice.html'
+    formTemplate = 'SMdashboard/invoice_build.html'
+    model = Invoice
+    detailed_template_view = 'SMdashboard/view-invoice.html'
+    invoiceForm = InvoiceForm
+
+    def get_data(self, request, user_id=None, company_id=None, **kwargs):
+        data = "data"
+        return list(data)
+
+    def get(self, request, *args, **kwargs):
+        if 'invoice_maker' and 'invoice_lines' in kwargs:
+            return render(request, self.formTemplate,
+                          {'invoice_maker': self.invoiceForm(),
+                           'invoice_lines': InvoiceLineFormSetData})
+
+        company_id = request.session.get('company_id')
+        data = self.get_data(request, user_id=request.user.id, company_id=company_id)
+        print(data)
+        return render(request, self.template_name, {'data': data})
+
+    def post(self, request, *args, **kwargs):
+        invoiceForm = InvoiceForm(request.POST)
+        invoiceLineFormSet = InvoiceLineFormSet(request.POST)
+
+        if invoiceForm.is_valid() and invoiceLineFormSet.is_valid():
+            client = invoiceForm.cleaned_data.get('client')
+            ship_to = invoiceForm.cleaned_data.get('ship_to')
+            issue_date = invoiceForm.cleaned_data.get('issue_date')
+            place_of_supply = invoiceForm.cleaned_data.get('place_of_supply')
+            payment_terms = invoiceForm.cleaned_data.get('payment_terms')
+
+            invoice_obj = self.model.objects.create(client=client, ship_to=ship_to, issue_date=issue_date,
+                                                    place_of_supply=place_of_supply, payment_terms=payment_terms,
+                                                    company_id=request.session.get("company_id"),
+                                                    # due_date=due_date,
+                                                    # grand_total=sum(map(lambda x: x.cleaned_data.get('unit_price') * x.cleaned_data.get('quantity'),
+                                                    #                     quotationLineFormSet))
+                                                    )
+            # lines = []
+            for invoicelines_form in invoiceLineFormSet:
+                #     lines.append(Quotation_lines(**pol_form.cleaned_data, quotation_id=po_obj.pk))
+                # Quotation_lines.objects.bulk_create(lines)
+                lines_object = InvoiceLines(**invoicelines_form.cleaned_data, invoice_id=invoice_obj.pk)
+                lines_object.save()
+            return redirect(to='invoice_table')
+        else:
+            redirect(to='invoice_maker')
