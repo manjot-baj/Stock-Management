@@ -51,24 +51,18 @@
                     </div>
                     {{ invoice_lines.management_form }}
                     <div id="form_set">
-                        <table class='table table-striped'>
-                            <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Description</th>
-                                <th>Quantity</th>
-                                <th>UOM</th>
-                                <th>Unit Price</th>
-                                <th>Discount</th>
-                                <th>TAX</th>
-                            </tr>
-                            </thead>
-                        </table>
                         {% for invoiceLineForm in invoice_lines %}
                         {{form.non_field_errors}}
                         {{form.errors}}
-                        <table class='dynamic-form-row table table-striped'>
+                        <table class='dynamic-form-row table table-striped table-responsive'>
                             <thead>
+                            <th>Product</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>UOM</th>
+                            <th>Unit Price</th>
+                            <th>Discount</th>
+                            <th>TAX</th>
                             </thead>
                             <tbody>
                             <tr>
@@ -109,11 +103,11 @@
     </div>
 </div>
 <div id="empty_form" style="display:none">
-    <table class='dynamic-form-row table table-striped'>
+    <table class='dynamic-form-row table table-striped table-responsive'>
         <tbody>
         <tr>
             <td>{{invoice_lines.empty_form.product}}</td>
-             <td>{{invoice_lines.empty_form.description}}</td>
+            <td>{{invoice_lines.empty_form.description}}</td>
             <td>{{invoice_lines.empty_form.quantity}}</td>
             <td>{{invoice_lines.empty_form.uom}}</td>
             <td>{{invoice_lines.empty_form.unit_price}}</td>
@@ -170,5 +164,6 @@ $(document).on('click', '.remove-form-row', function(e){
     deleteForm('form', $(this));
     return false;
 });
+
 </script>
 {% endblock %}
