@@ -73,7 +73,7 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <td id="product_id{{ forloop.counter0 }}">{{quotationLineForm.product}}</td>
+                                <td>{{quotationLineForm.product}}</td>
                                 <td>{{quotationLineForm.quantity}}</td>
                                 <td>{{quotationLineForm.uom}}</td>
                                 <td >{{quotationLineForm.unit_price}}</td>
@@ -128,14 +128,14 @@
 <script src="https://cdn.jsdelivr.net/npm/table-to-json@0.13.0/lib/jquery.tabletojson.min.js"
         integrity="sha256-AqDz23QC5g2yyhRaZcEGhMMZwQnp8fC6sCZpf+e7pnw=" crossorigin="anonymous"></script>
 <script type="text/javascript">
-var i = 0
+var c = 0
 $('#add_more').click(function() {
 	var form_idx = $('#id_form-TOTAL_FORMS').val();
 	$('#form_set').append($('#empty_form').html().replace(/__prefix__/g, form_idx));
 	$('#id_form-TOTAL_FORMS').val(parseInt(form_idx) + 1);
 	console.log(form_idx);
-	console.log(i);
-	i++;
+	console.log(c);
+	c++;
 });
 
 function updateElementIndex(el, prefix, ndx) {
@@ -169,10 +169,10 @@ $(document).on('click', '.remove-form-row', function(e){
     return false;
 })
 
-$('#id_form-0-product').on('change', function(event){
-      var data = $('#id_form-0-unit_price').val(123);
+$('#id_form-0-product').last().on('change', function(event){
+      $('#id_form-0-unit_price').last().val(123);
 
-      console.log(data)
+      console.log("1")
 })
 
 
