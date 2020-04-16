@@ -63,5 +63,6 @@ urlpatterns = [
                        {'quotation_order_maker': '', 'quotation_order_lines': ''},
                        name="quotation_order_maker"),
                   path('quotation_order_table/', views.Quotation.as_view(), name="quotation_order_table"),
+                  path('viewQuotationOrder/<int:object_id>', views.Quotation.as_view(), name="view_quotation_order"),
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

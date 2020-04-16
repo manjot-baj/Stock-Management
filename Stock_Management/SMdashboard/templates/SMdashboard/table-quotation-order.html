@@ -44,9 +44,9 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
-<script type="text/javascript" src="{% static 'dashboard/js/plugins/bootstrap-datepicker.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'dashboard/js/plugins/jquery.dataTables.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'dashboard/js/plugins/dataTables.bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'SMdashboard/js/plugins/bootstrap-datepicker.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'SMdashboard/js/plugins/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'SMdashboard/js/plugins/dataTables.bootstrap.min.js' %}"></script>
 <script type="text/javascript">
 var table = $('#sampleTable').DataTable({
   columns: [
@@ -56,8 +56,6 @@ var table = $('#sampleTable').DataTable({
   { data: "client"},
 
   ],
-  ordering: false,
-
 
   data: {% autoescape off %}{{data}}{% endautoescape %}
   });

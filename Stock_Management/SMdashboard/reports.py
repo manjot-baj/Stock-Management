@@ -6,6 +6,7 @@ from SM.company_data import Client, Vendor, CompanyDetail
 from SM import employee_data, enquiry, product, service, dayBook, amc
 
 
+
 class ClientReport:
 
     def get_data(self, request, client_id=None, company_id=None):

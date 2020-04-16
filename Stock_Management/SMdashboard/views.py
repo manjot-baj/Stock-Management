@@ -1523,10 +1523,16 @@ class Quotation(OwnerRequiredMinxin, ListView):
                           {'quotation_order_maker': self.quotionForm(),
                            'quotation_order_lines': self.QuotationLineFormSetData})
 
+        elif 'object_id' in kwargs:
+            pass
+
+
         company_id = request.session.get('company_id')
         data = self.get_data(request, user_id=request.user.id, company_id=company_id)
         print(data)
         return render(request, self.template_name, {'data': data})
+
+
 
 
     def post(self, request, *args, **kwargs):
