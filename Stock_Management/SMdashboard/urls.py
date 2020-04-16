@@ -59,10 +59,12 @@ urlpatterns = [
                   path('amc_view/<int:object_id>', views.AMC_View.as_view(), name="amc_view"),
                   path('amc/<int:object_id>', views.AMC_View.as_view(), {'amc_form': ''}, name="amc"),
 
-                  path('quotation_order_maker/', views.Quotation.as_view(),
+                  path('quotation_order_maker/', views.QuotationView.as_view(),
                        {'quotation_order_maker': '', 'quotation_order_lines': ''},
                        name="quotation_order_maker"),
                   path('quotation_order_table/', views.Quotation.as_view(), name="quotation_order_table"),
                   path('viewQuotationOrder/<int:object_id>', views.Quotation.as_view(), name="view_quotation_order"),
-
+                  path('invoice_maker/', views.InvoiceView.as_view(), {'invoice_maker': '', 'invoice_lines': ''},
+                       name="invoice_maker"),
+                  path('invoice_table/', views.InvoiceView.as_view(), name="invoice_table"),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

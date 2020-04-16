@@ -261,6 +261,28 @@
                 </li>
             </ul>
         </li>
+        <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview">
+            <i class="app-menu__icon fa fa-file" aria-hidden="true"></i><span
+                class="app-menu__label">Invoice</span>
+            <i class="treeview-indicator fa fa-angle-right"></i></a>
+            <ul class="treeview-menu">
+                <li><a class="treeview-item" href="{% url 'invoice_maker' %}"><i class="icon fa fa-circle-o"></i>
+                    Add Invoice</a></li>
+                <li><a class="treeview-item" href="{% url 'invoice_table' %}"><i class="icon fa fa-circle-o"></i>Invoices</a>
+                </li>
+            </ul>
+        </li>
+        <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview">
+            <i class="app-menu__icon fa fa-file" aria-hidden="true"></i><span
+                class="app-menu__label">Quotation</span>
+            <i class="treeview-indicator fa fa-angle-right"></i></a>
+            <ul class="treeview-menu">
+                <li><a class="treeview-item" href="{% url 'quotation_order_maker' %}"><i class="icon fa fa-circle-o"></i>
+                    Add Quotation</a></li>
+                <li><a class="treeview-item" href="{% url 'quotation_order_table' %}"><i class="icon fa fa-circle-o"></i>Quotations</a>
+                </li>
+            </ul>
+        </li>
     </ul>
 </aside>
 <main class="app-content">
