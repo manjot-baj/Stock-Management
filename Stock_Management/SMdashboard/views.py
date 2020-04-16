@@ -1493,7 +1493,7 @@ class AMC_View(OwnerRequiredMinxin, ListView):
 # today = datetime.today().date()
 # yesterday = today + timedelta(days=90 + 90 + 90 + 90)
 
-class Quotation(OwnerRequiredMinxin, ListView):
+class QuotationView(OwnerRequiredMinxin, ListView):
     template_name = 'SMdashboard/table-quotation-order.html'
     formTemplate = 'SMdashboard/quotation_order_build.html'
     model = Quotation
@@ -1541,7 +1541,7 @@ class Quotation(OwnerRequiredMinxin, ListView):
             issue_date = quotationForm.cleaned_data.get('issue_date')
             # due_date = quotationForm.cleaned_data.get('due_date')
 
-            po_obj = Quotation.objects.create(
+            po_obj = self.model.objects.create(
                 client=client,
                 ship_to=ship_to,
                 issue_date=issue_date,
@@ -1568,8 +1568,14 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
     detailed_template_view = 'SMdashboard/view-invoice.html'
     invoiceForm = InvoiceForm
 
-    def get_data(self, request, user_id=None, company_id=None, **kwargs):
-        data = "data"
+    def get_data(self, request, company_id=None, *args, **kwargs):
+        data = self.model.objects.filter(company_id=company_id).values('pk', 'number').annotate(
+            client=F('client__name'),
+            date_issue=ExpressionWrapper(Func(F('issue_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                         output_field=CharField()),
+            date_due=ExpressionWrapper(Func(F('due_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                       output_field=CharField()),
+        )
         return list(data)
 
     def get(self, request, *args, **kwargs):
@@ -1586,7 +1592,10 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
     def post(self, request, *args, **kwargs):
         invoiceForm = InvoiceForm(request.POST)
         invoiceLineFormSet = InvoiceLineFormSet(request.POST)
-
+        # print(invoiceForm.is_valid())
+        # print(invoiceForm)
+        # print(invoiceLineFormSet.is_valid())
+        # print(invoiceLineFormSet)
         if invoiceForm.is_valid() and invoiceLineFormSet.is_valid():
             client = invoiceForm.cleaned_data.get('client')
             ship_to = invoiceForm.cleaned_data.get('ship_to')
