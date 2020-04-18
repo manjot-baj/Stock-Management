@@ -63,9 +63,15 @@ urlpatterns = [
                        {'quotation_order_maker': '', 'quotation_order_lines': ''},
                        name="quotation_order_maker"),
                   path('quotation_order_table/', views.QuotationView.as_view(), name="quotation_order_table"),
-                  path('view_quotation_order/<int:object_id>', views.QuotationView.as_view(), name="view_quotation_order"),
+
+                  path('getProductPrice/', views.getProductPrice),
+
+                  path('viewQuotationOrder/<int:object_id>', views.QuotationView.as_view(),
+                       name="view_quotation_order"),
                   path('invoice_maker/', views.InvoiceView.as_view(), {'invoice_maker': '', 'invoice_lines': ''},
                        name="invoice_maker"),
                   path('invoice_table/', views.InvoiceView.as_view(), name="invoice_table"),
-                  path('getProductPrice/', views.getProductPrice),
+                  path('product_detail/', views.InvoiceView.as_view(), {'product_detail': ''},
+                       name="product_detail"),
+
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -8,7 +8,7 @@
         <h1><i class="fa fa-file-text-o"></i>Invoice</h1>
         <p>Build a Invoice</p>
     </div>
-</div>
+</div>&nbsp;
 <div class="row">
     <div class="col-md-12">
         <div class="tile">
@@ -49,6 +49,7 @@
                             {{invoice_maker.payment_terms}}
                         </div>
                     </div>
+                    <label for="id_some">jaska</label>
                     {{ invoice_lines.management_form }}
                     <div id="form_set">
                         {% for invoiceLineForm in invoice_lines %}
@@ -66,7 +67,7 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <td>{{invoiceLineForm.product}}</td>
+                                <td onclick="my_function()">{{invoiceLineForm.product}}</td>
                                 <td>{{invoiceLineForm.description}}</td>
                                 <td>{{invoiceLineForm.quantity}}</td>
                                 <td>{{invoiceLineForm.uom}}</td>
@@ -106,7 +107,7 @@
     <table class='dynamic-form-row table table-striped table-responsive'>
         <tbody>
         <tr>
-            <td>{{invoice_lines.empty_form.product}}</td>
+            <td onclick="my_function()">{{invoice_lines.empty_form.product}}</td>
             <td>{{invoice_lines.empty_form.description}}</td>
             <td>{{invoice_lines.empty_form.quantity}}</td>
             <td>{{invoice_lines.empty_form.uom}}</td>
@@ -123,8 +124,36 @@
 {% endblock %}
 {% block script %}
 {{ block.super }}
-<script src="https://cdn.jsdelivr.net/npm/table-to-json@0.13.0/lib/jquery.tabletojson.min.js"
-        integrity="sha256-AqDz23QC5g2yyhRaZcEGhMMZwQnp8fC6sCZpf+e7pnw=" crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css"
+      href="{% static 'SMdashboard/datatables/select/1.3.1/css/select.bootstrap4.min.css' %}"/>
+<link rel="stylesheet" type="text/css"
+      href="{% static 'SMdashboard/datatables/buttons/1.6.0/css/buttons.bootstrap4.min.css' %}"/>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+<script src="{% static 'SMdashboard/datatables/1.10.20/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'SMdashboard/datatables/1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'SMdashboard/datatables/buttons/1.6.0/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'SMdashboard/datatables/buttons/1.6.0/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'SMdashboard/cloudflare/ajax/libs/jszip/3.1.3/jszip.min.js' %}"></script>
+<script src="{% static 'SMdashboard/cloudflare/ajax/libs/pdfmake/0.1.53/pdfmake.min.js' %}"></script>
+<script src="{% static 'SMdashboard/cloudflare/ajax/libs/pdfmake/0.1.53/vfs_fonts.js' %}"></script>
+<script src="{% static 'SMdashboard/datatables/buttons/1.6.0/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'SMdashboard/datatables/buttons/1.6.0/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'SMdashboard/datatables/select/1.3.1/js/dataTables.select.min.js' %}"></script>
+<script src="{% static 'SMdashboard/datatables/plug-ins/1.10.20/api/sum().js' %}"></script>
+<script type="text/javascript" src="{% static 'SMdashboard/js/plugins/sweetalert.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'SMdashboard/js/plugins/bootstrap-datepicker.min.js' %}"></script>
+
+
+<link rel="stylesheet" href="{% static 'SMdashboard/cloudflare/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css' %}">
+<link rel="stylesheet" href="{% static 'SMdashboard/datatables/1.10.20/css/dataTables.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'SMdashboard/datatables/buttons/1.6.0/css/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'SMdashboard/datatables/select/1.3.1/css/select.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'SMdashboard/css/main.css' %}">
+
 <script type="text/javascript">
 
 $('#add_more').click(function() {
@@ -164,6 +193,23 @@ $(document).on('click', '.remove-form-row', function(e){
     deleteForm('form', $(this));
     return false;
 });
+
+function my_function(){
+        var product_detail = $('#id_form-1-product').val()
+        $.ajax({
+            url: '{% url 'product_detail' %}',
+            method: 'POST',
+            data: {'product_detail': product_detail},
+            headers: {"X-CSRFToken": '{{ csrf_token }}'},
+            success: function(data, status, jqXHR){
+                console.log(status, data)
+                if(jqXHR.status == 200){
+                    console.log(data[0]['unit_price']);
+                    $('label[for="id_some"]').html(data[0]['unit_price']);
+            }
+            }
+        })
+     }
 
 </script>
 {% endblock %}
