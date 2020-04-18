@@ -11,7 +11,7 @@ from django.views.generic import ListView, View
 from django.db.models import (Case, CharField, Count, DateTimeField,
                               ExpressionWrapper, F, FloatField, Func, Max, Min,
                               Prefetch, Q, Sum, Value, When, Subquery)
-from SM import enquiry, employee_data, service, dayBook, product, amc
+from SM import enquiry, employee_data, service, dayBook, product, amc, product, quotation
 from django.utils import timezone
 import http.client
 import json
@@ -21,9 +21,22 @@ from .forms import QuotationForm, QuotationLineForm, QuotationLineFormSet, Quota
 from SM.quotation import Quotation, Quotation_lines
 from SM.invoice import Invoice, InvoiceLines
 from datetime import timedelta
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+from django.db.models import Value as V
 
 conn = http.client.HTTPSConnection("api.msg91.com")
 OWNER_GROUP = "Owner"
+
+
+@csrf_exempt
+def getProductPrice(request):
+    # objId = request.POST.get('id')
+    product_name = request.POST.get('product_name')
+    print(product_name)
+    test = product.Product.objects.filter(pk=product_name, company_id=request.session.get('company_id')).values('unit_price')
+    print(test)
+    return JsonResponse(test, safe=False)
 
 
 class OwnerRequiredMinxin(GroupRequiredMixin):
@@ -1525,7 +1538,13 @@ class QuotationView(OwnerRequiredMinxin, ListView):
                            'quotation_order_lines': QuotationLineFormSetData})
 
         elif 'object_id' in kwargs:
-            pass
+            from .reports import QuotationReport
+            data = QuotationReport().get_data(request, quotation_order_id=kwargs.get('object_id'),
+                                              company_id=request.session.get('company_id'))
+            print(data)
+
+            template = self.detailed_template_view
+            # return render(request, template, data)
 
 
         company_id = request.session.get('company_id')

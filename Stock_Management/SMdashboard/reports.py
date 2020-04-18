@@ -3,7 +3,7 @@ from django.db.models import Value as V
 from django.db.models.functions import Cast, Concat, Coalesce
 from django.shortcuts import redirect
 from SM.company_data import Client, Vendor, CompanyDetail
-from SM import employee_data, enquiry, product, service, dayBook, amc
+from SM import employee_data, enquiry, product, service, dayBook, amc, quotation
 
 
 
@@ -413,5 +413,38 @@ class AmcReport:
                                                               output_field=CharField()), service_status=F('status')))
             if not len(amc_service_records) == 0:
                 data.update({"service_record": amc_service_records})
+        print(data)
+        return data
+
+
+class QuotationReport:
+
+    def get_data(self, request, quotation_order_id=None, company_id=None):
+        data = {}
+        quotation_order_lines = quotation.Quotation_lines.objects.annotate(product_name=F('product__name'))
+        print(quotation_order_lines)
+        record = quotation.Quotation.objects.filter(pk=quotation_order_id, company_id=company_id).annotate(
+            quotation_issue_date=ExpressionWrapper(Func(F('issue_date'), V("DD/MM/YYYY"), function='TO_CHAR'),
+                                      output_field=CharField()),
+            quotation_due_date=ExpressionWrapper(Func(F('due_date'), V("DD/MM/YYYY"), function='TO_CHAR'),
+                                         output_field=CharField()),
+            quotation_client=F('client__name'),
+
+        ).prefetch_related(Prefetch('quotation_lines_set', queryset=quotation_order_lines,
+                                    to_attr='quotation_order_lines'))
+
+        for each in record:
+            data.update({
+                'quotation_issue_date': each.quotation_issue_date,
+                'quotation_due_date': each.quotation_due_date,
+                'quotation_client': each.quotation_client,
+                'number':each.number,
+                'ship_to': each.ship_to,
+                'grand_total': each.grand_total,
+                'pk': each.pk,
+                'quotation_order_lines': [{'product_name':line.product_name, 'uom':line.uom,
+                                          'quantity':line.quantity, 'unit_price': line.unit_price
+                                           }for line in quotation_order_lines]
+            })
         print(data)
         return data
