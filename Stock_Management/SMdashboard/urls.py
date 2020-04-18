@@ -64,7 +64,7 @@ urlpatterns = [
                        name="quotation_order_maker"),
                   path('quotation_order_table/', views.QuotationView.as_view(), name="quotation_order_table"),
 
-                  path('getProductPrice/', views.getProductPrice),
+                  # path('getProductPrice/', views.getProductPrice),
 
                   path('viewQuotationOrder/<int:object_id>', views.QuotationView.as_view(),
                        name="view_quotation_order"),
@@ -73,5 +73,8 @@ urlpatterns = [
                   path('invoice_table/', views.InvoiceView.as_view(), name="invoice_table"),
                   path('product_detail/', views.InvoiceView.as_view(), {'product_detail': ''},
                        name="product_detail"),
+                  path('quotation_product_detail/', views.QuotationView.as_view(), {'quotation_product_detail': ''},
+                       name="quotation_product_detail"),
+
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

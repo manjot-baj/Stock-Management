@@ -1515,6 +1515,11 @@ class QuotationView(OwnerRequiredMinxin, ListView):
     quotionForm = QuotationForm
 
     def get_data(self, request, user_id=None, company_id=None, **kwargs):
+        if 'quotation_product_detail' in kwargs:
+            data = Product.objects.filter(pk=request.POST.get('product_detail'), company_id=company_id).values('pk',
+                                                                                                               'type',
+                                                                                                               'unit_price')
+            return list(data)
         qs = self.model.objects.filter(company_id=company_id)
         # if 'filter_date' in kwargs:
         #     qs = qs.filter(
@@ -1549,10 +1554,16 @@ class QuotationView(OwnerRequiredMinxin, ListView):
 
         company_id = request.session.get('company_id')
         data = self.get_data(request, user_id=request.user.id, company_id=company_id)
+
         print(data)
         return render(request, self.template_name, {'data': data})
 
     def post(self, request, *args, **kwargs):
+        if 'quotation_product_detail' in kwargs:
+            data = self.get_data(request, company_id=request.session.get('company_id'), quotation_product_detail='')
+            print(data)
+            return JsonResponse(data, safe=False)
+
         quotationForm = QuotationForm(request.POST)
         quotationLineFormSet = QuotationLineFormSet(request.POST)
 
@@ -1620,6 +1631,7 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
     def post(self, request, *args, **kwargs):
         if 'product_detail' in kwargs:
             data = self.get_data(request, company_id=request.session.get('company_id'), product_detail='')
+            print(data)
             return JsonResponse(data, safe=False)
         invoiceForm = InvoiceForm(request.POST)
         invoiceLineFormSet = InvoiceLineFormSet(request.POST)

@@ -73,7 +73,7 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <td><p>{{quotationLineForm.product}}</p></td>
+                                <td onclick="my_function()">{{quotationLineForm.product}}</td>
                                 <td>{{quotationLineForm.quantity}}</td>
                                 <td>{{quotationLineForm.uom}}</td>
                                 <td >{{quotationLineForm.unit_price}}</td>
@@ -110,7 +110,7 @@
     <table class='dynamic-form-row table table-striped' id="empty_table">
         <tbody id="empty_body">
         <tr>
-            <td>{{quotation_order_lines.empty_form.product}}</td>
+            <td onclick="my_function()">{{quotation_order_lines.empty_form.product}}</td>
             <td>{{quotation_order_lines.empty_form.quantity}}</td>
             <td>{{quotation_order_lines.empty_form.uom}}</td>
             <td>{{quotation_order_lines.empty_form.unit_price}}</td>
@@ -131,10 +131,6 @@
 
 <script type="text/javascript">
 
-var newId = 1
-var newTest = {'type':null, 'id':`test-${newId}`, 'sn':null, 'uom':null, 'sku':null, 'name':null, 'description':null,
- 'hsn':null, 'sac':null, 'unit_price':null, 'purchase_rate':null, 'tax':null, 'company':null, 'is_available':null,
-}
 
 $('#add_more').click(function() {
 	var form_idx = $('#id_form-TOTAL_FORMS').val();
@@ -181,37 +177,61 @@ $(document).on('click', '.remove-form-row', function(e){
 <!--      console.log("1")-->
 <!--})-->
 
-$('#id_form-0-product').on('change', function(event){
-      $('#id_form-0-unit_price').val(123);
+<!--$('#id_form-0-product').on('change', function(event){-->
+<!--      $('#id_form-0-unit_price').val(123);-->
 
-      var product_name = $('#id_form-0-product').val()
-      console.log(product_name)
-      var data = {'product_name':product_name}
-      console.log(data)
-      updateUnitPricePOST(data)
+<!--      var product_name = $('#id_form-0-product').val()-->
+<!--      console.log(product_name)-->
+<!--      var data = {'product_name':product_name}-->
+<!--      console.log(data)-->
+<!--      updateUnitPricePOST(data)-->
 
-      console.log("1")
-})
+<!--      console.log("1")-->
+<!--})-->
 
-var responseData = []
-function updateUnitPricePOST(data){
-        var url = '/getProductPrice/'
+<!--var responseData = []-->
+<!--function updateUnitPricePOST(data){-->
+<!--        var url = '/getProductPrice/'-->
+<!--        $.ajax({-->
+<!--            method:'POST',-->
+<!--            url:url,-->
+<!--            data:data,-->
+<!--            headers: {"X-CSRFToken": '{{ csrf_token }}'},-->
+<!--            success:function(response){-->
+
+<!--                    responseData = response-->
+<!--                    console.log(responseData)-->
+
+
+<!--            }-->
+<!--        })-->
+
+
+<!--    }-->
+
+function my_function(){
+        var i = 0;
+        var product_detail = $('#id_form-${i}-product').val()
+        $('#id_form-${i}-unit_price').val(65);
+        i++;
+        console.log(${i})
+        console.log("okk")
         $.ajax({
-            method:'POST',
-            url:url,
-            data:data,
+            url: '{% url 'quotation_product_detail' %}',
+            method: 'POST',
+            data: {'product_detail': product_detail},
             headers: {"X-CSRFToken": '{{ csrf_token }}'},
-            success:function(response){
-
-                    responseData = response
-                    console.log(responseData)
-
+            success: function(data, status, jqXHR){
+                console.log(status, data)
+                if(jqXHR.status == 200){
+                    console.log(data[0]['unit_price']);
+                    $('label[for="id_some"]').html(data[0]['unit_price']);
 
             }
+            }
         })
+     }
 
-
-    }
 
 
 </script>
