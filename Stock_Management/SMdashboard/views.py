@@ -20,6 +20,7 @@ from .forms import QuotationForm, QuotationLineForm, QuotationLineFormSet, Quota
     InvoiceForm, InvoiceLineForm, InvoiceLineFormSet, InvoiceLineFormSetData
 from SM.quotation import Quotation, Quotation_lines
 from SM.invoice import Invoice, InvoiceLines
+from SM.product import Product
 from datetime import timedelta
 
 conn = http.client.HTTPSConnection("api.msg91.com")
@@ -1527,7 +1528,6 @@ class QuotationView(OwnerRequiredMinxin, ListView):
         elif 'object_id' in kwargs:
             pass
 
-
         company_id = request.session.get('company_id')
         data = self.get_data(request, user_id=request.user.id, company_id=company_id)
         print(data)
@@ -1573,6 +1573,11 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
     invoiceForm = InvoiceForm
 
     def get_data(self, request, company_id=None, *args, **kwargs):
+        if 'product_detail' in kwargs:
+            data = Product.objects.filter(pk=request.POST.get('product_detail'), company_id=company_id).values('pk',
+                                                                                                               'type',
+                                                                                                               'unit_price')
+            return list(data)
         data = self.model.objects.filter(company_id=company_id).values('pk', 'number').annotate(
             client=F('client__name'),
             date_issue=ExpressionWrapper(Func(F('issue_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
@@ -1594,6 +1599,9 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
         return render(request, self.template_name, {'data': data})
 
     def post(self, request, *args, **kwargs):
+        if 'product_detail' in kwargs:
+            data = self.get_data(request, company_id=request.session.get('company_id'), product_detail='')
+            return JsonResponse(data, safe=False)
         invoiceForm = InvoiceForm(request.POST)
         invoiceLineFormSet = InvoiceLineFormSet(request.POST)
         # print(invoiceForm.is_valid())
@@ -1621,5 +1629,4 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
                 lines_object = InvoiceLines(**invoicelines_form.cleaned_data, invoice_id=invoice_obj.pk)
                 lines_object.save()
             return redirect(to='invoice_table')
-        else:
-            redirect(to='invoice_maker')
+        return redirect(to='invoice_maker')
