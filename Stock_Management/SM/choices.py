@@ -24,6 +24,11 @@ TypeUOM = (
     ('Piece', 'Piece'),
 )
 
+WithGstOrNot = (
+    ('Yes', 'Yes'),
+    ('No', 'No'),
+)
+
 TaxType = (
         ('0', 'None'),
         ('1', '1% GST'),

@@ -4,7 +4,7 @@ from django.utils import timezone
 from .models import BaseModel
 from .company_data import CompanyDetail, Client
 from .product import Product
-from .choices import Places, PaymentStatus, Prices, TaxType, TypeUOM
+from .choices import Places, PaymentStatus, Prices, TaxType, TypeUOM, WithGstOrNot
 import random
 from datetime import datetime, timedelta
 
@@ -28,6 +28,7 @@ class Invoice(BaseModel):
     grand_total = models.DecimalField(decimal_places=2, max_digits=10, default=0.00, null=True, blank=True)
     company = models.ForeignKey(CompanyDetail, on_delete=models.SET_NULL, null=True, blank=False)
     with_gst = models.BooleanField(null=True, blank=True)
+    gst = models.CharField(choices=WithGstOrNot, max_length=20, null=True, blank=False)
 
     def __str__(self):
         return self.no

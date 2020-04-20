@@ -396,7 +396,7 @@ class InvoiceForm(forms.ModelForm):
     class Meta:
         model = invoice.Invoice
 
-        fields = ['issue_date', 'client', 'ship_to', 'place_of_supply', 'payment_terms']
+        fields = ['issue_date', 'client', 'ship_to', 'place_of_supply', 'payment_terms', 'gst']
 
         widgets = {
             'issue_date': forms.HiddenInput(attrs={'class': 'form-control-sm'}),
@@ -404,6 +404,7 @@ class InvoiceForm(forms.ModelForm):
             'ship_to': forms.Textarea(attrs={'rows': 10, 'cols': 60, 'class': 'form-control-sm'}),
             'place_of_supply': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'payment_terms': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'gst': forms.Select(attrs={'class': 'form-control form-control-sm'}),
         }
 
 
