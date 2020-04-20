@@ -35,7 +35,8 @@ def getProductPrice(request):
     # objId = request.POST.get('id')
     product_name = request.POST.get('product_name')
     print(product_name)
-    test = product.Product.objects.filter(pk=product_name, company_id=request.session.get('company_id')).values('unit_price')
+    test = product.Product.objects.filter(pk=product_name, company_id=request.session.get('company_id')).values(
+        'unit_price')
     print(test)
     return JsonResponse(test, safe=False)
 
@@ -1605,9 +1606,8 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
 
     def get_data(self, request, company_id=None, *args, **kwargs):
         if 'product_detail' in kwargs:
-            data = Product.objects.filter(pk=request.POST.get('product_detail'), company_id=company_id).values('pk',
-                                                                                                               'type',
-                                                                                                               'unit_price')
+            data = Product.objects.filter(pk=request.POST.get('product_detail'), company_id=company_id).values(
+                'pk', 'type', 'unit_price')
             return list(data)
         data = self.model.objects.filter(company_id=company_id).values('pk', 'number').annotate(
             client=F('client__name'),
@@ -1629,8 +1629,7 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
             print(kwargs.get('object_id'))
             from .reports import InvoiceReport
             data = InvoiceReport().get_data(request, invoice_order_id=kwargs.get('object_id'),
-                                              company_id=request.session.get('company_id'))
-
+                                            company_id=request.session.get('company_id'))
             print(data)
             pdf = render_to_pdf('SMdashboard/pdf_template.html', data)
             return HttpResponse(pdf, content_type='application/pdf')
@@ -1657,13 +1656,29 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
             issue_date = invoiceForm.cleaned_data.get('issue_date')
             place_of_supply = invoiceForm.cleaned_data.get('place_of_supply')
             payment_terms = invoiceForm.cleaned_data.get('payment_terms')
+            clean_amount = sum(map(lambda x: x.cleaned_data.get('unit_price') *
+                                             x.cleaned_data.get('quantity'), invoiceLineFormSet))
+            discount_amount = sum(map(lambda x: (x.cleaned_data.get('unit_price') *
+                                                 x.cleaned_data.get('discount') / 100) *
+                                                x.cleaned_data.get('quantity'), invoiceLineFormSet))
+            tax_amount = sum(map(lambda x: (x.cleaned_data.get('unit_price') *
+                                            int(x.cleaned_data.get('tax')) / 100) *
+                                           x.cleaned_data.get('quantity'), invoiceLineFormSet))
+            total = clean_amount - discount_amount + tax_amount
+
+            print(clean_amount)
+            print(discount_amount)
+            print(tax_amount)
+            print(total)
 
             invoice_obj = self.model.objects.create(client=client, ship_to=ship_to, issue_date=issue_date,
                                                     place_of_supply=place_of_supply, payment_terms=payment_terms,
                                                     company_id=request.session.get("company_id"),
-                                                    # due_date=due_date,
-                                                    grand_total=sum(map(lambda x: x.cleaned_data.get('unit_price') * x.cleaned_data.get('quantity'),
-                                                                        invoiceLineFormSet))
+                                                    clean_amount=clean_amount,
+                                                    discount_amount=discount_amount,
+                                                    tax_amount=tax_amount,
+                                                    grand_total=total
+
                                                     )
             # lines = []
             for invoicelines_form in invoiceLineFormSet:
