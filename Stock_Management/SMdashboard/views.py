@@ -1606,9 +1606,8 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
 
     def get_data(self, request, company_id=None, *args, **kwargs):
         if 'product_detail' in kwargs:
-            data = Product.objects.filter(pk=request.POST.get('product_detail'), company_id=company_id).values('pk',
-                                                                                                               'type',
-                                                                                                               'unit_price')
+            data = Product.objects.filter(pk=request.POST.get('product_detail'), company_id=company_id).values(
+                'pk', 'type', 'unit_price')
             return list(data)
         data = self.model.objects.filter(company_id=company_id).values('pk', 'number').annotate(
             client=F('client__name'),
@@ -1660,7 +1659,7 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
                                                  x.cleaned_data.get('discount') / 100) *
                                                 x.cleaned_data.get('quantity'), invoiceLineFormSet))
             tax_amount = sum(map(lambda x: (x.cleaned_data.get('unit_price') *
-                                           int(x.cleaned_data.get('tax')) / 100) *
+                                            int(x.cleaned_data.get('tax')) / 100) *
                                            x.cleaned_data.get('quantity'), invoiceLineFormSet))
             total = clean_amount - discount_amount + tax_amount
 
