@@ -3,7 +3,7 @@ from django.db.models import Value as V
 from django.db.models.functions import Cast, Concat, Coalesce
 from django.shortcuts import redirect
 from SM.company_data import Client, Vendor, CompanyDetail
-from SM import employee_data, enquiry, product, service, dayBook, amc, quotation
+from SM import employee_data, enquiry, product, service, dayBook, amc, quotation, invoice
 
 
 
@@ -421,6 +421,8 @@ class QuotationReport:
 
     def get_data(self, request, quotation_order_id=None, company_id=None):
         data = {}
+        print(quotation_order_id)
+        print(company_id)
         quotation_order_lines = quotation.Quotation_lines.objects.annotate(product_name=F('product__name'))
         print(quotation_order_lines)
         record = quotation.Quotation.objects.filter(pk=quotation_order_id, company_id=company_id).annotate(
@@ -438,13 +440,51 @@ class QuotationReport:
                 'quotation_issue_date': each.quotation_issue_date,
                 'quotation_due_date': each.quotation_due_date,
                 'quotation_client': each.quotation_client,
-                'number':each.number,
+                'number': each.number,
                 'ship_to': each.ship_to,
                 'grand_total': each.grand_total,
                 'pk': each.pk,
-                'quotation_order_lines': [{'product_name':line.product_name, 'uom':line.uom,
-                                          'quantity':line.quantity, 'unit_price': line.unit_price
+                'quotation_order_lines': [{'product_name': line.product_name, 'uom': line.uom,
+                                          'quantity': line.quantity, 'unit_price': line.unit_price
                                            }for line in quotation_order_lines]
             })
         print(data)
+        return data
+
+
+class InvoiceReport:
+
+    def get_data(self, request, invoice_order_id=None, company_id=None):
+        data = {}
+        print(invoice_order_id)
+        print(company_id)
+        invoice_order_lines = invoice.InvoiceLines.objects.annotate(product_name=F('product__name'))
+        print(invoice_order_lines)
+        record = invoice.Invoice.objects.filter(pk=invoice_order_id, company_id=company_id).annotate(
+            invoice_issue_date=ExpressionWrapper(Func(F('issue_date'), V("DD/MM/YYYY"), function='TO_CHAR'),
+                                                   output_field=CharField()),
+            invoice_due_date=ExpressionWrapper(Func(F('due_date'), V("DD/MM/YYYY"), function='TO_CHAR'),
+                                                 output_field=CharField()),
+            invoice_client=F('client__name'),
+        ).prefetch_related(Prefetch('invoicelines_set', queryset=invoice_order_lines,
+                                    to_attr='invoice_order_lines'))
+
+        for each in record:
+            data.update({
+                'invoice_issue_date': each.invoice_issue_date,
+                'invoice_due_date': each.invoice_due_date,
+                'invoice_client': each.invoice_client,
+                'number': each.number,
+                'ship_to': each.ship_to,
+                'place_of_supply': each.place_of_supply,
+                'payment_terms': each.payment_terms,
+                'grand_total': each.grand_total,
+
+                'pk': each.pk,
+                'invoice_order_lines': [{'product_name': line.product_name,
+                                         'uom':line.uom,
+                                          'quantity': line.quantity,
+                                          'unit_price': line.unit_price} for line in
+                                         each.invoice_order_lines]
+            })
         return data

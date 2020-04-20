@@ -1544,6 +1544,7 @@ class QuotationView(OwnerRequiredMinxin, ListView):
                            'quotation_order_lines': QuotationLineFormSetData})
 
         elif 'object_id' in kwargs:
+            print(kwargs.get('object_id'))
             from .reports import QuotationReport
             data = QuotationReport().get_data(request, quotation_order_id=kwargs.get('object_id'),
                                               company_id=request.session.get('company_id'))
@@ -1622,6 +1623,13 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
             return render(request, self.formTemplate,
                           {'invoice_maker': self.invoiceForm(),
                            'invoice_lines': InvoiceLineFormSetData})
+
+        elif 'object_id' in kwargs:
+            print(kwargs.get('object_id'))
+            from .reports import InvoiceReport
+            data = InvoiceReport().get_data(request, invoice_order_id=kwargs.get('object_id'),
+                                              company_id=request.session.get('company_id'))
+            print(data)
 
         company_id = request.session.get('company_id')
         data = self.get_data(request, user_id=request.user.id, company_id=company_id)
