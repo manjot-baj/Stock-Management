@@ -445,7 +445,8 @@ class QuotationReport:
                 'grand_total': each.grand_total,
                 'pk': each.pk,
                 'quotation_order_lines': [{'product_name': line.product_name, 'uom': line.uom,
-                                          'quantity': line.quantity, 'unit_price': line.unit_price
+                                          'quantity': line.quantity, 'unit_price': line.unit_price,
+
                                            }for line in quotation_order_lines]
             })
         print(data)
@@ -484,7 +485,8 @@ class InvoiceReport:
                 'invoice_order_lines': [{'product_name': line.product_name,
                                          'uom':line.uom,
                                           'quantity': line.quantity,
-                                          'unit_price': line.unit_price} for line in
+                                          'unit_price': line.unit_price,
+                                         'total': line.quantity * line.unit_price} for line in
                                          each.invoice_order_lines]
             })
         return data

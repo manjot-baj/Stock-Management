@@ -1625,11 +1625,15 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
                            'invoice_lines': InvoiceLineFormSetData})
 
         elif 'object_id' in kwargs:
+            from .hmToPd import render_to_pdf
             print(kwargs.get('object_id'))
             from .reports import InvoiceReport
             data = InvoiceReport().get_data(request, invoice_order_id=kwargs.get('object_id'),
                                               company_id=request.session.get('company_id'))
+
             print(data)
+            pdf = render_to_pdf('SMdashboard/pdf_template.html', data)
+            return HttpResponse(pdf, content_type='application/pdf')
 
         company_id = request.session.get('company_id')
         data = self.get_data(request, user_id=request.user.id, company_id=company_id)
@@ -1658,8 +1662,8 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
                                                     place_of_supply=place_of_supply, payment_terms=payment_terms,
                                                     company_id=request.session.get("company_id"),
                                                     # due_date=due_date,
-                                                    # grand_total=sum(map(lambda x: x.cleaned_data.get('unit_price') * x.cleaned_data.get('quantity'),
-                                                    #                     quotationLineFormSet))
+                                                    grand_total=sum(map(lambda x: x.cleaned_data.get('unit_price') * x.cleaned_data.get('quantity'),
+                                                                        invoiceLineFormSet))
                                                     )
             # lines = []
             for invoicelines_form in invoiceLineFormSet:
