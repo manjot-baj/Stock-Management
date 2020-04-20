@@ -22,6 +22,9 @@ class Invoice(BaseModel):
     issue_date = models.DateTimeField(default=timezone.now, null=True, blank=False)
     payment_terms = models.CharField(max_length=50, choices=PaymentStatus, null=True, blank=False)
     due_date = models.DateTimeField(null=True, blank=True)
+    clean_amount = models.DecimalField(decimal_places=2, max_digits=10, default=0.00, null=True, blank=True)
+    discount_amount = models.DecimalField(decimal_places=2, max_digits=10, default=0.00, null=True, blank=True)
+    tax_amount = models.DecimalField(decimal_places=2, max_digits=10, default=0.00, null=True, blank=True)
     grand_total = models.DecimalField(decimal_places=2, max_digits=10, default=0.00, null=True, blank=True)
     company = models.ForeignKey(CompanyDetail, on_delete=models.SET_NULL, null=True, blank=False)
     with_gst = models.BooleanField(null=True, blank=True)
@@ -93,7 +96,7 @@ class InvoiceLines(BaseModel):
     unit_price = models.FloatField(null=True, blank=False, default=0.0)
     discount = models.PositiveIntegerField(null=True, blank=False,
                                            default=0, validators=[MaxValueValidator(100), MinValueValidator(0)])
-    tax = models.CharField(choices=TaxType, max_length=50, null=True, blank=False)
+    tax = models.CharField(choices=TaxType, default=0, max_length=50, null=True, blank=False)
 
     class Meta:
         db_table = 'Invoice_Lines'
