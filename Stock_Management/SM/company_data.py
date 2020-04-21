@@ -1,6 +1,7 @@
 from django.db import models
 
 from .models import BaseModel
+from .choices import Places, PaymentStatus, Prices, TaxType, TypeUOM, WithGstOrNot
 
 
 class CompanyDetail(BaseModel):
@@ -8,7 +9,7 @@ class CompanyDetail(BaseModel):
     country = models.CharField(max_length=100, null=True, blank=True)
     address = models.TextField(max_length=200, null=True, blank=True)
     city = models.CharField(max_length=100, null=True, blank=True)
-    state = models.CharField(max_length=100, null=True, blank=True)
+    state = models.CharField(max_length=50, choices=Places, null=True, blank=False)
     pin_code = models.CharField(max_length=100, null=True, blank=True)
     phone = models.CharField(max_length=100, null=True, blank=True)
     email_id = models.CharField(max_length=100, null=True, blank=True)
@@ -59,10 +60,10 @@ class Client(BaseModel):
     TIN = models.CharField(max_length=100, null=True, blank=True)
     email = models.CharField(max_length=100, null=True, blank=True)
     phone = models.CharField(max_length=100, null=True, blank=False)
-    billing_address = models.CharField(max_length=100, null=True, blank=True)
+    billing_address = models.CharField(max_length=50, choices=Places, null=True, blank=False)
     billing_zip = models.CharField(max_length=100, null=True, blank=True)
     billing_city = models.CharField(max_length=100, null=True, blank=True)
-    billing_state = models.CharField(max_length=100, null=True, blank=True)
+    billing_state = models.CharField(max_length=50, choices=Places, null=True, blank=False)
     billing_country = models.CharField(max_length=100, null=True, blank=True)
     shipping_address = models.CharField(max_length=100, null=True, blank=True)
     shipping_zip = models.CharField(max_length=100, null=True, blank=True)

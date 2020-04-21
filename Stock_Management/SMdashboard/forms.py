@@ -40,7 +40,7 @@ class ClientAddForm(forms.ModelForm):
             'billing_address': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'billing_zip': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'billing_city': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-            'billing_state': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'billing_state': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'billing_country': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'shipping_address': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'shipping_zip': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
@@ -72,7 +72,7 @@ class ClientEditForm(forms.ModelForm):
             'billing_address': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'billing_zip': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'billing_city': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-            'billing_state': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'billing_state': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'billing_country': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'shipping_address': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'shipping_zip': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
@@ -396,13 +396,13 @@ class InvoiceForm(forms.ModelForm):
     class Meta:
         model = invoice.Invoice
 
-        fields = ['issue_date', 'client', 'ship_to', 'place_of_supply', 'payment_terms', 'gst']
+        fields = ['issue_date', 'client', 'ship_to', 'place_of_supply', 'payment_terms', 'gst', 'centralGst', 'stateGst', 'internationalGst']
 
         widgets = {
             'issue_date': forms.HiddenInput(attrs={'class': 'form-control-sm'}),
             'client': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'ship_to': forms.Textarea(attrs={'rows': 10, 'cols': 60, 'class': 'form-control-sm'}),
-            'place_of_supply': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'place_of_supply': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'payment_terms': forms.Select(attrs={'class': 'form-control form-control-sm'}),
             'gst': forms.Select(attrs={'class': 'form-control form-control-sm'}),
         }

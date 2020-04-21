@@ -153,7 +153,7 @@ class InvoiceAdminInline(admin.TabularInline):
 class InvoiceAdmin(admin.ModelAdmin):
     list_display = ['no', 'number', 'client', 'place_of_supply', 'issue_date', 'due_date', 'clean_amount',
                     'discount_amount', 'tax_amount', 'grand_total', 'company',
-                    'with_gst']
+                    'with_gst', 'centralGst', 'stateGst', 'internationalGst', 'gst']
     list_filter = ['client', 'company', 'with_gst']
     search_fields = ['number', 'client', 'place_of_supply']
     inlines = [InvoiceAdminInline]
@@ -164,7 +164,8 @@ class InvoiceAdmin(admin.ModelAdmin):
             ('number', 'issue_date', 'due_date'),
             ('client', 'ship_to', 'place_of_supply'),
             ('payment_terms', 'clean_amount', 'discount_amount', 'tax_amount', 'grand_total'),
-            ('company', 'with_gst'),
+            ('centralGst', 'stateGst', 'internationalGst'),
+            ('company', 'with_gst', 'gst'),
         ), }),
     ]
 

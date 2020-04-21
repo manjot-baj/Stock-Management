@@ -18,7 +18,7 @@ class Invoice(BaseModel):
     number = models.CharField(null=True, blank=True, max_length=100)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)
     ship_to = models.TextField(null=True, blank=False, max_length=250)
-    place_of_supply = models.CharField(max_length=50, choices=Places, null=True, blank=False)
+    place_of_supply = models.CharField(null=True, blank=False, max_length=100)
     issue_date = models.DateTimeField(default=timezone.now, null=True, blank=False)
     payment_terms = models.CharField(max_length=50, choices=PaymentStatus, null=True, blank=False)
     due_date = models.DateTimeField(null=True, blank=True)
@@ -29,6 +29,9 @@ class Invoice(BaseModel):
     company = models.ForeignKey(CompanyDetail, on_delete=models.SET_NULL, null=True, blank=False)
     with_gst = models.BooleanField(null=True, blank=True)
     gst = models.CharField(choices=WithGstOrNot, max_length=20, null=True, blank=False)
+    centralGst = models.DecimalField(decimal_places=2, max_digits=10, default=0.00, null=True, blank=True)
+    stateGst = models.DecimalField(decimal_places=2, max_digits=10, default=0.00, null=True, blank=True)
+    internationalGst = models.DecimalField(decimal_places=2, max_digits=10, default=0.00, null=True, blank=True)
 
     def __str__(self):
         return self.no

@@ -1609,6 +1609,13 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
             data = Product.objects.filter(pk=request.POST.get('product_detail'), company_id=company_id).values(
                 'pk', 'type', 'unit_price')
             return list(data)
+
+        if 'client_billing_state_detail' in kwargs:
+            print(request.POST.get('client_billing_state_detail'))
+            data = Client.objects.filter(pk=request.POST.get('client_billing_state_detail'), company_id=company_id).values(
+                'pk', 'billing_state', 'billing_address')
+            return list(data)
+
         data = self.model.objects.filter(company_id=company_id).values('pk', 'number').annotate(
             client=F('client__name'),
             date_issue=ExpressionWrapper(Func(F('issue_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
@@ -1630,6 +1637,45 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
             from .reports import InvoiceReport
             data = InvoiceReport().get_data(request, invoice_order_id=kwargs.get('object_id'),
                                             company_id=request.session.get('company_id'))
+
+            company_details = CompanyDetail.objects.filter(pk=request.session.get('company_id')).values('pk',
+                    'name','state', 'address', 'city', 'pin_code', 'country', 'phone', 'email_id', 'website', 'GSTIN',
+                    'taxation_type', 'tax_inclusive', 'TIN', 'VAT', 'service_tax_no', 'CST_tin_no',
+                                 'PAN', 'additional_details', 'currency').annotate(
+
+                # company_address=Concat(
+                #     F('address'), Value(', '), F('city'), Value(', '),
+                #     F('state'), Value(', '),
+                #     F('pin_code'), Value(', '), F('country'),
+                #     Value(', '), F('phone'), Value(', '), F('email_id'),
+                #     Value(', '), F('website'),
+                #     output_field=CharField())
+            )
+            # company = list(company_details)
+
+
+            data.update({
+                'company_name': company_details[0]['name'],
+                'company_country': company_details[0]['country'],
+                'company_address': company_details[0]['address'],
+                'company_city': company_details[0]['city'],
+                'company_state': company_details[0]['state'],
+                'company_pin_code': company_details[0]['pin_code'],
+                'company_phone': company_details[0]['phone'],
+                'company_email_id': company_details[0]['email_id'],
+                'company_website': company_details[0]['website'],
+                'company_GSTIN': company_details[0]['GSTIN'],
+                'company_taxation_type': company_details[0]['taxation_type'],
+                'company_tax_inclusive': company_details[0]['tax_inclusive'],
+                'company_TIN': company_details[0]['TIN'],
+                'company_VAT': company_details[0]['VAT'],
+                'company_service_tax_no': company_details[0]['service_tax_no'],
+                'company_CST_tin_no': company_details[0]['CST_tin_no'],
+                'company_PAN': company_details[0]['PAN'],
+                'company_additional_details': company_details[0]['additional_details'],
+                'company_currency': company_details[0]['currency'],
+                })
+
             print(data)
             pdf = render_to_pdf('SMdashboard/pdf_template.html', data)
             return HttpResponse(pdf, content_type='application/pdf')
@@ -1644,6 +1690,12 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
             data = self.get_data(request, company_id=request.session.get('company_id'), product_detail='')
             print(data)
             return JsonResponse(data, safe=False)
+
+        if 'client_billing_state_detail' in kwargs:
+            data = self.get_data(request, company_id=request.session.get('company_id'), client_billing_state_detail='')
+            print(data)
+            return JsonResponse(data, safe=False)
+
         invoiceForm = InvoiceForm(request.POST)
         invoiceLineFormSet = InvoiceLineFormSet(request.POST)
         # print(invoiceForm.is_valid())
@@ -1656,6 +1708,7 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
             issue_date = invoiceForm.cleaned_data.get('issue_date')
             place_of_supply = invoiceForm.cleaned_data.get('place_of_supply')
             payment_terms = invoiceForm.cleaned_data.get('payment_terms')
+            gst = invoiceForm.cleaned_data.get('gst')
             clean_amount = sum(map(lambda x: x.cleaned_data.get('unit_price') *
                                              x.cleaned_data.get('quantity'), invoiceLineFormSet))
             discount_amount = sum(map(lambda x: (x.cleaned_data.get('unit_price') *
@@ -1671,13 +1724,46 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
             print(tax_amount)
             print(total)
 
+            company_details = CompanyDetail.objects.filter(pk=request.session.get('company_id')).values('pk',
+                        'name','state').annotate(
+
+                company_address=Concat(
+                    F('address'), Value(', '), F('city'), Value(', '),
+                    F('state'), Value(', '),
+                    F('pin_code'), Value(', '), F('country'),
+                    Value(', '), F('phone'), Value(', '), F('email_id'),
+                    Value(', '), F('website'),
+                    output_field=CharField())
+            )
+            company = list(company_details)
+            print(company)
+            print(company[0]['state'])
+            print(place_of_supply)
+
+            if company[0]['state'] == place_of_supply:
+                print("okkkk hai")
+                centralGst = tax_amount/2
+                stateGst = tax_amount/2
+            else:
+                centralGst = 0.0
+                stateGst = 0.0
+
+            if company[0]['state'] != place_of_supply:
+                internationalGst = tax_amount
+            else:
+                internationalGst = 0.0
+
             invoice_obj = self.model.objects.create(client=client, ship_to=ship_to, issue_date=issue_date,
                                                     place_of_supply=place_of_supply, payment_terms=payment_terms,
                                                     company_id=request.session.get("company_id"),
                                                     clean_amount=clean_amount,
                                                     discount_amount=discount_amount,
                                                     tax_amount=tax_amount,
-                                                    grand_total=total
+                                                    grand_total=total,
+                                                    centralGst =centralGst,
+                                                    stateGst =stateGst,
+                                                    internationalGst =internationalGst,
+                                                    gst=gst
 
                                                     )
             # lines = []

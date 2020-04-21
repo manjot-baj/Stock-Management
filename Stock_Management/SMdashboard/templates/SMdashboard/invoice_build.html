@@ -27,7 +27,7 @@
                     </div>
                     <div class="form-group row">
                         <label class="control-label col-md-1"><strong>{{invoice_maker.client.label}}</strong></label>
-                        <div class="col-md-2">
+                        <div class="col-md-2" onChange="my_client()">
                             {{invoice_maker.client}}
                         </div>
                     </div>
@@ -55,7 +55,7 @@
                             {{invoice_maker.gst}}
                         </div>
                     </div>
-                    <label for="id_some"></label>
+<!--                    <label for="id_some"></label>-->
                     {{ invoice_lines.management_form }}
                     <div id="form_set">
                         {% for invoiceLineForm in invoice_lines %}
@@ -79,7 +79,9 @@
                                 <td>{{invoiceLineForm.uom}}</td>
                                 <td>{{invoiceLineForm.unit_price}}</td>
                                 <td>{{invoiceLineForm.discount}}</td>
+
                                 <td>{{invoiceLineForm.tax}}</td>
+
                                 <td>
                                     <button type="button"
                                             class="remove-form-row btn btn-secondary fa fa-trash"></button>
@@ -119,7 +121,9 @@
             <td>{{invoice_lines.empty_form.uom}}</td>
             <td>{{invoice_lines.empty_form.unit_price}}</td>
             <td>{{invoice_lines.empty_form.discount}}</td>
+
             <td>{{invoice_lines.empty_form.tax}}</td>
+
             <td>
                 <button type="button" class="remove-form-row btn btn-secondary fa fa-trash"></button>
             </td>
@@ -223,6 +227,12 @@ $(document).on('click', '.remove-form-row', function(e){
 <!--        })-->
 <!--     }-->
 
+var x = 'Yes'
+function myFunction() {
+    x = document.getElementById("id_gst").value;
+ }
+
+
 var k = 0;
 function my_function(){
 
@@ -239,8 +249,19 @@ function my_function(){
                     console.log(data[0]['unit_price']);
                     $(`#id_form-${k}-unit_price`).val(data[0]['unit_price'])
                     $('label[for="id_some"]').html(data[0]['unit_price']);
+                    $(`#id_form-0-discount`).val(0)
                     console.log(`Fifteen is ${k}.`);
-                    k+= 1;
+<!--                    k+= 1;-->
+                    console.log(x)
+                    if (x == "Yes"){
+                            $(`#id_form-${k}-tax`).show();
+                            }
+                        else if (x == "No"){
+
+                        $(`#id_form-${k}-tax`).hide();
+
+                        }
+                        k+= 1;
             }
             }
         })
@@ -248,17 +269,33 @@ function my_function(){
 
      }
 
-function myFunction() {
-    var x = document.getElementById("id_gst").value;
-    if (x == "Yes"){
-        document.getElementById("id_form-0-tax").style.visibility = "visible";
-    }
-     else if (x == "No"){
-        document.getElementById("id_form-0-tax").style.visibility = "hidden";
 
-    }
 
- }
+function my_client(){
+
+        var client_billing_state_detail = $(`#id_client`).val()
+        console.log(client_billing_state_detail)
+
+        $.ajax({
+            url: '{% url 'client_billing_state_detail' %}',
+            method: 'POST',
+            data: {'client_billing_state_detail': client_billing_state_detail},
+            headers: {"X-CSRFToken": '{{ csrf_token }}'},
+            success: function(data, status, jqXHR){
+                console.log(status, data)
+                if(jqXHR.status == 200){
+                    console.log(data[0]['billing_state']);
+                    $(`#id_place_of_supply`).val(data[0]['billing_state'])
+                    $(`#id_ship_to`).val(data[0]['billing_address'])
+
+            }
+            }
+        })
+
+
+     }
+
+
 
 </script>
 {% endblock %}

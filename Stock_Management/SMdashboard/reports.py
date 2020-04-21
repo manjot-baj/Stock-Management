@@ -480,6 +480,11 @@ class InvoiceReport:
                 'place_of_supply': each.place_of_supply,
                 'payment_terms': each.payment_terms,
                 'grand_total': each.grand_total,
+                'centralGst': each.centralGst,
+                'stateGst': each.stateGst,
+                'internationalGst': each.internationalGst,
+                'gst': each.gst,
+                'tax_amount': each.tax_amount,
 
                 'pk': each.pk,
                 'invoice_order_lines': [{'product_name': line.product_name,
