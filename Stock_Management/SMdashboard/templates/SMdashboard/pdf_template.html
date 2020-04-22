@@ -1,3 +1,5 @@
+{% load static %}
+<html>
 <head>
 <style>
     @page {
@@ -21,7 +23,11 @@
     <!-- Content for Static Frame 'header_frame' -->
     <div id="header_content">
     	<h3>{{company_name}}</h3>
-<!--        <img src="pic_trulli.jpg" alt="Italian Trulli">-->
+        <img src="/static/http://127.0.0.1:8000/uploads/profile1.jpg"/>
+		<div>
+			<img src="http://127.0.0.1:8000/uploads/profile1.jpg.jpg" alt="img">
+		</div>
+
 
     </div>
 
@@ -55,6 +61,19 @@
     		<th>Product</th>
     		<th>Price</th>
     		<th>Quantity</th>
+			{% if place_of_supply == company_state %}
+				{% if gst == 'Yes' %}
+    				<th>CGST</th>
+    				<th>SGST</th>
+				{% endif %}
+
+
+			{% else %}
+				{% if gst == 'Yes' %}
+    				<th>IGST</th>
+
+				{% endif %}
+			{% endif %}
     		<th>Total</th>
     	</tr>
         {% for line in invoice_order_lines %}
@@ -63,7 +82,31 @@
     		<td align="center">{{line.product_name}}</td>
     		<td align="center">{{line.unit_price}}</td>
     		<td align="center">{{line.quantity}}</td>
-    		<td align="center">{{line.total}}</td>
+			{% if place_of_supply == company_state %}
+				{% if gst == 'Yes' %}
+    				<td align="center">{{line.line_centralGst}}</td>
+					<td align="center">{{line.line_stateGst}}</td>
+				{% endif %}
+
+
+			{% else %}
+				{% if gst == 'Yes' %}
+    				<td align="center">{{line.line_internationalGst}}</td>
+
+				{% endif %}
+			{% endif %}
+
+
+			{% if gst == 'Yes' %}
+    		<td align="center">{{line.total_with_gst}}</td>
+			{% endif %}
+
+			{% if gst == 'No' %}
+    		<td align="center">{{line.total_without_gst}}</td>
+			{% endif %}
+
+
+
     	</tr>
         {% endfor %}
 
@@ -71,30 +114,42 @@
 			<td align="center"></td>
     		<td align="center"></td>
     		<td align="center"></td>
-			<td align="center"><Strong>CGST: {{centralGst}}</Strong></td>
+			{% if place_of_supply == company_state %}
+				{% if gst == 'Yes' %}
+					<td align="center"><Strong>Total CGST: {{centralGst}}</Strong></td>
+					<td align="center"><Strong>Total SGST: {{stateGst}}</Strong></td>
+				{% endif %}
+
+
+			{% else %}
+				{% if gst == 'Yes' %}
+				<td align="center"><Strong>Total IGST: {{internationalGst}}</Strong></td>
+				{% endif %}
+			{% endif %}
+			<td align="center"><Strong>Total: {{grand_total}}</Strong></td>
 
     	</tr>
-		<tr>
-			<td align="center"></td>
-    		<td align="center"></td>
-    		<td align="center"></td>
-			<td align="center"><Strong>SGST: {{stateGst}}</Strong></td>
+<!--		<tr>-->
+<!--			<td align="center"></td>-->
+<!--    		<td align="center"></td>-->
+<!--    		<td align="center"></td>-->
+<!--			<td align="center"><Strong>SGST: {{stateGst}}</Strong></td>-->
 
-    	</tr>
-		<tr>
-			<td align="center"></td>
-    		<td align="center"></td>
-    		<td align="center"></td>
-			<td align="center"><Strong>IGST: {{internationalGst}}</Strong></td>
+<!--    	</tr>-->
+<!--		<tr>-->
+<!--			<td align="center"></td>-->
+<!--    		<td align="center"></td>-->
+<!--    		<td align="center"></td>-->
+<!--			<td align="center"><Strong>IGST: {{internationalGst}}</Strong></td>-->
 
-    	</tr>
-		<tr>
-			<td align="center"></td>
-    		<td align="center"></td>
-    		<td align="center"></td>
-			<td align="center"><Strong>Total Tax: {{tax_amount}}</Strong></td>
+<!--    	</tr>-->
+<!--		<tr>-->
+<!--			<td align="center"></td>-->
+<!--    		<td align="center"></td>-->
+<!--    		<td align="center"></td>-->
+<!--			<td align="center"><Strong>Total Tax: {{tax_amount}}</Strong></td>-->
 
-    	</tr>
+<!--    	</tr>-->
 
     </table>
 
@@ -105,10 +160,10 @@
     <table>
     	<tr>
             <th align="left"><strong>Sign</strong></th>
-            <th>    </th>
-    		<th><strong>Total: {{grand_total}}</strong></th>
+            <th>  </th>
+    		<th><strong>Grand Total: {{grand_total}}</strong></th>
 
-
+			
     	</tr>
 	</table>
 </body>

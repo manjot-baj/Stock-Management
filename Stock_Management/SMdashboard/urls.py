@@ -82,5 +82,8 @@ urlpatterns = [
                   path('client_billing_state_detail/', views.InvoiceView.as_view(), {'client_billing_state_detail': ''},
                        name="client_billing_state_detail"),
 
+                  path('invoice_without_gst/', views.InvoiceView.as_view(), {'invoice_without_gst': ''},
+                       name="invoice_without_gst"),
+
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

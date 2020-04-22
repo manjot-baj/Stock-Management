@@ -24,6 +24,7 @@ class CompanyDetail(BaseModel):
     PAN = models.CharField(max_length=100, null=True, blank=True)
     additional_details = models.TextField(max_length=200, null=True, blank=True)
     currency = models.CharField(max_length=100, null=True, blank=True)
+    photo = models.ImageField(default='/uploads/default_service.jpg')
 
     def __str__(self):
         return self.name
@@ -60,10 +61,10 @@ class Client(BaseModel):
     TIN = models.CharField(max_length=100, null=True, blank=True)
     email = models.CharField(max_length=100, null=True, blank=True)
     phone = models.CharField(max_length=100, null=True, blank=False)
-    billing_address = models.CharField(max_length=50, choices=Places, null=True, blank=False)
+    billing_address = models.CharField(max_length=100, null=True, blank=True)
     billing_zip = models.CharField(max_length=100, null=True, blank=True)
     billing_city = models.CharField(max_length=100, null=True, blank=True)
-    billing_state = models.CharField(max_length=50, choices=Places, null=True, blank=False)
+    billing_state = models.CharField(max_length=100, null=True, blank=True)
     billing_country = models.CharField(max_length=100, null=True, blank=True)
     shipping_address = models.CharField(max_length=100, null=True, blank=True)
     shipping_zip = models.CharField(max_length=100, null=True, blank=True)

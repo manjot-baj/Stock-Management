@@ -30,6 +30,7 @@
                             <th> Invoice No</th>
                             <th>Client</th>
                             <th>Due Date</th>
+                            <th>With GST</th>
                         </tr>
                         </thead>
                         <tbody></tbody>
@@ -83,31 +84,40 @@ var table = $('#sampleTable').DataTable({
   { data: "number"},
   { data: "client"},
    { data: "date_due"},
+   { data: "gst"},
   ],
 
-<!--  dom: "<'row'"+-->
-<!--                "<'col-sm-4 col-md-4'l>"+-->
-<!--                "<'col-sm-4 col-md-4 text-center'B>"+-->
-<!--                "<'col-sm-4 col-md-4'f>"+-->
-<!--             ">"+-->
-<!--             "<'row dt-table'"+-->
-<!--                "<'col-sm-12 col-md-12'tr>"+-->
-<!--             ">"+-->
-<!--             "<'row'"+-->
-<!--                "<'col-sm-12 col-md-5'i>"+-->
-<!--                "<'col-sm-12 col-md-7'p>"+-->
-<!--             ">",-->
-<!--  buttons: [-->
+  dom: "<'row'"+
+                "<'col-sm-4 col-md-4'l>"+
+                "<'col-sm-4 col-md-4 text-center'B>"+
+                "<'col-sm-4 col-md-4'f>"+
+             ">"+
+             "<'row dt-table'"+
+                "<'col-sm-12 col-md-12'tr>"+
+             ">"+
+             "<'row'"+
+                "<'col-sm-12 col-md-5'i>"+
+                "<'col-sm-12 col-md-7'p>"+
+             ">",
+  buttons: [
 
-<!--            {-->
-<!--				text: '<i class="fa fa-plus" aria-hidden="true"></i>Add',-->
-<!--				titleAttr: 'Add',-->
-<!--				action: function () {-->
-<!--				console.log(window.location.host)-->
-<!--				$(location).attr('href','http://'+window.location.host+'{% url 'enquiry_form'%}')-->
-<!--				}-->
-<!--			},-->
-<!--  ],-->
+            {
+				text: '<i class="fa fa" aria-hidden="true"></i>without GST',
+				titleAttr: 'Add',
+				action: function () {
+				console.log(window.location.host)
+				$(location).attr('href','http://'+window.location.host+'{% url 'invoice_without_gst'%}')
+				}
+			},
+			{
+				text: '<i class="fa fa" aria-hidden="true"></i>With GST',
+				titleAttr: 'Add',
+				action: function () {
+				console.log(window.location.host)
+				$(location).attr('href','http://'+window.location.host+'{% url 'invoice_table'%}')
+				}
+			},
+  ],
 
 
   columnDefs: [

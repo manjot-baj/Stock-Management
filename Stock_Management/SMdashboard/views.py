@@ -1616,7 +1616,17 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
                 'pk', 'billing_state', 'billing_address')
             return list(data)
 
-        data = self.model.objects.filter(company_id=company_id).values('pk', 'number').annotate(
+        if 'invoice_without_gst' in kwargs:
+            data = self.model.objects.filter(company_id=company_id, gst='No').values('pk', 'number', 'gst').annotate(
+                client=F('client__name'),
+                date_issue=ExpressionWrapper(Func(F('issue_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                             output_field=CharField()),
+                date_due=ExpressionWrapper(Func(F('due_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                           output_field=CharField()),
+            )
+            return list(data)
+
+        data = self.model.objects.filter(company_id=company_id, gst='Yes').values('pk', 'number', 'gst').annotate(
             client=F('client__name'),
             date_issue=ExpressionWrapper(Func(F('issue_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
                                          output_field=CharField()),
@@ -1641,7 +1651,7 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
             company_details = CompanyDetail.objects.filter(pk=request.session.get('company_id')).values('pk',
                     'name','state', 'address', 'city', 'pin_code', 'country', 'phone', 'email_id', 'website', 'GSTIN',
                     'taxation_type', 'tax_inclusive', 'TIN', 'VAT', 'service_tax_no', 'CST_tin_no',
-                                 'PAN', 'additional_details', 'currency').annotate(
+                                 'PAN', 'additional_details', 'currency', 'photo').annotate(
 
                 # company_address=Concat(
                 #     F('address'), Value(', '), F('city'), Value(', '),
@@ -1674,11 +1684,18 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
                 'company_PAN': company_details[0]['PAN'],
                 'company_additional_details': company_details[0]['additional_details'],
                 'company_currency': company_details[0]['currency'],
+                'company_photo': company_details[0]['photo'],
                 })
 
             print(data)
             pdf = render_to_pdf('SMdashboard/pdf_template.html', data)
             return HttpResponse(pdf, content_type='application/pdf')
+
+        elif 'invoice_without_gst' in kwargs:
+            company_id = request.session.get('company_id')
+            data = self.get_data(request, user_id=request.user.id, company_id=company_id, invoice_without_gst='' )
+            print(data)
+            return render(request, self.template_name, {'data': data})
 
         company_id = request.session.get('company_id')
         data = self.get_data(request, user_id=request.user.id, company_id=company_id)

@@ -491,7 +491,11 @@ class InvoiceReport:
                                          'uom':line.uom,
                                           'quantity': line.quantity,
                                           'unit_price': line.unit_price,
-                                         'total': line.quantity * line.unit_price} for line in
+                                         'total_without_gst': line.quantity * line.unit_price,
+                                         'total_with_gst': line.quantity * line.unit_price + line.quantity * (line.unit_price * (int(line.tax))/100),
+                                         'line_centralGst': (line.quantity * (line.unit_price * (int(line.tax))/100))/2,
+                                         'line_stateGst': (line.quantity * (line.unit_price * (int(line.tax))/100))/2,
+                                         'line_internationalGst': line.quantity * (line.unit_price * (int(line.tax))/100),} for line in
                                          each.invoice_order_lines]
             })
         return data
