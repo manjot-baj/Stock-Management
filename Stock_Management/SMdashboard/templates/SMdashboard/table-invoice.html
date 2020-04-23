@@ -143,6 +143,26 @@ var table = $('#sampleTable').DataTable({
       	autoclose: true,
       	todayHighlight: true
       });
+      function filterByDate(){
+        var fromDate = $('#fromDate').val()
+        var toDate = $('#toDate').val()
+        $.ajax({
+            url: '{% url 'filter_invoice_date' %}',
+            method: 'POST',
+            data: {'fromDate': fromDate, 'toDate': toDate},
+            headers: {"X-CSRFToken": '{{ csrf_token }}'},
+            success: function(data, status, jqXHR){
+                console.log(status, data)
+                if(jqXHR.status == 200){
+                    table.clear();
+                    table.rows.add(data).draw();
+                    console.log(data);
+
+            }
+            }
+        })
+     }
+
 </script>
 {% endblock %}
 

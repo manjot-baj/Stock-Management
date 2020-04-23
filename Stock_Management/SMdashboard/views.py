@@ -1605,6 +1605,23 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
     invoiceForm = InvoiceForm
 
     def get_data(self, request, company_id=None, *args, **kwargs):
+        if 'filter_date' in kwargs:
+            print("in okk")
+            print(company_id)
+            data = Invoice.objects.filter(issue_date__gte=request.POST.get('fromDate'),
+                                             issue_date__lte=request.POST.get('toDate'),
+                                             company_id=company_id).values(
+                'pk', 'number', 'gst'
+            ).annotate(
+                client=F('client__name'),
+                date_issue=ExpressionWrapper(Func(F('issue_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                             output_field=CharField()),
+                date_due=ExpressionWrapper(Func(F('due_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                           output_field=CharField()),
+            )
+
+            return list(data)
+
         if 'product_detail' in kwargs:
             data = Product.objects.filter(pk=request.POST.get('product_detail'), company_id=company_id).values(
                 'pk', 'type', 'unit_price')
@@ -1703,6 +1720,11 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
         return render(request, self.template_name, {'data': data})
 
     def post(self, request, *args, **kwargs):
+        if 'filterDate' in kwargs:
+            print("okk")
+            data = self.get_data(request, filter_date='', company_id=request.session.get('company_id'))
+            print(data)
+            return JsonResponse(data, safe=False)
         if 'product_detail' in kwargs:
             data = self.get_data(request, company_id=request.session.get('company_id'), product_detail='')
             print(data)

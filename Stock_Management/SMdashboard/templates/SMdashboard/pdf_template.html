@@ -22,8 +22,7 @@
     <!-- Content for Static Frame 'header_frame' -->
     <div id="header_content">
     	<h3>{{company_name}}</h3>
-        <h2>{{company_photo.url}}</h2>
-		<div>
+        <div>
 			<img src="http://127.0.0.1:8000/uploads/profile1.jpg.jpg" alt="img" width="80px", height="80px"/>
 		</div>
 
@@ -39,16 +38,28 @@
     <table>
     		<tr>
     			<td>{{company_address}}</td>
-    			<td>Contact datails: {{company_phone}}</td>
+    			<td>Bill To ,</td>
     		</tr>
     		<tr>
     			<td>{{company_city}}, {{company_state}},</td>
-    			<td>Email Id:{{company_email_id}}</td>
+    			<td>{{invoice_client}}</td>
     		</tr>
     		<tr>
     			<td>Company pin code:{{company_pin_code}}</td>
-    			<td>Website: {{company_website}}</td>
+    			<td>{{ship_to}}, {{place_of_supply}}</td>
                 <td align="right"><strong>invoice no.{{number}}</strong></td>
+    		</tr>
+            <tr>
+    			<td>Contact datails: {{company_phone}}</td>
+<!--    			<td>Email Id:{{company_email_id}}</td>-->
+    		</tr>
+            <tr>
+    			<td>Email Id:{{company_email_id}}</td>
+<!--    			<td>Email Id:{{company_email_id}}</td>-->
+    		</tr>
+            <tr>
+    			<td>Website: {{company_website}}</td>
+<!--    			<td>Email Id:{{company_email_id}}</td>-->
     		</tr>
     </table>
 
