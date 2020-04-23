@@ -77,7 +77,7 @@ class Invoice(BaseModel):
                 self.due_date = date
                 invoice_save = super(Invoice, self).save(force_insert=False, force_update=False, using=None,
                                                          update_fields=None)
-            elif self.payment_terms == "Due on Receipt":
+            elif self.payment_terms == "0":
                 date = self.issue_date
                 self.due_date = date
                 invoice_save = super(Invoice, self).save(force_insert=False, force_update=False, using=None,

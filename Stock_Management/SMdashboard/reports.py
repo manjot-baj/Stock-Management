@@ -485,16 +485,18 @@ class InvoiceReport:
                 'internationalGst': each.internationalGst,
                 'gst': each.gst,
                 'tax_amount': each.tax_amount,
+                'discount_amount': each.discount_amount,
 
                 'pk': each.pk,
                 'invoice_order_lines': [{'product_name': line.product_name,
                                          'uom':line.uom,
                                           'quantity': line.quantity,
                                           'unit_price': line.unit_price,
-                                         'total_without_gst': line.quantity * line.unit_price,
-                                         'total_with_gst': line.quantity * line.unit_price + line.quantity * (line.unit_price * (int(line.tax))/100),
-                                         'line_centralGst': (line.quantity * (line.unit_price * (int(line.tax))/100))/2,
-                                         'line_stateGst': (line.quantity * (line.unit_price * (int(line.tax))/100))/2,
+                                          'line_discount': round(((line.discount/100)*line.unit_price*line.quantity),2),
+                                         'total_without_gst': round((line.quantity * line.unit_price - (line.discount/100)*line.unit_price*line.quantity),2),
+                                         'total_with_gst': round((line.quantity * line.unit_price + line.quantity * (line.unit_price * (int(line.tax))/100) - (line.discount/100)*line.unit_price*line.quantity),2),
+                                         'line_centralGst': round(((line.quantity * (line.unit_price * (int(line.tax))/100))/2),2),
+                                         'line_stateGst': round(((line.quantity * (line.unit_price * (int(line.tax))/100))/2),2),
                                          'line_internationalGst': line.quantity * (line.unit_price * (int(line.tax))/100),} for line in
                                          each.invoice_order_lines]
             })

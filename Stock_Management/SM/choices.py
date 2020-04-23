@@ -8,8 +8,8 @@ PaymentStatus = (
         ("45", "Net 45"),
         ("60", "Net 60"),
         ("90", "Net 90"),
-        ("Due on Receipt", "Due on Receipt"),
-        ("Due on The Specified Date", "Due on The Specified Date"),
+        ("0", "Due on Receipt"),
+        # ("Due on The Specified Date", "Due on The Specified Date"),
     )
 
 TypeUOM = (

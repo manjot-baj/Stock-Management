@@ -84,6 +84,11 @@
 
 				{% endif %}
 			{% endif %}
+
+            {% if discount_condition == 'Yes' %}
+                <th>Discount</th>
+            {% endif %}
+
     		<th>Total</th>
     	</tr>
         {% for line in invoice_order_lines %}
@@ -105,6 +110,10 @@
 
 				{% endif %}
 			{% endif %}
+
+            {% if discount_condition == 'Yes' %}
+                <td align="center">{{line.line_discount}}</td>
+            {% endif %}
 
 
 			{% if gst == 'Yes' %}
@@ -136,6 +145,11 @@
 				<td align="center"><Strong>Total IGST: {{internationalGst}}</Strong></td>
 				{% endif %}
 			{% endif %}
+
+            {% if discount_condition == 'Yes' %}
+                <td align="center"><Strong>Total Discount: {{discount_amount}}</Strong></td>
+            {% endif %}
+
 			<td align="center"><Strong>Total: {{grand_total}}</Strong></td>
 
     	</tr>

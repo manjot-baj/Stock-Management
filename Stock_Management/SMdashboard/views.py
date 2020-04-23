@@ -1703,6 +1703,15 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
                 'company_currency': company_details[0]['currency'],
                 'company_photo': company_details[0]['photo'],
                 })
+            print(data['discount_amount'])
+            if data['discount_amount'] == 0.00:
+                data.update({
+                    'discount_condition': 'No',
+                })
+            else:
+                data.update({
+                    'discount_condition': 'Yes',
+                })
 
             print(data)
             pdf = render_to_pdf('SMdashboard/pdf_template.html', data)
