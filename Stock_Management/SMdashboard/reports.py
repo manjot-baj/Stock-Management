@@ -497,7 +497,7 @@ class InvoiceReport:
                                          'total_with_gst': round((line.quantity * line.unit_price + line.quantity * (line.unit_price * (int(line.tax))/100) - (line.discount/100)*line.unit_price*line.quantity),2),
                                          'line_centralGst': round(((line.quantity * (line.unit_price * (int(line.tax))/100))/2),2),
                                          'line_stateGst': round(((line.quantity * (line.unit_price * (int(line.tax))/100))/2),2),
-                                         'line_internationalGst': line.quantity * (line.unit_price * (int(line.tax))/100),} for line in
+                                         'line_internationalGst': round((line.quantity * (line.unit_price * (int(line.tax))/100)),2),} for line in
                                          each.invoice_order_lines]
             })
         return data

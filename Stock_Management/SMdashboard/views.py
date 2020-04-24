@@ -1606,11 +1606,9 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
 
     def get_data(self, request, company_id=None, *args, **kwargs):
         if 'filter_date' in kwargs:
-            print("in okk")
-            print(company_id)
             data = Invoice.objects.filter(issue_date__gte=request.POST.get('fromDate'),
-                                             issue_date__lte=request.POST.get('toDate'),
-                                             company_id=company_id).values(
+                                          issue_date__lte=request.POST.get('toDate'),
+                                          company_id=company_id).values(
                 'pk', 'number', 'gst'
             ).annotate(
                 client=F('client__name'),
@@ -1629,7 +1627,8 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
 
         if 'client_billing_state_detail' in kwargs:
             print(request.POST.get('client_billing_state_detail'))
-            data = Client.objects.filter(pk=request.POST.get('client_billing_state_detail'), company_id=company_id).values(
+            data = Client.objects.filter(pk=request.POST.get('client_billing_state_detail'),
+                                         company_id=company_id).values(
                 'pk', 'billing_state', 'billing_address')
             return list(data)
 
@@ -1666,9 +1665,24 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
                                             company_id=request.session.get('company_id'))
 
             company_details = CompanyDetail.objects.filter(pk=request.session.get('company_id')).values('pk',
-                    'name','state', 'address', 'city', 'pin_code', 'country', 'phone', 'email_id', 'website', 'GSTIN',
-                    'taxation_type', 'tax_inclusive', 'TIN', 'VAT', 'service_tax_no', 'CST_tin_no',
-                                 'PAN', 'additional_details', 'currency', 'photo').annotate(
+                                                                                                        'name', 'state',
+                                                                                                        'address',
+                                                                                                        'city',
+                                                                                                        'pin_code',
+                                                                                                        'country',
+                                                                                                        'phone',
+                                                                                                        'email_id',
+                                                                                                        'website',
+                                                                                                        'GSTIN',
+                                                                                                        'taxation_type',
+                                                                                                        'tax_inclusive',
+                                                                                                        'TIN', 'VAT',
+                                                                                                        'service_tax_no',
+                                                                                                        'CST_tin_no',
+                                                                                                        'PAN',
+                                                                                                        'additional_details',
+                                                                                                        'currency',
+                                                                                                        'photo').annotate(
 
                 # company_address=Concat(
                 #     F('address'), Value(', '), F('city'), Value(', '),
@@ -1679,7 +1693,6 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
                 #     output_field=CharField())
             )
             # company = list(company_details)
-
 
             data.update({
                 'company_name': company_details[0]['name'],
@@ -1702,7 +1715,7 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
                 'company_additional_details': company_details[0]['additional_details'],
                 'company_currency': company_details[0]['currency'],
                 'company_photo': company_details[0]['photo'],
-                })
+            })
             print(data['discount_amount'])
             if data['discount_amount'] == 0.00:
                 data.update({
@@ -1719,7 +1732,7 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
 
         elif 'invoice_without_gst' in kwargs:
             company_id = request.session.get('company_id')
-            data = self.get_data(request, user_id=request.user.id, company_id=company_id, invoice_without_gst='' )
+            data = self.get_data(request, user_id=request.user.id, company_id=company_id, invoice_without_gst='')
             print(data)
             return render(request, self.template_name, {'data': data})
 
@@ -1730,7 +1743,6 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
 
     def post(self, request, *args, **kwargs):
         if 'filterDate' in kwargs:
-            print("okk")
             data = self.get_data(request, filter_date='', company_id=request.session.get('company_id'))
             print(data)
             return JsonResponse(data, safe=False)
@@ -1773,7 +1785,8 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
             print(total)
 
             company_details = CompanyDetail.objects.filter(pk=request.session.get('company_id')).values('pk',
-                        'name','state').annotate(
+                                                                                                        'name',
+                                                                                                        'state').annotate(
 
                 company_address=Concat(
                     F('address'), Value(', '), F('city'), Value(', '),
@@ -1789,9 +1802,9 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
             print(place_of_supply)
 
             if company[0]['state'] == place_of_supply:
-                print("okkkk hai")
-                centralGst = tax_amount/2
-                stateGst = tax_amount/2
+
+                centralGst = tax_amount / 2
+                stateGst = tax_amount / 2
             else:
                 centralGst = 0.0
                 stateGst = 0.0
@@ -1801,24 +1814,112 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
             else:
                 internationalGst = 0.0
 
-            invoice_obj = self.model.objects.create(client=client, ship_to=ship_to, issue_date=issue_date,
-                                                    place_of_supply=place_of_supply, payment_terms=payment_terms,
-                                                    company_id=request.session.get("company_id"),
-                                                    clean_amount=clean_amount,
-                                                    discount_amount=discount_amount,
-                                                    tax_amount=tax_amount,
-                                                    grand_total=total,
-                                                    centralGst =centralGst,
-                                                    stateGst =stateGst,
-                                                    internationalGst =internationalGst,
-                                                    gst=gst
+            # for invoice no. coding
 
-                                                    )
-            # lines = []
-            for invoicelines_form in invoiceLineFormSet:
-                #     lines.append(Quotation_lines(**pol_form.cleaned_data, quotation_id=po_obj.pk))
-                # Quotation_lines.objects.bulk_create(lines)
-                lines_object = InvoiceLines(**invoicelines_form.cleaned_data, invoice_id=invoice_obj.pk)
-                lines_object.save()
+            if gst == 'Yes':
+                first_time = self.model.objects.filter(gst='Yes').exists()
+                print(first_time)
+
+                if not first_time:
+
+                    invoice_obj = self.model.objects.create(client=client, ship_to=ship_to, issue_date=issue_date,
+                                                            place_of_supply=place_of_supply,
+                                                            payment_terms=payment_terms,
+                                                            company_id=request.session.get("company_id"),
+                                                            clean_amount=clean_amount,
+                                                            discount_amount=discount_amount,
+                                                            tax_amount=tax_amount,
+                                                            grand_total=total,
+                                                            centralGst=centralGst,
+                                                            stateGst=stateGst,
+                                                            internationalGst=internationalGst,
+                                                            gst=gst,
+                                                            number=1
+                                                            )
+                    lines = []
+                    for invoicelines_form in invoiceLineFormSet:
+                        # lines.append(InvoiceLines(**invoicelines_form.cleaned_data, invoice_id=invoice_obj.pk))
+                        # InvoiceLines.objects.bulk_create(lines)
+                        lines_object = InvoiceLines(**invoicelines_form.cleaned_data, invoice_id=invoice_obj.pk)
+                        lines_object.save()
+
+                else:
+                    second_time = self.model.objects.filter(gst='Yes').count()
+                    print(second_time)
+                    print("second condition")
+
+                    invoice_obj = self.model.objects.create(client=client, ship_to=ship_to, issue_date=issue_date,
+                                                            place_of_supply=place_of_supply,
+                                                            payment_terms=payment_terms,
+                                                            company_id=request.session.get("company_id"),
+                                                            clean_amount=clean_amount,
+                                                            discount_amount=discount_amount,
+                                                            tax_amount=tax_amount,
+                                                            grand_total=total,
+                                                            centralGst=centralGst,
+                                                            stateGst=stateGst,
+                                                            internationalGst=internationalGst,
+                                                            gst=gst,
+                                                            number=second_time + 1
+                                                            )
+                    lines = []
+                    for invoicelines_form in invoiceLineFormSet:
+                        # lines.append(InvoiceLines(**invoicelines_form.cleaned_data, invoice_id=invoice_obj.pk))
+                        # InvoiceLines.objects.bulk_create(lines)
+
+                        lines_object = InvoiceLines(**invoicelines_form.cleaned_data, invoice_id=invoice_obj.pk)
+                        lines_object.save()
+
+            if gst == 'No':
+                first_time = self.model.objects.filter(gst='No').exists()
+                print(first_time)
+
+                if not first_time:
+                    invoice_obj = self.model.objects.create(client=client, ship_to=ship_to, issue_date=issue_date,
+                                                            place_of_supply=place_of_supply,
+                                                            payment_terms=payment_terms,
+                                                            company_id=request.session.get("company_id"),
+                                                            clean_amount=clean_amount,
+                                                            discount_amount=discount_amount,
+                                                            tax_amount=tax_amount,
+                                                            grand_total=total,
+                                                            centralGst=centralGst,
+                                                            stateGst=stateGst,
+                                                            internationalGst=internationalGst,
+                                                            gst=gst,
+                                                            number=1
+                                                            )
+
+                    for invoicelines_form in invoiceLineFormSet:
+
+                        lines_object = InvoiceLines(**invoicelines_form.cleaned_data, invoice_id=invoice_obj.pk)
+                        lines_object.save()
+
+                else:
+                    second_time = self.model.objects.filter(gst='No').count()
+                    print(second_time)
+                    print(" no second condition")
+
+                    invoice_obj = self.model.objects.create(client=client, ship_to=ship_to, issue_date=issue_date,
+                                                            place_of_supply=place_of_supply,
+                                                            payment_terms=payment_terms,
+                                                            company_id=request.session.get("company_id"),
+                                                            clean_amount=clean_amount,
+                                                            discount_amount=discount_amount,
+                                                            tax_amount=tax_amount,
+                                                            grand_total=total,
+                                                            centralGst=centralGst,
+                                                            stateGst=stateGst,
+                                                            internationalGst=internationalGst,
+                                                            gst=gst,
+                                                            number=second_time + 1
+                                                            )
+
+                    for invoicelines_form in invoiceLineFormSet:
+
+                        lines_object = InvoiceLines(**invoicelines_form.cleaned_data, invoice_id=invoice_obj.pk)
+                        lines_object.save()
+
+
             return redirect(to='invoice_table')
         return redirect(to='invoice_maker')

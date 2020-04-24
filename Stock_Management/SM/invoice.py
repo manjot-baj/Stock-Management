@@ -13,6 +13,7 @@ def random_string():
     return str(random.randint(10000, 99999))
 
 
+
 class Invoice(BaseModel):
     no = models.CharField(default=random_string, max_length=50, null=True)
     number = models.CharField(null=True, blank=True, max_length=100)
@@ -106,24 +107,34 @@ class InvoiceLines(BaseModel):
         db_table = 'Invoice_Lines'
         verbose_name_plural = 'Invoice Lines'
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        if self.pk is None:
-            if self.tax == '0':
-                company = list(Invoice.objects.filter(no=self.invoice).values('company'))
-                count = Invoice.objects.filter(company_id=company[0].get('company'), with_gst=False).count()
-                Invoice.objects.filter(no=self.invoice).update(number=count + 1, with_gst=False)
-                invoice_save = super(InvoiceLines, self).save(force_insert=False, force_update=False, using=None,
-                                                              update_fields=None)
-            elif not self.tax == '0':
-                company = list(Invoice.objects.filter(no=self.invoice).values('company'))
-                count = Invoice.objects.filter(company_id=company[0].get('company'), with_gst=True).count()
-                Invoice.objects.filter(no=self.invoice).update(number=count + 1, with_gst=True)
-                invoice_save = super(InvoiceLines, self).save(force_insert=False, force_update=False, using=None,
-                                                              update_fields=None)
-            else:
-                invoice_save = super(InvoiceLines, self).save(force_insert=False, force_update=False, using=None,
-                                                              update_fields=None)
-        else:
-            invoice_save = super(InvoiceLines, self).save(force_insert=False, force_update=False, using=None,
-                                                          update_fields=None)
-        return invoice_save
+    # def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+    #
+    #     print(self.pk)
+    #     if self.pk is None:
+    #
+    #         if self.tax == '0':
+    #             company = list(Invoice.objects.filter(no=self.invoice).values('company'))
+    #             count = Invoice.objects.filter(company_id=company[0].get('company'), with_gst=False).count()
+    #             print("in model")
+    #             print(count)
+    #             print("in model")
+    #
+    #             Invoice.objects.filter(no=self.invoice).update(number=count + 1, with_gst=False)
+    #
+    #             invoice_save = super(InvoiceLines, self).save(force_insert=False, force_update=False, using=None,
+    #                                                                       update_fields=None)
+    #         elif not self.tax == '0':
+    #             company = list(Invoice.objects.filter(no=self.invoice).values('company'))
+    #             count = Invoice.objects.filter(company_id=company[0].get('company'), with_gst=True).count()
+    #
+    #             Invoice.objects.filter(no=self.invoice).update(number=count + 1, with_gst=True)
+    #             invoice_save = super(InvoiceLines, self).save(force_insert=False, force_update=False, using=None,
+    #                                                                       update_fields=None)
+    #         else:
+    #             invoice_save = super(InvoiceLines, self).save(force_insert=False, force_update=False, using=None,
+    #                                                                       update_fields=None)
+    #
+    #     else:
+    #         invoice_save = super(InvoiceLines, self).save(force_insert=False, force_update=False, using=None,
+    #                                                       update_fields=None)
+    #     return invoice_save

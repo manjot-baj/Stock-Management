@@ -269,3 +269,4 @@ admin.site.register(ServiceStoreData)
 admin.site.register(PaymentDocument)
 admin.site.register(Inventory)
 admin.site.register(Quotation_lines)
+
