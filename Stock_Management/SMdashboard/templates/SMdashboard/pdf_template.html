@@ -8,7 +8,7 @@
             left: 50pt; width: 512pt; top: 20pt; height: 300pt;
         }
         @frame content_frame {          /* Content Frame */
-            left: 50pt; width: 512pt; top: 90pt; height: 632pt;
+            left: 50pt; width: 512pt; top: 90pt; height: 932pt;
         }
         @frame footer_frame {           /* Another static Frame */
             -pdf-frame-content: footer_content;
@@ -67,7 +67,7 @@
 
     <table>
     	<tr>
-
+			<th>Sr.no</th>
     		<th>Product</th>
     		<th>Price</th>
     		<th>Quantity</th>
@@ -92,8 +92,9 @@
     		<th>Total</th>
     	</tr>
         {% for line in invoice_order_lines %}
+        <tr></tr>
     	<tr>
-
+			<td align="center">{{forloop.counter}}</td>
     		<td align="center">{{line.product_name}}</td>
     		<td align="center">{{line.unit_price}}</td>
     		<td align="center">{{line.quantity}}</td>
@@ -130,6 +131,7 @@
         {% endfor %}
 
 		<tr>
+            <td align="center"></td>
 			<td align="center"></td>
     		<td align="center"></td>
     		<td align="center"></td>

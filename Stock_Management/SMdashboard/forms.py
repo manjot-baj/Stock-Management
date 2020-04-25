@@ -354,14 +354,16 @@ class QuotationForm(forms.ModelForm):
     class Meta:
         model = quotation.Quotation
 
-        fields = ['client', 'ship_to', 'issue_date', 'due_date']
+        fields = ['issue_date', 'client', 'ship_to', 'place_of_supply', 'gst', 'centralGst',
+                  'stateGst', 'internationalGst']
 
         widgets = {
-
-            'client': forms.Select(attrs={'class': 'form-control form-control-sm'}),
-            'ship_to': forms.Textarea(attrs={'rows': 5, 'cols': 58, 'class': 'form-control-sm'}),
             'issue_date': forms.widgets.DateInput(attrs={'type': 'date', 'class': 'form-control form-control-sm'}),
-            # 'due_date': forms.widgets.DateInput(attrs={'type': 'date', 'class': 'form-control form-control-sm'}),
+            'client': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'ship_to': forms.Textarea(attrs={'rows': 10, 'cols': 60, 'class': 'form-control-sm'}),
+            'place_of_supply': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+
+            'gst': forms.Select(attrs={'class': 'form-control form-control-sm'}),
         }
 
 
@@ -369,16 +371,17 @@ class QuotationLineForm(forms.ModelForm):
     class Meta:
         model = quotation.Quotation_lines
 
-        fields = ['product', 'uom', 'quantity', 'unit_price', 'tax']
+        fields = ['product', 'description', 'uom', 'quantity', 'unit_price', 'discount', 'tax']
 
         widgets = {
             'product': forms.Select(attrs={'class': 'form-control form-control-sm', 'required': True}),
+            'description': forms.Textarea(attrs={'rows': 5, 'cols': 30, 'class': 'form-control-sm'}),
             'uom': forms.Select(attrs={'class': 'form-control form-control-sm', 'required': True}),
             'quantity': forms.NumberInput(attrs={'class': 'form-control-sm', 'required': True}),
-            'unit_price': forms.NumberInput(
-                attrs={'class': 'form-control-sm', 'min': 0.0, 'step': 0.01, 'required': True}),
+            'unit_price': forms.NumberInput(attrs={'class': 'form-control-sm', 'min': 0.0, 'step': 0.01,
+                                                   'required': True}),
+            'discount': forms.NumberInput(attrs={'class': 'form-control-sm', 'required': True}),
             'tax': forms.Select(attrs={'class': 'form-control form-control-sm', 'required': True}),
-
         }
 
 

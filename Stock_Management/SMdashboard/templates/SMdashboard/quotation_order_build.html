@@ -21,7 +21,7 @@
             <form class="form-horizontal" action="" method="post">
                 {% csrf_token %}
                 <section class="invoice">
-                    <div class="row mb-4">
+<!--                    <div class="row mb-4">-->
 <!--                        <div class="col-6">-->
 <!--                            <h2 class="page-header">-->
 <!--                                <i class="fa fa-globe"></i>-->
@@ -34,15 +34,21 @@
 <!--                                {{quotation_order_maker.due_date.value|date:'d-M-Y'}}</h5>-->
 <!--                            {{quotation_order_maker.due_date}}-->
 <!--                        </div>-->
-                        <div class="col-6">
-                            <h5 class="text-right"> Issue Date:
-                                {{quotation_order_maker.issue_date.value|date:'d-M-Y'}}</h5>
+<!--                        <div class="col-6">-->
+<!--                            <h5 class="text-right"> Issue Date:-->
+<!--                                {{quotation_order_maker.issue_date.value|date:'d-M-Y'}}</h5>-->
+<!--                            {{quotation_order_maker.issue_date}}-->
+<!--                        </div>-->
+<!--                    </div>-->
+                    <div class="form-group row">
+                        <label class="control-label col-md-1"><strong>{{quotation_order_maker.issue_date.label}}</strong></label>
+                        <div class="col-md-2">
                             {{quotation_order_maker.issue_date}}
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="control-label col-md-1"><strong>{{quotation_order_maker.client.label}}</strong></label>
-                        <div class="col-md-2">
+                        <div class="col-md-2" onChange="my_client()">
                             {{quotation_order_maker.client}}
                         </div>
                     </div>
@@ -52,16 +58,30 @@
                             {{quotation_order_maker.ship_to}}
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-1"><strong>{{quotation_order_maker.place_of_supply.label}}</strong></label>
+                        <div class="col-md-2">
+                            {{quotation_order_maker.place_of_supply}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-1"><strong>{{quotation_order_maker.gst.label}}</strong></label>
+                        <div class="col-md-2" onchange="myFunction()">
+                            {{quotation_order_maker.gst}}
+                        </div>
+                    </div>
                     {{ quotation_order_lines.management_form }}
                     <div id="form_set">
                         <table class='table table-striped'>
                             <thead>
                                 <tr>
-                                    <th>product</th>
-                                    <th>quantity</th>
-                                    <th>uom</th>
-                                    <th>unit_price</th>
-                                    <th>tax</th>
+                                    <th>Product</th>
+                                    <th>Description</th>
+                                    <th>Quantity</th>
+                                    <th>UOM</th>
+                                    <th>Unit Price</th>
+                                    <th>Discount</th>
+                                    <th>TAX</th>
                                 </tr>
                             </thead>
                         </table>
@@ -73,11 +93,16 @@
                             </thead>
                             <tbody>
                             <tr>
+<!--                                <td onChange="my_function()">{{quotationLineForm.product}}</td>-->
                                 <td onChange="my_function()">{{quotationLineForm.product}}</td>
+                                <td>{{quotationLineForm.description}}</td>
                                 <td>{{quotationLineForm.quantity}}</td>
                                 <td>{{quotationLineForm.uom}}</td>
-                                <td >{{quotationLineForm.unit_price}}</td>
+                                <td>{{quotationLineForm.unit_price}}</td>
+                                <td>{{quotationLineForm.discount}}</td>
+
                                 <td>{{quotationLineForm.tax}}</td>
+
                                 <td>
                                     <button type="button" class="remove-form-row btn btn-secondary fa fa-trash"></button>
                                 </td>
@@ -110,10 +135,14 @@
     <table class='dynamic-form-row table table-striped' id="empty_table">
         <tbody id="empty_body">
         <tr>
+<!--            <td onChange="my_function()">{{quotation_order_lines.empty_form.product}}</td>-->
             <td onChange="my_function()">{{quotation_order_lines.empty_form.product}}</td>
+            <td>{{quotation_order_lines.empty_form.description}}</td>
             <td>{{quotation_order_lines.empty_form.quantity}}</td>
             <td>{{quotation_order_lines.empty_form.uom}}</td>
             <td>{{quotation_order_lines.empty_form.unit_price}}</td>
+            <td>{{quotation_order_lines.empty_form.discount}}</td>
+
             <td>{{quotation_order_lines.empty_form.tax}}</td>
             <td>
                 <button type="button" class="remove-form-row btn btn-secondary fa fa-trash"></button>
@@ -128,6 +157,35 @@
 <script src="https://cdn.jsdelivr.net/npm/table-to-json@0.13.0/lib/jquery.tabletojson.min.js"
         integrity="sha256-AqDz23QC5g2yyhRaZcEGhMMZwQnp8fC6sCZpf+e7pnw=" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<link rel="stylesheet" type="text/css"
+      href="{% static 'SMdashboard/datatables/select/1.3.1/css/select.bootstrap4.min.css' %}"/>
+<link rel="stylesheet" type="text/css"
+      href="{% static 'SMdashboard/datatables/buttons/1.6.0/css/buttons.bootstrap4.min.css' %}"/>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<script src="{% static 'SMdashboard/datatables/1.10.20/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'SMdashboard/datatables/1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'SMdashboard/datatables/buttons/1.6.0/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'SMdashboard/datatables/buttons/1.6.0/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'SMdashboard/cloudflare/ajax/libs/jszip/3.1.3/jszip.min.js' %}"></script>
+<script src="{% static 'SMdashboard/cloudflare/ajax/libs/pdfmake/0.1.53/pdfmake.min.js' %}"></script>
+<script src="{% static 'SMdashboard/cloudflare/ajax/libs/pdfmake/0.1.53/vfs_fonts.js' %}"></script>
+<script src="{% static 'SMdashboard/datatables/buttons/1.6.0/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'SMdashboard/datatables/buttons/1.6.0/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'SMdashboard/datatables/select/1.3.1/js/dataTables.select.min.js' %}"></script>
+<script src="{% static 'SMdashboard/datatables/plug-ins/1.10.20/api/sum().js' %}"></script>
+<script type="text/javascript" src="{% static 'SMdashboard/js/plugins/sweetalert.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'SMdashboard/js/plugins/bootstrap-datepicker.min.js' %}"></script>
+
+
+<link rel="stylesheet" href="{% static 'SMdashboard/cloudflare/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css' %}">
+<link rel="stylesheet" href="{% static 'SMdashboard/datatables/1.10.20/css/dataTables.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'SMdashboard/datatables/buttons/1.6.0/css/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'SMdashboard/datatables/select/1.3.1/css/select.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'SMdashboard/css/main.css' %}">
+
 
 <script type="text/javascript">
 
@@ -176,6 +234,11 @@ $(document).on('click', '.remove-form-row', function(e){
     return false;
 })
 
+var x = 'Yes'
+function myFunction() {
+    x = document.getElementById("id_gst").value;
+ }
+
 
 var k = 0;
 function my_function(){
@@ -194,13 +257,48 @@ function my_function(){
                     $(`#id_form-${k}-unit_price`).val(data[0]['unit_price'])
                     $('label[for="id_some"]').html(data[0]['unit_price']);
                     console.log(`Fifteen is ${k}.`);
-                    k+= 1;
+                    console.log(x)
+                    if (x == "Yes"){
+                            $(`#id_form-${k}-tax`).show();
+                            }
+                        else if (x == "No"){
+
+                        $(`#id_form-${k}-tax`).hide();
+
+                        }
+                        k+= 1;
             }
             }
         })
 
 
      }
+
+function my_client(){
+
+        var client_billing_state_detail = $(`#id_client`).val()
+        console.log(client_billing_state_detail)
+
+        $.ajax({
+            url: '{% url 'client_billing_state_detail' %}',
+            method: 'POST',
+            data: {'client_billing_state_detail': client_billing_state_detail},
+            headers: {"X-CSRFToken": '{{ csrf_token }}'},
+            success: function(data, status, jqXHR){
+                console.log(status, data)
+                if(jqXHR.status == 200){
+                    console.log(data[0]['billing_state']);
+                    $(`#id_place_of_supply`).val(data[0]['billing_state'])
+                    $(`#id_ship_to`).val(data[0]['billing_address'])
+
+            }
+            }
+        })
+
+
+     }
+
+
 
 
 </script>

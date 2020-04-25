@@ -115,7 +115,7 @@ class QuotationAdminInline(admin.TabularInline):
     model = Quotation_lines
     fieldsets = [
         ('Quotation Lines', {'fields': (
-            ('product', 'uom', 'quantity', 'unit_price', 'tax'),
+            ('product', 'description', 'uom', 'quantity', 'unit_price', 'discount', 'tax'),
         )}),
     ]
     extra = 1
@@ -123,18 +123,21 @@ class QuotationAdminInline(admin.TabularInline):
 
 @admin.register(Quotation)
 class QuotationAdmin(admin.ModelAdmin):
-    list_display = ['no', 'issue_date', 'number', 'client', 'due_date', 'with_gst']
-    list_filter = ['client', 'company', 'with_gst']
+    list_display = ['no', 'number', 'client', 'place_of_supply', 'issue_date', 'due_date', 'clean_amount',
+                    'discount_amount', 'tax_amount', 'grand_total', 'company',
+                    'centralGst', 'stateGst', 'internationalGst', 'gst']
+    list_filter = ['client', 'company', 'gst']
     search_fields = ['number', 'client']
     inlines = [QuotationAdminInline]
 
     fieldsets = [
         ('Quotation Details', {'fields': (
             ('no'),
-            ('issue_date', 'due_date', 'number'),
-            ('client', 'ship_to'),
-            ('grand_total'),
-            ('company', 'with_gst'),
+            ('number', 'issue_date', 'due_date'),
+            ('client', 'ship_to', 'place_of_supply'),
+            ('clean_amount', 'discount_amount', 'tax_amount', 'grand_total'),
+            ('centralGst', 'stateGst', 'internationalGst'),
+            ('company', 'gst'),
         ), }),
     ]
 

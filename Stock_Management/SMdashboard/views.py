@@ -1521,22 +1521,15 @@ class QuotationView(OwnerRequiredMinxin, ListView):
                                                                                                                'type',
                                                                                                                'unit_price')
             return list(data)
-        qs = self.model.objects.filter(company_id=company_id)
-        # if 'filter_date' in kwargs:
-        #     qs = qs.filter(
-        #         order_date__gte=request.POST.get('fromDate'),
-        #         order_date__lte=request.POST.get('toDate')
-        #     )
-        data = qs.values('pk', 'number').annotate(
+        data = self.model.objects.filter(company_id=company_id, gst='Yes').values('pk', 'number', 'gst').annotate(
             client=F('client__name'),
             date_issue=ExpressionWrapper(Func(F('issue_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
                                          output_field=CharField()),
             date_due=ExpressionWrapper(Func(F('due_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
                                        output_field=CharField()),
-            # grand_total=ExpressionWrapper(
-            #     F('grand_total'), output_field=FloatField())
-        ).order_by('-pk')
+        )
         return list(data)
+
 
     def get(self, request, *args, **kwargs):
         if 'quotation_order_maker' and 'quotation_order_lines' in kwargs:
@@ -1551,8 +1544,7 @@ class QuotationView(OwnerRequiredMinxin, ListView):
                                               company_id=request.session.get('company_id'))
             print(data)
 
-            template = self.detailed_template_view
-            # return render(request, template, data)
+
 
         company_id = request.session.get('company_id')
         data = self.get_data(request, user_id=request.user.id, company_id=company_id)
@@ -1570,31 +1562,170 @@ class QuotationView(OwnerRequiredMinxin, ListView):
         quotationLineFormSet = QuotationLineFormSet(request.POST)
 
         if quotationForm.is_valid() and quotationLineFormSet.is_valid():
-            # number = quotationForm.cleaned_data.get('number')
+
             client = quotationForm.cleaned_data.get('client')
-            # society = request.session.get('society_ids')[0]
+
             ship_to = quotationForm.cleaned_data.get('ship_to')
             issue_date = quotationForm.cleaned_data.get('issue_date')
-            # due_date = quotationForm.cleaned_data.get('due_date')
+            place_of_supply = quotationForm.cleaned_data.get('place_of_supply')
+            gst = quotationForm.cleaned_data.get('gst')
 
-            po_obj = self.model.objects.create(
-                client=client,
-                ship_to=ship_to,
-                issue_date=issue_date,
-                company_id=request.session.get("company_id")
-                # due_date=due_date,
-                # grand_total=sum(map(lambda x: x.cleaned_data.get('unit_price') * x.cleaned_data.get('quantity'),
-                #                     quotationLineFormSet))
+            clean_amount = sum(map(lambda x: x.cleaned_data.get('unit_price') *
+                                             x.cleaned_data.get('quantity'), quotationLineFormSet))
+            discount_amount = sum(map(lambda x: (x.cleaned_data.get('unit_price') *
+                                                 x.cleaned_data.get('discount') / 100) *
+                                                x.cleaned_data.get('quantity'), quotationLineFormSet))
+
+            tax_amount = sum(map(lambda x: (x.cleaned_data.get('unit_price') *
+                                            int(x.cleaned_data.get('tax')) / 100) *
+                                           x.cleaned_data.get('quantity'), quotationLineFormSet))
+            total = clean_amount - discount_amount + tax_amount
+
+            # getting compny details to compare state
+
+            company_details = CompanyDetail.objects.filter(pk=request.session.get('company_id')).values('pk',
+                                                                                                        'name',
+                                                                                                        'state').annotate(
+
+                company_address=Concat(
+                    F('address'), Value(', '), F('city'), Value(', '),
+                    F('state'), Value(', '),
+                    F('pin_code'), Value(', '), F('country'),
+                    Value(', '), F('phone'), Value(', '), F('email_id'),
+                    Value(', '), F('website'),
+                    output_field=CharField())
             )
-            lines = []
-            for pol_form in quotationLineFormSet:
-                #     lines.append(Quotation_lines(**pol_form.cleaned_data, quotation_id=po_obj.pk))
-                # Quotation_lines.objects.bulk_create(lines)
-                object = Quotation_lines(**pol_form.cleaned_data, quotation_id=po_obj.pk)
-                object.save()
+            company = list(company_details)
+            print(company)
+            print(company[0]['state'])
+            print(place_of_supply)
+
+            if company[0]['state'] == place_of_supply:
+
+                centralGst = tax_amount / 2
+                stateGst = tax_amount / 2
+            else:
+                centralGst = 0.0
+                stateGst = 0.0
+
+            if company[0]['state'] != place_of_supply:
+                internationalGst = tax_amount
+            else:
+                internationalGst = 0.0
+
+            # coding cor quotation no. generator
+
+            if gst == 'Yes':
+                first_time = self.model.objects.filter(gst='Yes').exists()
+                print(first_time)
+
+                if not first_time:
+                    quotation_obj = self.model.objects.create(client=client, ship_to=ship_to, issue_date=issue_date,
+                                                            place_of_supply=place_of_supply,
+
+                                                            company_id=request.session.get("company_id"),
+                                                            clean_amount=clean_amount,
+                                                            discount_amount=discount_amount,
+                                                            tax_amount=tax_amount,
+                                                            grand_total=total,
+                                                            centralGst=centralGst,
+                                                            stateGst=stateGst,
+                                                            internationalGst=internationalGst,
+                                                            gst=gst,
+                                                            number=1
+                                                            )
+                    lines = []
+                    for quotationlines_form in quotationLineFormSet:
+                        # lines.append(InvoiceLines(**invoicelines_form.cleaned_data, invoice_id=quotation_obj.pk))
+                        # InvoiceLines.objects.bulk_create(lines)
+                        lines_object = Quotation_lines(**quotationlines_form.cleaned_data, quotation_id=quotation_obj.pk)
+                        lines_object.save()
+
+                else:
+                    second_time = self.model.objects.filter(gst='Yes').count()
+                    print(second_time)
+                    print("second condition")
+
+                    quotation_obj = self.model.objects.create(client=client, ship_to=ship_to, issue_date=issue_date,
+                                                            place_of_supply=place_of_supply,
+
+                                                            company_id=request.session.get("company_id"),
+                                                            clean_amount=clean_amount,
+                                                            discount_amount=discount_amount,
+                                                            tax_amount=tax_amount,
+                                                            grand_total=total,
+                                                            centralGst=centralGst,
+                                                            stateGst=stateGst,
+                                                            internationalGst=internationalGst,
+                                                            gst=gst,
+                                                            number=second_time + 1
+                                                            )
+                    lines = []
+                    for quotationlines_form in quotationLineFormSet:
+                        # lines.append(InvoiceLines(**invoicelines_form.cleaned_data, invoice_id=quotation_obj.pk))
+                        # InvoiceLines.objects.bulk_create(lines)
+                        lines_object = Quotation_lines(**quotationlines_form.cleaned_data, quotation_id=quotation_obj.pk)
+                        lines_object.save()
+
+
+            if gst == 'No':
+                first_time = self.model.objects.filter(gst='No').exists()
+                print(first_time)
+
+                if not first_time:
+                    quotation_obj = self.model.objects.create(client=client, ship_to=ship_to, issue_date=issue_date,
+                                                            place_of_supply=place_of_supply,
+
+                                                            company_id=request.session.get("company_id"),
+                                                            clean_amount=clean_amount,
+                                                            discount_amount=discount_amount,
+                                                            tax_amount=tax_amount,
+                                                            grand_total=total,
+                                                            centralGst=centralGst,
+                                                            stateGst=stateGst,
+                                                            internationalGst=internationalGst,
+                                                            gst=gst,
+                                                            number=1
+                                                            )
+
+                    lines = []
+                    for quotationlines_form in quotationLineFormSet:
+                        # lines.append(InvoiceLines(**invoicelines_form.cleaned_data, invoice_id=quotation_obj.pk))
+                        # InvoiceLines.objects.bulk_create(lines)
+                        lines_object = Quotation_lines(**quotationlines_form.cleaned_data, quotation_id=quotation_obj.pk)
+                        lines_object.save()
+
+                else:
+                    second_time = self.model.objects.filter(gst='No').count()
+                    print(second_time)
+                    print(" no second condition")
+
+                    quotation_obj = self.model.objects.create(client=client, ship_to=ship_to, issue_date=issue_date,
+                                                            place_of_supply=place_of_supply,
+
+                                                            company_id=request.session.get("company_id"),
+                                                            clean_amount=clean_amount,
+                                                            discount_amount=discount_amount,
+                                                            tax_amount=tax_amount,
+                                                            grand_total=total,
+                                                            centralGst=centralGst,
+                                                            stateGst=stateGst,
+                                                            internationalGst=internationalGst,
+                                                            gst=gst,
+                                                            number=second_time + 1
+                                                            )
+
+                    lines = []
+                    for quotationlines_form in quotationLineFormSet:
+                        # lines.append(InvoiceLines(**invoicelines_form.cleaned_data, invoice_id=quotation_obj.pk))
+                        # InvoiceLines.objects.bulk_create(lines)
+                        lines_object = Quotation_lines(**quotationlines_form.cleaned_data, quotation_id=quotation_obj.pk)
+                        lines_object.save()
+
+
             return redirect(to='quotation_order_table')
-        else:
-            redirect(to='quotation_order_maker')
+
+        return redirect(to='quotation_order_maker')
 
 
 class InvoiceView(OwnerRequiredMinxin, ListView):
