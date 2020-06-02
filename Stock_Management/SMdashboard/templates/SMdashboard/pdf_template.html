@@ -37,7 +37,7 @@
 <!--			<td>Invoice</td>-->
 			<td>
 			<table>
-				<tr><td>Invoice</td></tr>
+				<tr><td><h2>Invoice no. <strong>{{number}}</strong></h2></td></tr>
 				<tr><td>Date</td></tr>
 			</table>
 			</td>
@@ -222,6 +222,13 @@
 
     </table>
 
+	<hr>
+    <table>
+    	<tr>
+			<th align="left"><h2><strong>Total In Words : </strong> {{grand_total_in_word}}</h2></th>
+		</tr>
+	</table>
+
     <hr>
 
 <!--    <p><strong>Total: {{grand_total}}</strong></p>-->
@@ -229,11 +236,13 @@
     <table>
     	<tr>
             <th align="left"><strong>Sign</strong></th>
-            <th>  </th>
+<!--			<th><h2>Total In Words: {{grand_total_in_word}} </h2></th>-->
 			<th><strong><h1>Grand Total: {{grand_total}}</h1></strong></th>
 
 			
     	</tr>
 	</table>
+
+
 </body>
 </html>
