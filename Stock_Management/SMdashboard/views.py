@@ -16,6 +16,8 @@ from django.utils import timezone
 import http.client
 import json
 import datetime
+
+
 from .forms import QuotationForm, QuotationLineForm, QuotationLineFormSet, QuotationLineFormSetData, \
     InvoiceForm, InvoiceLineForm, InvoiceLineFormSet, InvoiceLineFormSetData
 from SM.quotation import Quotation, Quotation_lines
@@ -25,6 +27,9 @@ from datetime import timedelta
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.db.models import Value as V
+
+import inflect
+
 
 conn = http.client.HTTPSConnection("api.msg91.com")
 OWNER_GROUP = "Owner"
@@ -1770,7 +1775,7 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
                                              output_field=CharField()),
                 date_due=ExpressionWrapper(Func(F('due_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
                                            output_field=CharField()),
-            )
+            ).order_by("-number")
             return list(data)
 
         data = self.model.objects.filter(company_id=company_id, gst='Yes').values('pk', 'number', 'gst').annotate(
@@ -1779,7 +1784,7 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
                                          output_field=CharField()),
             date_due=ExpressionWrapper(Func(F('due_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
                                        output_field=CharField()),
-        )
+        ).order_by("-number")
         return list(data)
 
     def get(self, request, *args, **kwargs):
@@ -1856,6 +1861,23 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
                 data.update({
                     'discount_condition': 'Yes',
                 })
+
+            print(data['grand_total'])
+            in_word = str(data['grand_total'])
+
+            def int2words(n, p=inflect.engine()):
+                return ''.join(p.number_to_words(n, wantlist=True, andword=''))
+
+            def dollars2words(f):
+                d, dot, cents = f.partition('.')
+                return "{dollars}{cents} rupees".format(
+                    dollars=int2words(int(d)),
+                    cents=" and {}/100".format(cents) if cents and int(cents) else '')
+
+            print(dollars2words(in_word))
+            data.update({
+                'grand_total_in_word': dollars2words(in_word),
+            })
 
             print(data)
             pdf = render_to_pdf('SMdashboard/pdf_template.html', data)
