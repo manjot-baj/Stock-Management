@@ -1775,7 +1775,7 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
                                              output_field=CharField()),
                 date_due=ExpressionWrapper(Func(F('due_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
                                            output_field=CharField()),
-            )
+            ).order_by("-number")
             return list(data)
 
         data = self.model.objects.filter(company_id=company_id, gst='Yes').values('pk', 'number', 'gst').annotate(
@@ -1784,7 +1784,7 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
                                          output_field=CharField()),
             date_due=ExpressionWrapper(Func(F('due_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
                                        output_field=CharField()),
-        )
+        ).order_by("-number")
         return list(data)
 
     def get(self, request, *args, **kwargs):
