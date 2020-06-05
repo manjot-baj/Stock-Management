@@ -1521,18 +1521,43 @@ class QuotationView(OwnerRequiredMinxin, ListView):
     quotionForm = QuotationForm
 
     def get_data(self, request, user_id=None, company_id=None, **kwargs):
+        if 'filter_date' in kwargs:
+            data = self.model.objects.filter(issue_date__gte=request.POST.get('fromDate'),
+                                          issue_date__lte=request.POST.get('toDate'),
+                                          company_id=company_id).values(
+                'pk', 'number', 'gst'
+            ).annotate(
+                client=F('client__name'),
+                date_issue=ExpressionWrapper(Func(F('issue_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                             output_field=CharField()),
+                date_due=ExpressionWrapper(Func(F('due_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                           output_field=CharField()),
+            )
+            return list(data)
+
         if 'quotation_product_detail' in kwargs:
             data = Product.objects.filter(pk=request.POST.get('product_detail'), company_id=company_id).values('pk',
                                                                                                                'type',
                                                                                                                'unit_price')
             return list(data)
+
+        if 'quotation_without_gst' in kwargs:
+            data = self.model.objects.filter(company_id=company_id, gst='No').values('pk', 'number', 'gst').annotate(
+                client=F('client__name'),
+                date_issue=ExpressionWrapper(Func(F('issue_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                             output_field=CharField()),
+                date_due=ExpressionWrapper(Func(F('due_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                           output_field=CharField()),
+            ).order_by("-number")
+            return list(data)
+
         data = self.model.objects.filter(company_id=company_id, gst='Yes').values('pk', 'number', 'gst').annotate(
             client=F('client__name'),
             date_issue=ExpressionWrapper(Func(F('issue_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
                                          output_field=CharField()),
             date_due=ExpressionWrapper(Func(F('due_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
                                        output_field=CharField()),
-        )
+        ).order_by("-number")
         return list(data)
 
 
@@ -1543,21 +1568,104 @@ class QuotationView(OwnerRequiredMinxin, ListView):
                            'quotation_order_lines': QuotationLineFormSetData})
 
         elif 'object_id' in kwargs:
+            from .hmToPd import render_to_pdf
             print(kwargs.get('object_id'))
             from .reports import QuotationReport
             data = QuotationReport().get_data(request, quotation_order_id=kwargs.get('object_id'),
                                               company_id=request.session.get('company_id'))
+
+            company_details = CompanyDetail.objects.filter(pk=request.session.get('company_id')).values('pk',
+                                                                                                        'name', 'state',
+                                                                                                        'address',
+                                                                                                        'city',
+                                                                                                        'pin_code',
+                                                                                                        'country',
+                                                                                                        'phone',
+                                                                                                        'email_id',
+                                                                                                        'website',
+                                                                                                        'GSTIN',
+                                                                                                        'taxation_type',
+                                                                                                        'tax_inclusive',
+                                                                                                        'TIN', 'VAT',
+                                                                                                        'service_tax_no',
+                                                                                                        'CST_tin_no',
+                                                                                                        'PAN',
+                                                                                                        'additional_details',
+                                                                                                        'currency',
+                                                                                                        'photo').annotate(
+
+
+            )
+            data.update({
+                'company_name': company_details[0]['name'],
+                'company_country': company_details[0]['country'],
+                'company_address': company_details[0]['address'],
+                'company_city': company_details[0]['city'],
+                'company_state': company_details[0]['state'],
+                'company_pin_code': company_details[0]['pin_code'],
+                'company_phone': company_details[0]['phone'],
+                'company_email_id': company_details[0]['email_id'],
+                'company_website': company_details[0]['website'],
+                'company_GSTIN': company_details[0]['GSTIN'],
+                'company_taxation_type': company_details[0]['taxation_type'],
+                'company_tax_inclusive': company_details[0]['tax_inclusive'],
+                'company_TIN': company_details[0]['TIN'],
+                'company_VAT': company_details[0]['VAT'],
+                'company_service_tax_no': company_details[0]['service_tax_no'],
+                'company_CST_tin_no': company_details[0]['CST_tin_no'],
+                'company_PAN': company_details[0]['PAN'],
+                'company_additional_details': company_details[0]['additional_details'],
+                'company_currency': company_details[0]['currency'],
+                'company_photo': company_details[0]['photo'],
+            })
+            print(data['discount_amount'])
+            if data['discount_amount'] == 0.00:
+                data.update({
+                    'discount_condition': 'No',
+                })
+            else:
+                data.update({
+                    'discount_condition': 'Yes',
+                })
+
+            print(data['grand_total'])
+            in_word = str(data['grand_total'])
+
+            def int2words(n, p=inflect.engine()):
+                return ''.join(p.number_to_words(n, wantlist=True, andword=''))
+
+            def dollars2words(f):
+                d, dot, cents = f.partition('.')
+                return "{dollars}{cents} rupees".format(
+                    dollars=int2words(int(d)),
+                    cents=" and {}/100".format(cents) if cents and int(cents) else '')
+
+            print(dollars2words(in_word))
+            data.update({
+                'grand_total_in_word': dollars2words(in_word),
+            })
+
             print(data)
+            pdf = render_to_pdf('SMdashboard/pdf_quotation.html', data)
+            return HttpResponse(pdf, content_type='application/pdf')
 
-
+        elif 'quotation_without_gst' in kwargs:
+            company_id = request.session.get('company_id')
+            data = self.get_data(request, user_id=request.user.id, company_id=company_id, quotation_without_gst='')
+            print(data)
+            return render(request, self.template_name, {'data': data})
 
         company_id = request.session.get('company_id')
         data = self.get_data(request, user_id=request.user.id, company_id=company_id)
-
         print(data)
+
         return render(request, self.template_name, {'data': data})
 
     def post(self, request, *args, **kwargs):
+        if 'filterDate' in kwargs:
+            data = self.get_data(request, filter_date='', company_id=request.session.get('company_id'))
+            print(data)
+            return JsonResponse(data, safe=False)
         if 'quotation_product_detail' in kwargs:
             data = self.get_data(request, company_id=request.session.get('company_id'), quotation_product_detail='')
             print(data)
@@ -1569,7 +1677,6 @@ class QuotationView(OwnerRequiredMinxin, ListView):
         if quotationForm.is_valid() and quotationLineFormSet.is_valid():
 
             client = quotationForm.cleaned_data.get('client')
-
             ship_to = quotationForm.cleaned_data.get('ship_to')
             issue_date = quotationForm.cleaned_data.get('issue_date')
             place_of_supply = quotationForm.cleaned_data.get('place_of_supply')
@@ -1587,6 +1694,8 @@ class QuotationView(OwnerRequiredMinxin, ListView):
             total = clean_amount - discount_amount + tax_amount
 
             # getting compny details to compare state
+            print("round up check value")
+            print(total)
 
             company_details = CompanyDetail.objects.filter(pk=request.session.get('company_id')).values('pk',
                                                                                                         'name',

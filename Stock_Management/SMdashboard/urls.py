@@ -69,6 +69,10 @@ urlpatterns = [
 
                   path('view_quotation_order/<int:object_id>', views.QuotationView.as_view(),
                        name="view_quotation_order"),
+                  path('filter_quotation_date/', views.QuotationView.as_view(), {'filterDate': ''},
+                       name="filter_quotation_date"),
+                  path('quotation_without_gst/', views.QuotationView.as_view(), {'quotation_without_gst': ''},
+                       name="quotation_without_gst"),
 
 
                   path('invoice_maker/', views.InvoiceView.as_view(), {'invoice_maker': '', 'invoice_lines': ''},
