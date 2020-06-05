@@ -27,6 +27,8 @@ class Invoice(BaseModel):
     discount_amount = models.DecimalField(decimal_places=2, max_digits=10, default=0.00, null=True, blank=True)
     tax_amount = models.DecimalField(decimal_places=2, max_digits=10, default=0.00, null=True, blank=True)
     grand_total = models.DecimalField(decimal_places=2, max_digits=10, default=0.00, null=True, blank=True)
+    rounded_off_value = models.DecimalField(decimal_places=2, max_digits=10, default=0.00, null=True, blank=True)
+    grand_total_without_round = models.DecimalField(decimal_places=2, max_digits=10, default=0.00, null=True,blank=True)
     company = models.ForeignKey(CompanyDetail, on_delete=models.SET_NULL, null=True, blank=False)
     with_gst = models.BooleanField(null=True, blank=True)
     gst = models.CharField(choices=WithGstOrNot, max_length=20, null=True, blank=False)

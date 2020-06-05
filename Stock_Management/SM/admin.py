@@ -125,7 +125,7 @@ class QuotationAdminInline(admin.TabularInline):
 class QuotationAdmin(admin.ModelAdmin):
     list_display = ['no', 'number', 'client', 'place_of_supply', 'issue_date', 'due_date', 'clean_amount',
                     'discount_amount', 'tax_amount', 'grand_total', 'company',
-                    'centralGst', 'stateGst', 'internationalGst', 'gst']
+                    'centralGst', 'stateGst', 'internationalGst', 'gst','rounded_off_value', 'grand_total_without_round']
     list_filter = ['client', 'company', 'gst']
     search_fields = ['number', 'client']
     inlines = [QuotationAdminInline]
@@ -138,6 +138,7 @@ class QuotationAdmin(admin.ModelAdmin):
             ('clean_amount', 'discount_amount', 'tax_amount', 'grand_total'),
             ('centralGst', 'stateGst', 'internationalGst'),
             ('company', 'gst'),
+            ('rounded_off_value', 'grand_total_without_round'),
         ), }),
     ]
 
@@ -156,7 +157,7 @@ class InvoiceAdminInline(admin.TabularInline):
 class InvoiceAdmin(admin.ModelAdmin):
     list_display = ['no', 'number', 'client', 'place_of_supply', 'issue_date', 'due_date', 'clean_amount',
                     'discount_amount', 'tax_amount', 'grand_total', 'company',
-                    'with_gst', 'centralGst', 'stateGst', 'internationalGst', 'gst']
+                    'with_gst', 'centralGst', 'stateGst', 'internationalGst', 'gst', 'rounded_off_value', 'grand_total_without_round']
     list_filter = ['client', 'company', 'with_gst']
     search_fields = ['number', 'client', 'place_of_supply']
     inlines = [InvoiceAdminInline]
@@ -169,6 +170,7 @@ class InvoiceAdmin(admin.ModelAdmin):
             ('payment_terms', 'clean_amount', 'discount_amount', 'tax_amount', 'grand_total'),
             ('centralGst', 'stateGst', 'internationalGst'),
             ('company', 'with_gst', 'gst'),
+            ('rounded_off_value', 'grand_total_without_round'),
         ), }),
     ]
 

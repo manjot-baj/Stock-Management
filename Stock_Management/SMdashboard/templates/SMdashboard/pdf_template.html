@@ -1,3 +1,4 @@
+{% load static %}
 <html>
 <head>
 <style>
@@ -180,22 +181,22 @@
     		<td align="center"></td>
 			{% if place_of_supply == company_state %}
 				{% if gst == 'Yes' %}
-					<td align="center"><Strong>Total CGST: {{centralGst}}</Strong></td>
-					<td align="center"><Strong>Total SGST: {{stateGst}}</Strong></td>
+					<td align="center"><Strong>Total CGST: <img src="http://i.stack.imgur.com/vJZ9m.png" height="10" width="8"> {{centralGst}}</Strong></td>
+					<td align="center"><Strong>Total SGST: <img src="http://i.stack.imgur.com/vJZ9m.png" height="10" width="8"> {{stateGst}}</Strong></td>
 				{% endif %}
 
 
 			{% else %}
 				{% if gst == 'Yes' %}
-				<td align="center"><Strong>Total IGST: {{internationalGst}}</Strong></td>
+				<td align="center"><Strong>Total IGST: <img src="http://i.stack.imgur.com/vJZ9m.png" height="10" width="8"> {{internationalGst}}</Strong></td>
 				{% endif %}
 			{% endif %}
 
             {% if discount_condition == 'Yes' %}
-                <td align="center"><Strong>Total Discount: {{discount_amount}}</Strong></td>
+                <td align="center"><Strong>Total Discount: <img src="http://i.stack.imgur.com/vJZ9m.png" height="10" width="8"> {{discount_amount}}</Strong></td>
             {% endif %}
 
-			<td align="center"><Strong>Total: {{grand_total}}</Strong></td>
+			<td align="center"><Strong>Total: <img src="http://i.stack.imgur.com/vJZ9m.png" height="10" width="8"> {{grand_total_without_round}}</Strong></td>
 
     	</tr>
 <!--		<tr>-->
@@ -236,12 +237,36 @@
     <table>
     	<tr>
             <th align="left"><strong>Sign</strong></th>
-<!--			<th><h2>Total In Words: {{grand_total_in_word}} </h2></th>-->
-			<th><strong><h1>Grand Total: {{grand_total}}</h1></strong></th>
-
-			
+			<th>TOTAL BEFORE TAX : <img src="http://i.stack.imgur.com/vJZ9m.png" height="10" width="8"> {{clean_amount}}</th>
     	</tr>
+
+		<tr>
+            <th align="left"><strong></strong></th>
+			<th>TOTAL TAX AMOUNT : <img src="http://i.stack.imgur.com/vJZ9m.png" height="10" width="8"> {{tax_amount}}</th>
+    	</tr>
+
+		<tr>
+            <th align="left"><strong></strong></th>
+			<th>ROUNDED OFF : <img src="http://i.stack.imgur.com/vJZ9m.png" height="10" width="8"> {{rounded_off_value}}</th>
+    	</tr>
+
+		<tr>
+            <th align="left"><strong></strong></th>
+<!--			<th>TOTAL AMOUNT : <img src="http://i.stack.imgur.com/vJZ9m.png" height="10" width="8"> {{grand_total}}</th>-->
+			<th>TOTAL AMOUNT : <img src="http://127.0.0.1:8000/uploads/vJZ9m.png" height="10" width="8"> {{grand_total}}</th>
+    	</tr>
+
+		<tr>
+            <th align="left"><strong></strong></th>
+            <th>AMOUNT DUE : <img src="http://127.0.0.1:8000/uploads/vJZ9m.png" height="10" width="8"> {{grand_total}}</th>
+    	</tr>
+
 	</table>
+
+
+</body>
+</html>
+
 
 
 </body>

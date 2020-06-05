@@ -1693,9 +1693,13 @@ class QuotationView(OwnerRequiredMinxin, ListView):
                                            x.cleaned_data.get('quantity'), quotationLineFormSet))
             total = clean_amount - discount_amount + tax_amount
 
+            total_rounded = round(total)
+            rounded_off_value = total_rounded - total
+
             # getting compny details to compare state
             print("round up check value")
             print(total)
+            print(total_rounded)
 
             company_details = CompanyDetail.objects.filter(pk=request.session.get('company_id')).values('pk',
                                                                                                         'name',
@@ -1741,7 +1745,9 @@ class QuotationView(OwnerRequiredMinxin, ListView):
                                                             clean_amount=clean_amount,
                                                             discount_amount=discount_amount,
                                                             tax_amount=tax_amount,
-                                                            grand_total=total,
+                                                            grand_total=total_rounded,
+                                                            grand_total_without_round=total,
+                                                            rounded_off_value = rounded_off_value,
                                                             centralGst=centralGst,
                                                             stateGst=stateGst,
                                                             internationalGst=internationalGst,
@@ -1767,7 +1773,9 @@ class QuotationView(OwnerRequiredMinxin, ListView):
                                                             clean_amount=clean_amount,
                                                             discount_amount=discount_amount,
                                                             tax_amount=tax_amount,
-                                                            grand_total=total,
+                                                            grand_total=total_rounded,
+                                                            grand_total_without_round=total,
+                                                            rounded_off_value=rounded_off_value,
                                                             centralGst=centralGst,
                                                             stateGst=stateGst,
                                                             internationalGst=internationalGst,
@@ -1794,7 +1802,9 @@ class QuotationView(OwnerRequiredMinxin, ListView):
                                                             clean_amount=clean_amount,
                                                             discount_amount=discount_amount,
                                                             tax_amount=tax_amount,
-                                                            grand_total=total,
+                                                            grand_total=total_rounded,
+                                                            grand_total_without_round=total,
+                                                            rounded_off_value=rounded_off_value,
                                                             centralGst=centralGst,
                                                             stateGst=stateGst,
                                                             internationalGst=internationalGst,
@@ -1821,7 +1831,9 @@ class QuotationView(OwnerRequiredMinxin, ListView):
                                                             clean_amount=clean_amount,
                                                             discount_amount=discount_amount,
                                                             tax_amount=tax_amount,
-                                                            grand_total=total,
+                                                            grand_total=total_rounded,
+                                                            grand_total_without_round=total,
+                                                            rounded_off_value=rounded_off_value,
                                                             centralGst=centralGst,
                                                             stateGst=stateGst,
                                                             internationalGst=internationalGst,
@@ -2041,6 +2053,9 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
                                            x.cleaned_data.get('quantity'), invoiceLineFormSet))
             total = clean_amount - discount_amount + tax_amount
 
+            total_rounded = round(total)
+            rounded_off_value = total_rounded - total
+
             print(clean_amount)
             print(discount_amount)
             print(tax_amount)
@@ -2091,7 +2106,9 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
                                                             clean_amount=clean_amount,
                                                             discount_amount=discount_amount,
                                                             tax_amount=tax_amount,
-                                                            grand_total=total,
+                                                            grand_total=total_rounded,
+                                                            grand_total_without_round=total,
+                                                            rounded_off_value=rounded_off_value,
                                                             centralGst=centralGst,
                                                             stateGst=stateGst,
                                                             internationalGst=internationalGst,
@@ -2117,7 +2134,9 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
                                                             clean_amount=clean_amount,
                                                             discount_amount=discount_amount,
                                                             tax_amount=tax_amount,
-                                                            grand_total=total,
+                                                            grand_total=total_rounded,
+                                                            grand_total_without_round=total,
+                                                            rounded_off_value=rounded_off_value,
                                                             centralGst=centralGst,
                                                             stateGst=stateGst,
                                                             internationalGst=internationalGst,
@@ -2144,7 +2163,9 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
                                                             clean_amount=clean_amount,
                                                             discount_amount=discount_amount,
                                                             tax_amount=tax_amount,
-                                                            grand_total=total,
+                                                            grand_total=total_rounded,
+                                                            grand_total_without_round=total,
+                                                            rounded_off_value=rounded_off_value,
                                                             centralGst=centralGst,
                                                             stateGst=stateGst,
                                                             internationalGst=internationalGst,
@@ -2169,7 +2190,9 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
                                                             clean_amount=clean_amount,
                                                             discount_amount=discount_amount,
                                                             tax_amount=tax_amount,
-                                                            grand_total=total,
+                                                            grand_total=total_rounded,
+                                                            grand_total_without_round=total,
+                                                            rounded_off_value=rounded_off_value,
                                                             centralGst=centralGst,
                                                             stateGst=stateGst,
                                                             internationalGst=internationalGst,
