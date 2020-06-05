@@ -443,6 +443,7 @@ class QuotationReport:
                 'number': each.number,
                 'ship_to': each.ship_to,
                 'place_of_supply': each.place_of_supply,
+                'clean_amount': each.clean_amount,
                 'grand_total': each.grand_total,
                 'centralGst': each.centralGst,
                 'stateGst': each.stateGst,
