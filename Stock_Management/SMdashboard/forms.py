@@ -1,6 +1,6 @@
 import os
 from django import forms
-from SM import enquiry, employee_data, service, dayBook, company_data, amc, quotation, invoice
+from SM import enquiry, employee_data, service, dayBook, company_data, amc, quotation, invoice, bill_of_supply
 import datetime
 
 
@@ -437,3 +437,46 @@ data = {
 
 InvoiceLineFormSet = forms.formset_factory(InvoiceLineForm)
 InvoiceLineFormSetData = InvoiceLineFormSet(data)
+
+class BillOfSupplyForm(forms.ModelForm):
+    class Meta:
+        model = bill_of_supply.BillOfSupply
+
+        fields = ['issue_date', 'client', 'ship_to', 'place_of_supply', 'payment_terms', 'gst', 'centralGst',
+                  'stateGst', 'internationalGst']
+
+        widgets = {
+            'issue_date': forms.HiddenInput(attrs={'class': 'form-control-sm'}),
+            'client': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'ship_to': forms.Textarea(attrs={'rows': 10, 'cols': 60, 'class': 'form-control-sm'}),
+            'place_of_supply': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'payment_terms': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+            'gst': forms.Select(attrs={'class': 'form-control form-control-sm'}),
+        }
+
+class BillOfSupplyLineForm(forms.ModelForm):
+    class Meta:
+        model = bill_of_supply.BillOfSupplyLines
+
+        fields = ['product', 'description', 'uom', 'quantity', 'unit_price', 'discount', 'tax']
+
+        widgets = {
+            'product': forms.Select(attrs={'class': 'form-control form-control-sm', 'required': True}),
+            'description': forms.Textarea(attrs={'rows': 5, 'cols': 30, 'class': 'form-control-sm'}),
+            'uom': forms.Select(attrs={'class': 'form-control form-control-sm', 'required': True}),
+            'quantity': forms.NumberInput(attrs={'class': 'form-control-sm', 'required': True}),
+            'unit_price': forms.NumberInput(attrs={'class': 'form-control-sm', 'min': 0.0, 'step': 0.01,
+                                                   'required': True}),
+            'discount': forms.NumberInput(attrs={'class': 'form-control-sm', 'required': True}),
+            'tax': forms.Select(attrs={'class': 'form-control form-control-sm', 'required': True}),
+        }
+
+data = {
+    'form-TOTAL_FORMS': '1',
+    'form-INITIAL_FORMS': '0',
+    'form-MAX_NUM_FORMS': '',
+}
+BillOfSupplyLineFormSet = forms.formset_factory(BillOfSupplyLineForm)
+
+BillOfSupplyLineFormSetData = BillOfSupplyLineFormSet(data)
+

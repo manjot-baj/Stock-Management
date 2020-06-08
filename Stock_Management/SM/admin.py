@@ -239,7 +239,7 @@ class BillOfSupplyAdminInline(admin.TabularInline):
     model = BillOfSupplyLines
     fieldsets = [
         ('BillLines', {'fields': (
-            ('product', 'description', 'uom', 'quantity', 'unit_price', 'discount'),
+            ('product', 'description', 'uom', 'quantity', 'unit_price', 'discount', 'tax'),
         )}),
     ]
     extra = 1
@@ -247,7 +247,9 @@ class BillOfSupplyAdminInline(admin.TabularInline):
 
 @admin.register(BillOfSupply)
 class BillOfSupplyAdmin(admin.ModelAdmin):
-    list_display = ['number', 'client', 'ship_to', 'issue_date', 'grand_total']
+    list_display = ['number', 'client', 'place_of_supply', 'issue_date', 'due_date', 'clean_amount',
+                    'discount_amount', 'tax_amount', 'grand_total', 'company',
+                    'centralGst', 'stateGst', 'internationalGst', 'gst', 'rounded_off_value', 'grand_total_without_round']
     search_fields = ['number', 'client']
     list_filter = ['client', 'company']
     inlines = [BillOfSupplyAdminInline]
@@ -256,8 +258,10 @@ class BillOfSupplyAdmin(admin.ModelAdmin):
         ('Bill Of Supply Details', {'fields': (
             ('number', 'issue_date', 'due_date'),
             ('client', 'ship_to', 'place_of_supply'),
-            ('payment_terms', 'grand_total'),
-            ('company'),
+            ('payment_terms', 'clean_amount', 'discount_amount', 'tax_amount', 'grand_total'),
+            ('centralGst', 'stateGst', 'internationalGst'),
+            ('company', 'gst'),
+            ('rounded_off_value', 'grand_total_without_round'),
         ), }),
     ]
 
@@ -274,4 +278,5 @@ admin.site.register(ServiceStoreData)
 admin.site.register(PaymentDocument)
 admin.site.register(Inventory)
 admin.site.register(Quotation_lines)
+admin.site.register(BillOfSupplyLines)
 

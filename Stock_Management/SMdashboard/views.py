@@ -19,10 +19,12 @@ import datetime
 
 
 from .forms import QuotationForm, QuotationLineForm, QuotationLineFormSet, QuotationLineFormSetData, \
-    InvoiceForm, InvoiceLineForm, InvoiceLineFormSet, InvoiceLineFormSetData
+    InvoiceForm, InvoiceLineForm, InvoiceLineFormSet, InvoiceLineFormSetData, \
+    BillOfSupplyForm, BillOfSupplyLineForm, BillOfSupplyLineFormSet, BillOfSupplyLineFormSetData
 from SM.quotation import Quotation, Quotation_lines
 from SM.invoice import Invoice, InvoiceLines
 from SM.product import Product
+from SM.bill_of_supply import BillOfSupply, BillOfSupplyLines
 from datetime import timedelta
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
@@ -2208,3 +2210,240 @@ class InvoiceView(OwnerRequiredMinxin, ListView):
 
             return redirect(to='invoice_table')
         return redirect(to='invoice_maker')
+
+class BillOfSupplyView(OwnerRequiredMinxin, ListView):
+    template_name = 'SMdashboard/table-billOfSupply.html'
+    formTemplate = 'SMdashboard/billOfSupply_build.html'
+    model = BillOfSupply
+    detailed_template_view = 'SMdashboard/view-billOfSupply.html'
+    billOfSupplyForm = BillOfSupplyForm
+
+    def get_data(self, request, company_id=None, *args, **kwargs):
+        if 'filter_date' in kwargs:
+            data = BillOfSupply.objects.filter(issue_date__gte=request.POST.get('fromDate'),
+                                          issue_date__lte=request.POST.get('toDate'),
+                                          company_id=company_id).values(
+                'pk', 'number', 'gst'
+            ).annotate(
+                client=F('client__name'),
+                date_issue=ExpressionWrapper(Func(F('issue_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                             output_field=CharField()),
+                date_due=ExpressionWrapper(Func(F('due_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                           output_field=CharField()),
+            ).order_by("-number")
+            return list(data)
+
+        if 'billOfSupply_without_gst' in kwargs:
+            data = self.model.objects.filter(company_id=company_id, gst='No').values('pk', 'number', 'gst').annotate(
+                client=F('client__name'),
+                date_issue=ExpressionWrapper(Func(F('issue_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                             output_field=CharField()),
+                date_due=ExpressionWrapper(Func(F('due_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                           output_field=CharField()),
+            ).order_by("-number")
+            return list(data)
+
+        data = self.model.objects.filter(company_id=company_id, gst='Yes').values('pk', 'number', 'gst').annotate(
+            client=F('client__name'),
+            date_issue=ExpressionWrapper(Func(F('issue_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                         output_field=CharField()),
+            date_due=ExpressionWrapper(Func(F('due_date'), Value("DD/MM/YYYY"), function='TO_CHAR'),
+                                       output_field=CharField()),
+        ).order_by("-number")
+        return list(data)
+
+    def get(self, request, *args, **kwargs):
+        if 'billOfSupply_maker' and 'billOfSupply_lines' in kwargs:
+            return render(request, self.formTemplate,
+                          {'billOfSupply_maker': self.billOfSupplyForm(),
+                           'billOfSupply_lines': BillOfSupplyLineFormSetData})
+
+        elif 'billOfSupply_without_gst' in kwargs:
+            company_id = request.session.get('company_id')
+            data = self.get_data(request, user_id=request.user.id, company_id=company_id, billOfSupply_without_gst='')
+            print(data)
+            return render(request, self.template_name, {'data': data})
+
+
+        company_id = request.session.get('company_id')
+        data = self.get_data(request, user_id=request.user.id, company_id=company_id)
+
+        print(data)
+        return render(request, self.template_name, {'data': data})
+
+    def post(self, request, *args, **kwargs):
+        if 'filterDate' in kwargs:
+            data = self.get_data(request, filter_date='', company_id=request.session.get('company_id'))
+            print(data)
+            return JsonResponse(data, safe=False)
+
+        billOfSupplyForm = BillOfSupplyForm(request.POST)
+        billOfSupplyLineFormSet = BillOfSupplyLineFormSet(request.POST)
+
+        if billOfSupplyForm.is_valid() and billOfSupplyLineFormSet.is_valid():
+            client = billOfSupplyForm.cleaned_data.get('client')
+            ship_to = billOfSupplyForm.cleaned_data.get('ship_to')
+            issue_date = billOfSupplyForm.cleaned_data.get('issue_date')
+            place_of_supply = billOfSupplyForm.cleaned_data.get('place_of_supply')
+            payment_terms = billOfSupplyForm.cleaned_data.get('payment_terms')
+            gst = billOfSupplyForm.cleaned_data.get('gst')
+
+            clean_amount = sum(map(lambda x: x.cleaned_data.get('unit_price') *
+                                             x.cleaned_data.get('quantity'), billOfSupplyLineFormSet))
+            discount_amount = sum(map(lambda x: (x.cleaned_data.get('unit_price') *
+                                                 x.cleaned_data.get('discount') / 100) *
+                                                x.cleaned_data.get('quantity'), billOfSupplyLineFormSet))
+            tax_amount = sum(map(lambda x: (x.cleaned_data.get('unit_price') *
+                                            int(x.cleaned_data.get('tax')) / 100) *
+                                           x.cleaned_data.get('quantity'), billOfSupplyLineFormSet))
+            total = clean_amount - discount_amount + tax_amount
+
+            total_rounded = round(total)
+            rounded_off_value = total_rounded - total
+
+            print(clean_amount)
+            print(discount_amount)
+            print(tax_amount)
+            print(total)
+
+            company_details = CompanyDetail.objects.filter(pk=request.session.get('company_id')).values('pk',
+                                                                                                        'name',
+                                                                                                        'state').annotate(
+
+                company_address=Concat(
+                    F('address'), Value(', '), F('city'), Value(', '),
+                    F('state'), Value(', '),
+                    F('pin_code'), Value(', '), F('country'),
+                    Value(', '), F('phone'), Value(', '), F('email_id'),
+                    Value(', '), F('website'),
+                    output_field=CharField())
+            )
+            company = list(company_details)
+            print(company)
+            print(company[0]['state'])
+            print(place_of_supply)
+
+            if company[0]['state'] == place_of_supply:
+
+                centralGst = tax_amount / 2
+                stateGst = tax_amount / 2
+            else:
+                centralGst = 0.0
+                stateGst = 0.0
+
+            if company[0]['state'] != place_of_supply:
+                internationalGst = tax_amount
+            else:
+                internationalGst = 0.0
+
+            # for generating no.
+            if gst == 'Yes':
+                first_time = self.model.objects.filter(gst='Yes').exists()
+                print(first_time)
+
+                if not first_time:
+
+                    billOfSupply_obj = self.model.objects.create(client=client, ship_to=ship_to, issue_date=issue_date,
+                                                            place_of_supply=place_of_supply,
+                                                            payment_terms=payment_terms,
+                                                            company_id=request.session.get("company_id"),
+                                                            clean_amount=clean_amount,
+                                                            discount_amount=discount_amount,
+                                                            tax_amount=tax_amount,
+                                                            grand_total=total_rounded,
+                                                            grand_total_without_round=total,
+                                                            rounded_off_value=rounded_off_value,
+                                                            centralGst=centralGst,
+                                                            stateGst=stateGst,
+                                                            internationalGst=internationalGst,
+                                                            gst=gst,
+                                                            number=1
+                                                            )
+                    lines = []
+                    for billOfSupplylines_form in billOfSupplyLineFormSet:
+                        # lines.append(BillOfSupplyLines(**billOfSupplylines_form.cleaned_data, bill_id=billOfSupply_obj.pk))
+                        # BillOfSupplyLines.objects.bulk_create(lines)
+                        lines_object = BillOfSupplyLines(**billOfSupplylines_form.cleaned_data, bill_id=billOfSupply_obj.pk)
+                        lines_object.save()
+                else:
+                    second_time = self.model.objects.filter(gst='Yes').count()
+                    print(second_time)
+                    print("second condition")
+                    billOfSupply_obj = self.model.objects.create(client=client, ship_to=ship_to, issue_date=issue_date,
+                                                            place_of_supply=place_of_supply,
+                                                            payment_terms=payment_terms,
+                                                            company_id=request.session.get("company_id"),
+                                                            clean_amount=clean_amount,
+                                                            discount_amount=discount_amount,
+                                                            tax_amount=tax_amount,
+                                                            grand_total=total_rounded,
+                                                            grand_total_without_round=total,
+                                                            rounded_off_value=rounded_off_value,
+                                                            centralGst=centralGst,
+                                                            stateGst=stateGst,
+                                                            internationalGst=internationalGst,
+                                                            gst=gst,
+                                                            number=second_time + 1
+                                                            )
+                    lines = []
+                    for billOfSupplylines_form in billOfSupplyLineFormSet:
+                        # lines.append(BillOfSupplyLines(**billOfSupplylines_form.cleaned_data, bill_id=billOfSupply_obj.pk))
+                        # BillOfSupplyLines.objects.bulk_create(lines)
+
+                        lines_object = BillOfSupplyLines(**billOfSupplylines_form.cleaned_data, bill_id=billOfSupply_obj.pk)
+                        lines_object.save()
+
+            if gst == 'No':
+                first_time = self.model.objects.filter(gst='No').exists()
+                print(first_time)
+
+                if not first_time:
+                    billOfSupply_obj = self.model.objects.create(client=client, ship_to=ship_to, issue_date=issue_date,
+                                                            place_of_supply=place_of_supply,
+                                                            payment_terms=payment_terms,
+                                                            company_id=request.session.get("company_id"),
+                                                            clean_amount=clean_amount,
+                                                            discount_amount=discount_amount,
+                                                            tax_amount=tax_amount,
+                                                            grand_total=total_rounded,
+                                                            grand_total_without_round=total,
+                                                            rounded_off_value=rounded_off_value,
+                                                            centralGst=centralGst,
+                                                            stateGst=stateGst,
+                                                            internationalGst=internationalGst,
+                                                            gst=gst,
+                                                            number=1
+                                                            )
+
+                    for billOfSupplylines_form in billOfSupplyLineFormSet:
+                        lines_object = BillOfSupplyLines(**billOfSupplylines_form.cleaned_data,bill_id=billOfSupply_obj.pk)
+                        lines_object.save()
+
+                else:
+                    second_time = self.model.objects.filter(gst='No').count()
+                    print(second_time)
+                    print(" no second condition")
+
+                    billOfSupply_obj = self.model.objects.create(client=client, ship_to=ship_to, issue_date=issue_date,
+                                                            place_of_supply=place_of_supply,
+                                                            payment_terms=payment_terms,
+                                                            company_id=request.session.get("company_id"),
+                                                            clean_amount=clean_amount,
+                                                            discount_amount=discount_amount,
+                                                            tax_amount=tax_amount,
+                                                            grand_total=total_rounded,
+                                                            grand_total_without_round=total,
+                                                            rounded_off_value=rounded_off_value,
+                                                            centralGst=centralGst,
+                                                            stateGst=stateGst,
+                                                            internationalGst=internationalGst,
+                                                            gst=gst,
+                                                            number=second_time + 1
+                                                            )
+
+                    for billOfSupplylines_form in billOfSupplyLineFormSet:
+                        lines_object = BillOfSupplyLines(**billOfSupplylines_form.cleaned_data,bill_id=billOfSupply_obj.pk)
+                        lines_object.save()
+
+            return redirect(to='billOfSupply_table')
+        return redirect(to='billOfSupply_maker')

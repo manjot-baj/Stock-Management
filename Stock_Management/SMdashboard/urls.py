@@ -93,4 +93,14 @@ urlpatterns = [
                        name="filter_invoice_date"),
 
 
+                  path('billOfSupply_table/', views.BillOfSupplyView.as_view(), name="billOfSupply_table"),
+                  path('billOfSupply_maker/', views.BillOfSupplyView.as_view(), {'billOfSupply_maker': '', 'billOfSupply_lines': ''},
+                       name="billOfSupply_maker"),
+                  path('billOfSupply_without_gst/', views.BillOfSupplyView.as_view(), {'billOfSupply_without_gst': ''},
+                       name="billOfSupply_without_gst"),
+                  path('filter_billOfSupply_date/', views.BillOfSupplyView.as_view(), {'filterDate': ''},
+                       name="filter_billOfSupply_date"),
+
+
+
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
