@@ -3,7 +3,7 @@ from django.db.models import Value as V
 from django.db.models.functions import Cast, Concat, Coalesce
 from django.shortcuts import redirect
 from SM.company_data import Client, Vendor, CompanyDetail
-from SM import employee_data, enquiry, product, service, dayBook, amc, quotation, invoice
+from SM import employee_data, enquiry, product, service, dayBook, amc, quotation, invoice, bill_of_supply
 
 
 
@@ -521,3 +521,65 @@ class InvoiceReport:
                                          each.invoice_order_lines]
             })
         return data
+
+class BillOfSupplyReport:
+    def get_data(self, request, billOfSupply_id=None, company_id=None):
+        data = {}
+        print(billOfSupply_id)    #bill_of_supply
+        print(company_id)
+        billOfSupply_lines = bill_of_supply.BillOfSupplyLines.objects.annotate(product_name=F('product__name'))
+        print(billOfSupply_lines)
+        record = bill_of_supply.BillOfSupply.objects.filter(pk=billOfSupply_id, company_id=company_id).annotate(
+            billOfSupply_issue_date=ExpressionWrapper(Func(F('issue_date'), V("DD/MM/YYYY"), function='TO_CHAR'),
+                                                 output_field=CharField()),
+            billOfSupply_due_date=ExpressionWrapper(Func(F('due_date'), V("DD/MM/YYYY"), function='TO_CHAR'),
+                                               output_field=CharField()),
+            billOfSupply_client=F('client__name'),
+        ).prefetch_related(Prefetch('billofsupplylines_set', queryset=billOfSupply_lines,
+                                    to_attr='billOfSupply_lines'))
+
+        for each in record:
+            data.update({
+                'billOfSupply_issue_date': each.billOfSupply_issue_date,
+                'billOfSupply_due_date': each.billOfSupply_due_date,
+                'billOfSupply_client': each.billOfSupply_client,
+                'number': each.number,
+                'ship_to': each.ship_to,
+                'place_of_supply': each.place_of_supply,
+                'payment_terms': each.payment_terms,
+                'clean_amount': each.clean_amount,
+                'grand_total': each.grand_total,
+                'rounded_off_value': each.rounded_off_value,
+                'grand_total_without_round': each.grand_total_without_round,
+                'centralGst': each.centralGst,
+                'stateGst': each.stateGst,
+                'internationalGst': each.internationalGst,
+                'gst': each.gst,
+                'tax_amount': each.tax_amount,
+                'discount_amount': each.discount_amount,
+
+                'pk': each.pk,
+                'billOfSupply_lines': [{'product_name': line.product_name,
+                                         'uom': line.uom,
+                                         'quantity': line.quantity,
+                                         'unit_price': line.unit_price,
+                                         'line_discount': round(
+                                             ((line.discount / 100) * line.unit_price * line.quantity), 2),
+                                         'total_without_gst': round((line.quantity * line.unit_price - (
+                                                     line.discount / 100) * line.unit_price * line.quantity), 2),
+                                         'total_with_gst': round((line.quantity * line.unit_price + line.quantity * (
+                                                     line.unit_price * (int(line.tax)) / 100) - (
+                                                                              line.discount / 100) * line.unit_price * line.quantity),
+                                                                 2),
+                                         'line_centralGst': round(
+                                             ((line.quantity * (line.unit_price * (int(line.tax)) / 100)) / 2), 2),
+                                         'line_stateGst': round(
+                                             ((line.quantity * (line.unit_price * (int(line.tax)) / 100)) / 2), 2),
+                                         'line_internationalGst': round(
+                                             (line.quantity * (line.unit_price * (int(line.tax)) / 100)), 2), } for line
+                                        in
+                                        each.billOfSupply_lines]
+            })
+
+        return data
+

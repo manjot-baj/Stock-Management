@@ -121,12 +121,12 @@ var table = $('#sampleTable').DataTable({
 
 
   columnDefs: [
-<!--			{-->
-<!--				targets: [1],-->
-<!--				render: function (data, type, row, meta) {-->
-<!--					return "<a href=" + "{% url 'view_invoice_order' 12345 %}".replace(/12345/, row.pk) + ">" + data + "</a>"-->
-<!--				}-->
-<!--			}-->
+			{
+				targets: [1],
+				render: function (data, type, row, meta) {
+					return "<a href=" + "{% url 'view_billOfSupply_order' 12345 %}".replace(/12345/, row.pk) + ">" + data + "</a>"
+				}
+			}
 
 		],
 

@@ -100,6 +100,8 @@ urlpatterns = [
                        name="billOfSupply_without_gst"),
                   path('filter_billOfSupply_date/', views.BillOfSupplyView.as_view(), {'filterDate': ''},
                        name="filter_billOfSupply_date"),
+                  path('view_billOfSupply_order/<int:object_id>', views.BillOfSupplyView.as_view(),
+                       name="view_billOfSupply_order"),
 
 
 

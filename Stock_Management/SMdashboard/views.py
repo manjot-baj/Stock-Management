@@ -2258,6 +2258,92 @@ class BillOfSupplyView(OwnerRequiredMinxin, ListView):
                           {'billOfSupply_maker': self.billOfSupplyForm(),
                            'billOfSupply_lines': BillOfSupplyLineFormSetData})
 
+        elif 'object_id' in kwargs:
+            from .hmToPd import render_to_pdf
+            print(kwargs.get('object_id'))
+            from .reports import BillOfSupplyReport
+            data = BillOfSupplyReport().get_data(request, billOfSupply_id=kwargs.get('object_id'),
+                                            company_id=request.session.get('company_id'))
+
+            company_details = CompanyDetail.objects.filter(pk=request.session.get('company_id')).values('pk',
+                                                                                                        'name', 'state',
+                                                                                                        'address',
+                                                                                                        'city',
+                                                                                                        'pin_code',
+                                                                                                        'country',
+                                                                                                        'phone',
+                                                                                                        'email_id',
+                                                                                                        'website',
+                                                                                                        'GSTIN',
+                                                                                                        'taxation_type',
+                                                                                                        'tax_inclusive',
+                                                                                                        'TIN', 'VAT',
+                                                                                                        'service_tax_no',
+                                                                                                        'CST_tin_no',
+                                                                                                        'PAN',
+                                                                                                        'additional_details',
+                                                                                                        'currency',
+                                                                                                        'photo').annotate(
+
+
+            )
+            # company = list(company_details)
+
+            data.update({
+                'company_name': company_details[0]['name'],
+                'company_country': company_details[0]['country'],
+                'company_address': company_details[0]['address'],
+                'company_city': company_details[0]['city'],
+                'company_state': company_details[0]['state'],
+                'company_pin_code': company_details[0]['pin_code'],
+                'company_phone': company_details[0]['phone'],
+                'company_email_id': company_details[0]['email_id'],
+                'company_website': company_details[0]['website'],
+                'company_GSTIN': company_details[0]['GSTIN'],
+                'company_taxation_type': company_details[0]['taxation_type'],
+                'company_tax_inclusive': company_details[0]['tax_inclusive'],
+                'company_TIN': company_details[0]['TIN'],
+                'company_VAT': company_details[0]['VAT'],
+                'company_service_tax_no': company_details[0]['service_tax_no'],
+                'company_CST_tin_no': company_details[0]['CST_tin_no'],
+                'company_PAN': company_details[0]['PAN'],
+                'company_additional_details': company_details[0]['additional_details'],
+                'company_currency': company_details[0]['currency'],
+                'company_photo': company_details[0]['photo'],
+            })
+            print(data['discount_amount'])
+            if data['discount_amount'] == 0.00:
+                data.update({
+                    'discount_condition': 'No',
+                })
+            else:
+                data.update({
+                    'discount_condition': 'Yes',
+                })
+
+            print(data['grand_total'])
+            in_word = str(data['grand_total'])
+
+            def int2words(n, p=inflect.engine()):
+                return ''.join(p.number_to_words(n, wantlist=True, andword=''))
+
+            def dollars2words(f):
+                d, dot, cents = f.partition('.')
+                return "{dollars}{cents} rupees".format(
+                    dollars=int2words(int(d)),
+                    cents=" and {}/100".format(cents) if cents and int(cents) else '')
+
+            print(dollars2words(in_word))
+            data.update({
+                'grand_total_in_word': dollars2words(in_word),
+            })
+            print("ok in id")
+            print(data)
+            pdf = render_to_pdf('SMdashboard/pdf_billOfSupply.html', data)
+            return HttpResponse(pdf, content_type='application/pdf')
+
+
+
         elif 'billOfSupply_without_gst' in kwargs:
             company_id = request.session.get('company_id')
             data = self.get_data(request, user_id=request.user.id, company_id=company_id, billOfSupply_without_gst='')
